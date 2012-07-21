@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Funkcje specjalne</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+      <style>
+         p {
+            margin-top: 15px;
+            margin-bottom: 0px;
+         }
+         h2 {
+            margin-top: 0px; 
+            margin-bottom: 0px;
+            text-align: center;
+         }
+         h3 {
+            margin-top: 10px; 
+            margin-bottom: 0px;
+         }
+         ul {
+            margin-top: 0px; 
+            margin-bottom: 0px;
+         }
+      </style>
+   </head>
+
+   <body>
+
+      <h2>Funkcje specjalne</h2>
+
+      <h3>1. int porownaj(idx1, idx2)</h3>
+
+      <p>
+         Funkcja "porownaj", jak sama nazwa wskazuje służy do porównywania 
+         dwóch liczb, jako parametr przyjmuje indeksy dwóch liczb, 
+         a jako wynik zwraca liczbę -1, 0 lub 1. Funkcja zwraca:
+      </p>
+      <ul>
+         <li>0 jeśli liczby na podanych indeksach są równe</li>
+         <li>-1 jeśli liczba na indeksie pierwszym jest mniejsza od tej na indeksie drugim</li>
+         <li>1 jeśli  liczba na indeksie pierwszym jest większa od tej na indeksie drugim</li>
+      </ul>
+      <p style="margin-top: 0cm">
+         Oczywiście jeśli podane indeksy będą ujemne albo wykroczą poza rozmiar 
+         tablicy program zostanie zatrzymany i zostanie 
+         wyświetlony błąd wykonania programu.
+      </p>
+      
+      <p style="text-align: center">
+         <img src="arrayOnly.jpg"/>
+      </p>
+      <p style="margin-top: 0cm">
+         Dla przykładu prezentujemy kilka wywołań funkcji "porownaj", 
+         przyjmijmy, że stan tablicy wygląda tak jak na niżej pokazanym rysunku:
+      </p>
+      <ul>
+         <li><code>porownaj(1, 11)</code> – wywołanie funkcji zwróci 0</li>
+         <li><code>porownaj(5, 7)</code> – wywołanie funkcji zwróci 1</li>
+         <li><code>porownaj(1, 14)</code> – wywołanie funkcji zwróci -1</li>
+         <li><code>porownaj(14, 1)</code>  – wywołanie funkcji zwróci 1</li>
+         <li><code>porownaj(3, -2)</code> – wywołanie funkcji zakończy się błędem</li>
+         <li><code>porownaj(16, 2)</code> – wywołanie funkcji zakończy się błędem</li>
+      </ul>
+
+   </body>
+</html>
