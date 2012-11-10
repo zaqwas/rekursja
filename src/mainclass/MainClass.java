@@ -94,6 +94,8 @@ public class MainClass {
     private JPanel lessonPanel;
     //</editor-fold>
     
+    private JMenu lessonChooserMenu;
+    
     private Font statusLabelFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
     private FontMetrics statusLabelFontMetrics;
     private StringCreator statusCreator;
@@ -340,6 +342,11 @@ public class MainClass {
         checkSyntaxMenuItem = new JMenuItem(Lang.checkSyntax);
         checkSyntaxMenuItem.setAccelerator(KeyStroke.getKeyStroke("F4"));
         programMenu.add(checkSyntaxMenuItem);
+        //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="Init choose lesson menu">
+        lessonChooserMenu = new JMenu(Lang.chooseLesson);
+        menuBar.add(lessonChooserMenu);
         //</editor-fold>
         
         //<editor-fold defaultstate="collapsed" desc="Init help menu">
@@ -951,6 +958,8 @@ public class MainClass {
     private static class Lang {
         public static String frameTitle = "Rekursja";
         public static String statusDots = "Status...";
+        
+        public static String chooseLesson = "Wybierz lekcję";
         
         public static String file = "Plik";
         public static String openFileDots = "Otwórz plik...";
