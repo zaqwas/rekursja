@@ -49,6 +49,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ActionMapUIResource;
 import lesson.EmptyLesson;
+import lesson._01A_Introduction.IntroductionLesson;
+import lesson._01B_MinElement.MinElementLesson;
+import lesson._02A_RecursionIntro.RecursionIntroLesson;
+import lesson._02B_ArithmeticSeries.ArithmeticSeriesLesson;
+import lesson._03A_EuclideanAlgorithm.EuclideanAlgorithmLesson;
 import parser.ProgramError;
 import stack.StackOfInstances;
 import statistics.Statistics;
@@ -94,7 +99,12 @@ public class MainClass {
     private JPanel lessonPanel;
     //</editor-fold>
     
-    private JMenu lessonChooserMenu;
+    private JMenu chooseLessonMenu;
+    private JMenuItem chooseIntroductionLessonMenuItem;
+    private JMenuItem chooseMinElementLessonMenuItem;
+    private JMenuItem chooseRecursionIntroLessonMenuItem;
+    private JMenuItem chooseArithmeticSeriesLessonMenuItem;
+    private JMenuItem chooseEuclideanAlgorithmLessonMenuItem;
     
     private Font statusLabelFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
     private FontMetrics statusLabelFontMetrics;
@@ -345,8 +355,88 @@ public class MainClass {
         //</editor-fold>
         
         //<editor-fold defaultstate="collapsed" desc="Init choose lesson menu">
-        lessonChooserMenu = new JMenu(Lang.chooseLesson);
-        menuBar.add(lessonChooserMenu);
+        chooseLessonMenu = new JMenu(Lang.chooseLesson);
+        menuBar.add(chooseLessonMenu);
+        
+        chooseIntroductionLessonMenuItem = new JMenuItem(Lang.chooseIntroductionLesson);
+        chooseIntroductionLessonMenuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if ( lesson!=null ) {
+                    lesson.close();
+                    lesson = null;
+                }
+                
+                lesson = new IntroductionLesson(MainClass.this);
+                lesson.start();
+            }
+        });
+        chooseLessonMenu.add(chooseIntroductionLessonMenuItem);
+        
+        chooseMinElementLessonMenuItem = new JMenuItem(Lang.chooseMinElementLesson);
+        chooseMinElementLessonMenuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if ( lesson!=null ) {
+                    lesson.close();
+                    lesson = null;
+                }
+                
+                lesson = new MinElementLesson(MainClass.this);
+                lesson.start();
+            }
+        });
+        chooseLessonMenu.add(chooseMinElementLessonMenuItem);
+        
+        chooseRecursionIntroLessonMenuItem = new JMenuItem(Lang.chooseRecursionIntroLesson);
+        chooseRecursionIntroLessonMenuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if ( lesson!=null ) {
+                    lesson.close();
+                    lesson = null;
+                }
+                
+                lesson = new RecursionIntroLesson(MainClass.this);
+                lesson.start();
+            }
+        });
+        chooseLessonMenu.add(chooseRecursionIntroLessonMenuItem);
+        
+        
+        chooseArithmeticSeriesLessonMenuItem = new JMenuItem(Lang.chooseArithmeticSeriesLessonMenuItem);
+        chooseArithmeticSeriesLessonMenuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if ( lesson!=null ) {
+                    lesson.close();
+                    lesson = null;
+                }
+                
+                lesson = new ArithmeticSeriesLesson(MainClass.this);
+                lesson.start();
+            }
+        });
+        chooseLessonMenu.add(chooseArithmeticSeriesLessonMenuItem);
+
+        chooseEuclideanAlgorithmLessonMenuItem = new JMenuItem(Lang.chooseEuclideanAlgorithmLessonMenuItem);
+        chooseEuclideanAlgorithmLessonMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (lesson != null) {
+                    lesson.close();
+                    lesson = null;
+                }
+
+                lesson = new EuclideanAlgorithmLesson(MainClass.this);
+                lesson.start();
+            }
+        });
+        chooseLessonMenu.add(chooseEuclideanAlgorithmLessonMenuItem);
         //</editor-fold>
         
         //<editor-fold defaultstate="collapsed" desc="Init help menu">
@@ -960,6 +1050,11 @@ public class MainClass {
         public static String statusDots = "Status...";
         
         public static String chooseLesson = "Wybierz lekcję";
+        public static String chooseIntroductionLesson = "Wprowadzenie";
+        public static String chooseMinElementLesson = "Minimalny element";
+        public static String chooseRecursionIntroLesson = "Wprowadzenie do rekurencji";
+        public static String chooseArithmeticSeriesLessonMenuItem = "Suma ciągu arytmetycznego";
+        public static String chooseEuclideanAlgorithmLessonMenuItem = "Algorytm Euklidesa";
         
         public static String file = "Plik";
         public static String openFileDots = "Otwórz plik...";

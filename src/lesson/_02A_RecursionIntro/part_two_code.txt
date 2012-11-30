@@ -1,0 +1,26 @@
+void wczytaj_n(&n){}
+
+var tablica_globalna[2];
+
+int silnia(n)
+var i, tablica[2];
+{
+  for (i=0; i<2; i++) {
+    tablica[i] = n;
+    tablica_globalna[i] = n;
+  }
+  i = n;
+
+  if (n <= 1)
+    return 1;
+  
+  return n * silnia(n-1);
+}
+
+void main()
+var n, wynik;
+{
+  wczytaj_n(&n);
+  wynik = silnia(n);
+  writeln(n,"! = ", wynik);
+}

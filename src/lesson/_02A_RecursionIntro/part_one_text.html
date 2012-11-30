@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Treść zadania</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  </head>
+
+  <body>
+    <h2 style="text-align: center">Wprowadzenie do rekurencji</h2>
+
+    <p>
+      Poprzednie lekcje miały wprowadzić Cię w strukturę systemu, a także zapoznać 
+      z językiem wykorzystywanym w systemie. Mam nadzieję, że dokładnie zapoznałeś się z ww. elementami, 
+      gdyż w tym momencie przejdziemy do głównego tematu tego systemu, czyli do nauki rekurencji.
+    </p>
+
+    <p>
+      Definicja rekurencji brzmi następująco:<br>
+      <b>Rekurencja</b> - sposób definiowania funkcji, polegający na umieszczeniu 
+      w treści funkcji odwołań do samej siebie.
+    </p>
+    
+    <h3>Przykład: funkcja silnia</h3>
+
+    <p>
+      Silnią liczby naturalnej nazywamy iloczyn wszystkich liczb naturalnych nie większych niż n.
+      Oznaczamy ją wykrzyknikiem, <i>n</i>! Np. 5!=1&sdot;2&sdot;3&sdot;4&sdot;5=120. 
+      Ponadto przyjmuje się że dla zera silnia wynosi jeden (0! = 1).
+    </p>
+    
+    <p>
+      Funkcję silnia można zdefiniować na dwa sposoby:
+    </p>
+    <table>
+      <tr>
+        <td>1. &nbsp;&nbsp;</td>
+        <td><img src="factorial_iteration.png"></td>
+      </tr>
+      <tr>
+        <td>2. &nbsp;&nbsp;</td>
+        <td><img src="factorial_recursion.png"></td>
+      </tr>
+    </table>
+    
+    <div>
+      Zauważmy, że ta druga definicja zawiera właśnie rekurencję, 
+      gdyż w opisie problemu użyty jest element, który właśnie opisujemy.
+    </div>
+    
+    Na podstawie tych dwóch wzorów można napisać dwie funkcje:
+    <p>ffff</p>
+    <table>
+      <tr>
+        <td>
+          <code>
+            int silnia(n)<br>
+            var i, wynik;<br>
+            {<br>
+            &nbsp;&nbsp;wynik = 1;<br>
+            &nbsp;&nbsp;for (i=2; i&lt;=n; i++)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;wynik *= i;<br>
+            &nbsp;&nbsp;return wynik;<br>
+            }
+          </code>
+        </td>
+        <td>
+          <code>
+            int silnia(n)<br>
+            {<br>
+            &nbsp;&nbsp;if ( n&lt;=1 )<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+            &nbsp;&nbsp;else<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;return n * silnia(n-1);<br>
+            }
+          </code>
+        </td>
+      </tr>
+    </table>
+    
+    
+
+    
+
+    <p>
+      Przed rozpoczęciem zadania należy zapoznać się ze specyfikacją zadania, 
+      znajdującą się w zakładce pod tym samym tytułem.
+    </p>
+
+  </body>
+</html>

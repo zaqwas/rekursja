@@ -1,4 +1,4 @@
-package lesson._03_FindElement;
+package lesson._01B_MinElement;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
 import interpreter.Instance;
@@ -52,9 +52,9 @@ import syntax.expression.Call;
 import syntax.function.SpecialFunctionBehavior;
 //</editor-fold>
 
-public class FindElementLesson implements Lesson {
+public class MinElementLesson implements Lesson {
     
-   private final static String resourcesDir = "/lesson/_03_FindElement/resources/";
+   private final static String resourcesDir = "/lesson/_01B_MinElement/";
    
     //<editor-fold defaultstate="collapsed" desc="Components and variables">
     private JInternalFrame frame;
@@ -105,12 +105,11 @@ public class FindElementLesson implements Lesson {
     private JMenuItem hintMenuItem;
     private JMenuItem solutionMenuItem;
     
-    private JLabel searchedElementLabel;
-    private JTextField searchedElementTextField;
+    
     
     private String userSolutionString;
     
-    public FindElementLesson(MainClass mainClass) {
+    public MinElementLesson(MainClass mainClass) {
         this.mainClass = mainClass;
     }
     
@@ -199,7 +198,13 @@ public class FindElementLesson implements Lesson {
     public void start() {
         frame = new JInternalFrame(Lang.arrayFrameTitle);
         
-        //<editor-fold defaultstate="collapsed" desc="Document filter">
+        //<editor-fold defaultstate="collapsed" desc="valuesPanel">
+        valuesPanel = new JPanel();
+        valuesPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
+        for (int i=0; i<32; i++) {
+            valuesIndexLabel[i] = new JLabel(Integer.toString(i)+":");
+            valuesIndexLabel[i].setFont(sansSerifPlain9Font);
+        }
         DocumentFilter documentFilter = new DocumentFilter () {
             @Override
             public void insertString(FilterBypass fb, int offset,
@@ -234,26 +239,6 @@ public class FindElementLesson implements Lesson {
                 fb.replace(0, docLength, str, attrs);
             }
         };
-        //</editor-fold>
-        
-        searchedElementLabel = new JLabel(Lang.searchedElement);
-        searchedElementLabel.setFont(sansSerifBold11Font);
-        
-        searchedElementTextField = new JTextField("0");
-        searchedElementTextField.setFont(monospacedFont);
-        searchedElementTextField.setMargin(noMargin);
-        searchedElementTextField.setHorizontalAlignment(JTextField.CENTER);
-        ((AbstractDocument) searchedElementTextField.getDocument()).setDocumentFilter(documentFilter);
-        searchedElementTextField.setColumns(3);
-        
-        //<editor-fold defaultstate="collapsed" desc="valuesPanel">
-        valuesPanel = new JPanel();
-        valuesPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
-        for (int i=0; i<32; i++) {
-            valuesIndexLabel[i] = new JLabel(Integer.toString(i)+":");
-            valuesIndexLabel[i].setFont(sansSerifPlain9Font);
-        }
-        
         for (int i=0; i<32; i++) {
             valuesTextField[i] = new JTextField("0");
             valuesTextField[i].setFont(monospacedFont);
@@ -410,24 +395,17 @@ public class FindElementLesson implements Lesson {
         layout.setHorizontalGroup(
             layout.createSequentialGroup()
             .addGap(2)
-            .addGroup(layout.createParallelGroup()
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(searchedElementLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchedElementTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                 .addComponent(valuesPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(buttonsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addComponent(buttonsPanel))
             .addGap(2)
         );
         layout.setVerticalGroup(
             layout.createSequentialGroup()
             .addGap(2)
-            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addComponent(searchedElementLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(searchedElementTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-            .addGap(2)
             .addComponent(valuesPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
             .addGap(2)
-            .addComponent(buttonsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+            .addComponent(buttonsPanel)
             .addGap(2)
         );
         frame.getContentPane().setLayout(layout);
@@ -778,8 +756,6 @@ public class FindElementLesson implements Lesson {
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
         public static final String arrayFrameTitle = "Tablica liczb";
-        
-        public static final String searchedElement = "Szukany element: ";
         
         //public static final String startButton = "<html>S<br/>T<br/>A<br/>R<br/>T</html>";
         public static final String startButton = "START";
