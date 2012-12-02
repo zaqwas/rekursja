@@ -1,0 +1,17 @@
+void wczytaj_n(&n){}
+
+int silnia(n)
+{
+  if (n <= 1)
+    return 1;
+  
+  return n * silnia(n-1);
+}
+
+void main()
+var n, wynik;
+{
+  wczytaj_n(&n);
+  wynik = silnia(n);
+  writeln(n,"! = ", wynik);
+}

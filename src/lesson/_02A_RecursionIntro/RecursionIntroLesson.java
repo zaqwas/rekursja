@@ -4,6 +4,8 @@ package lesson._02A_RecursionIntro;
 import helpers.ReadFileHelper;
 import interpreter.InterpreterThread;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.JEditorPane;
@@ -23,30 +25,38 @@ public class RecursionIntroLesson implements Lesson {
    
     private MainClass mainClass;
     
-    private JInternalFrame partOneTextFrame;
-    private JEditorPane partOneTextEditorPane;
-    private JScrollPane partOneTaxtScrollPane;
+    private JInternalFrame part1TextFrame;
+    private JEditorPane part1TextEditorPane;
+    private JScrollPane part1TaxtScrollPane;
     
-    private JInternalFrame partTwoTextFrame;
-    private JEditorPane partTwoTextEditorPane;
-    private JScrollPane partTwoTaxtScrollPane;
+    private JInternalFrame part2TextFrame;
+    private JEditorPane part2TextEditorPane;
+    private JScrollPane part2TaxtScrollPane;
     
-    private JInternalFrame partThreeTextFrame;
-    private JEditorPane partThreeTextEditorPane;
-    private JScrollPane partThreeTaxtScrollPane;
+    private JInternalFrame part3TextFrame;
+    private JEditorPane part3TextEditorPane;
+    private JScrollPane part3TaxtScrollPane;
     
-    private JMenuItem partOneTextLessonMenuItem;
-    private JMenuItem partOneCodeLessonMenuItem;
-    private JMenuItem partTwoTextLessonMenuItem;
-    private JMenuItem partTwoCodeLessonMenuItem;
-    private JMenuItem partThreeTextLessonMenuItem;
-    private JMenuItem partThreeCodeLessonMenuItem;
+    private JMenuItem part1TextMenuItem;
+    private JMenuItem part1CodeRecursionMenuItem;
+    private JMenuItem part1CodeIterationMenuItem;
+    private JMenuItem part2TextMenuItem;
+    private JMenuItem part2CodeMenuItem;
+    private JMenuItem part3TextMenuItem;
+    private JMenuItem part3CodeWithoutStopMenuItem;
+    private JMenuItem part3CodeWithStopMenuItem;
+    
+    private JMenuItem part1gotoPart2MenuItem;
+    private JMenuItem part2gotoPart1MenuItem;
+    private JMenuItem part2gotoPart3MenuItem;
+    private JMenuItem part3gotoPart2MenuItem;
     
     private String oldCode;
-    private String partOneCodeRecursion;
-    private String partOneCodeIteration;
-    private String partTwoCode;
-    private String partThreeCode;
+    private String part1CodeRecursion;
+    private String part1CodeIteration;
+    private String part2Code;
+    private String part3CodeWithoutStop;
+    private String part3CodeWithStop;
     
     public RecursionIntroLesson(MainClass mainClass) {
         this.mainClass = mainClass;
@@ -55,114 +65,260 @@ public class RecursionIntroLesson implements Lesson {
     @Override
     public void start() {
         
-        //<editor-fold defaultstate="collapsed" desc="PartOneTextFrame">
-        partOneTextFrame = new JInternalFrame(Lang.textFrameTitle);
+        //<editor-fold defaultstate="collapsed" desc="Part1TextFrame">
+        part1TextFrame = new JInternalFrame(Lang.textFrameTitle);
         
-        partOneTaxtScrollPane = new JScrollPane();
-        partOneTaxtScrollPane.setBorder(null);
+        part1TaxtScrollPane = new JScrollPane();
+        part1TaxtScrollPane.setBorder(null);
         
-        partOneTextEditorPane = new JEditorPane();
-        partOneTextEditorPane.setEditable(false);
+        part1TextEditorPane = new JEditorPane();
+        part1TextEditorPane.setEditable(false);
         try {
-            partOneTextEditorPane.setPage(getClass().getResource(resourcesDir + "part_one_text.html"));
+            part1TextEditorPane.setPage(getClass().getResource(resourcesDir + "part1_text.html"));
         } catch (IOException ex) {
-            partOneTextEditorPane.setText(Lang.loadTabPaneError);
+            part1TextEditorPane.setText(Lang.loadTabPaneError);
         }
-        partOneTaxtScrollPane.setViewportView(partOneTextEditorPane);
-        partOneTextFrame.add(partOneTaxtScrollPane);
+        part1TaxtScrollPane.setViewportView(part1TextEditorPane);
+        part1TextFrame.add(part1TaxtScrollPane);
         
-        partOneTaxtScrollPane.setPreferredSize(new Dimension(700, 500));
-        partOneTextFrame.setResizable(true);
-        partOneTextFrame.pack();
-        
-        mainClass.addToDesktop(partOneTextFrame);
-        partOneTextFrame.setVisible(true);
+        part1TaxtScrollPane.setPreferredSize(new Dimension(700, 500));
+        part1TextFrame.setResizable(true);
+        part1TextFrame.pack();
         //</editor-fold>
         
-        //<editor-fold defaultstate="collapsed" desc="PartTwoTextFrame">
-        partTwoTextFrame = new JInternalFrame(Lang.textFrameTitle);
+        //<editor-fold defaultstate="collapsed" desc="Part2TextFrame">
+        part2TextFrame = new JInternalFrame(Lang.textFrameTitle);
         
-        partTwoTaxtScrollPane = new JScrollPane();
-        partTwoTaxtScrollPane.setBorder(null);
+        part2TaxtScrollPane = new JScrollPane();
+        part2TaxtScrollPane.setBorder(null);
         
-        partTwoTextEditorPane = new JEditorPane();
-        partTwoTextEditorPane.setEditable(false);
+        part2TextEditorPane = new JEditorPane();
+        part2TextEditorPane.setEditable(false);
         try {
-            partTwoTextEditorPane.setPage(getClass().getResource(resourcesDir + "part_two_text.html"));
+            part2TextEditorPane.setPage(getClass().getResource(resourcesDir + "part2_text.html"));
         } catch (IOException ex) {
-            partTwoTextEditorPane.setText(Lang.loadTabPaneError);
+            part2TextEditorPane.setText(Lang.loadTabPaneError);
         }
-        partTwoTaxtScrollPane.setViewportView(partTwoTextEditorPane);
-        partTwoTextFrame.add(partTwoTaxtScrollPane);
+        part2TaxtScrollPane.setViewportView(part2TextEditorPane);
+        part2TextFrame.add(part2TaxtScrollPane);
         
-        partTwoTaxtScrollPane.setPreferredSize(new Dimension(700, 500));
-        partTwoTextFrame.setResizable(true);
-        partTwoTextFrame.pack();
-        
-        mainClass.addToDesktop(partTwoTextFrame);
-        partTwoTextFrame.setVisible(false);
+        part2TaxtScrollPane.setPreferredSize(new Dimension(700, 500));
+        part2TextFrame.setResizable(true);
+        part2TextFrame.pack();
         //</editor-fold>
         
-        //<editor-fold defaultstate="collapsed" desc="PartThreeTextFrame">
-        partThreeTextFrame = new JInternalFrame(Lang.textFrameTitle);
+        //<editor-fold defaultstate="collapsed" desc="Part3TextFrame">
+        part3TextFrame = new JInternalFrame(Lang.textFrameTitle);
         
-        partThreeTaxtScrollPane = new JScrollPane();
-        partThreeTaxtScrollPane.setBorder(null);
+        part3TaxtScrollPane = new JScrollPane();
+        part3TaxtScrollPane.setBorder(null);
         
-        partThreeTextEditorPane = new JEditorPane();
-        partThreeTextEditorPane.setEditable(false);
+        part3TextEditorPane = new JEditorPane();
+        part3TextEditorPane.setEditable(false);
         try {
-            partThreeTextEditorPane.setPage(getClass().getResource(resourcesDir + "part_three_text.html"));
+            part3TextEditorPane.setPage(getClass().getResource(resourcesDir + "part3_text.html"));
         } catch (IOException ex) {
-            partThreeTextEditorPane.setText(Lang.loadTabPaneError);
+            part3TextEditorPane.setText(Lang.loadTabPaneError);
         }
-        partThreeTaxtScrollPane.setViewportView(partThreeTextEditorPane);
-        partThreeTextFrame.add(partThreeTaxtScrollPane);
+        part3TaxtScrollPane.setViewportView(part3TextEditorPane);
+        part3TextFrame.add(part3TaxtScrollPane);
         
-        partThreeTaxtScrollPane.setPreferredSize(new Dimension(700, 500));
-        partThreeTextFrame.setResizable(true);
-        partThreeTextFrame.pack();
-        
-        mainClass.addToDesktop(partThreeTextFrame);
-        partThreeTextFrame.setVisible(false);
+        part3TaxtScrollPane.setPreferredSize(new Dimension(700, 500));
+        part3TextFrame.setResizable(true);
+        part3TextFrame.pack();
         //</editor-fold>
         
-        //<editor-fold defaultstate="collapsed" desc="Init codeEditor">
+        //<editor-fold defaultstate="collapsed" desc="Init codes">
         InputStream stream;
-        stream = getClass().getResourceAsStream(resourcesDir + "part_one_code_recursion.txt");
-        partOneCodeRecursion = ReadFileHelper.readFile(stream);
-        stream = getClass().getResourceAsStream(resourcesDir + "part_one_code_iteration.txt");
-        partOneCodeIteration = ReadFileHelper.readFile(stream);
-        stream = getClass().getResourceAsStream(resourcesDir + "part_two_code.txt");
-        partTwoCode = ReadFileHelper.readFile(stream);
-        stream = getClass().getResourceAsStream(resourcesDir + "part_three_code.txt");
-        partThreeCode = ReadFileHelper.readFile(stream);
+        stream = getClass().getResourceAsStream(resourcesDir + "part1_code_recursion.txt");
+        part1CodeRecursion = ReadFileHelper.readFile(stream);
+        stream = getClass().getResourceAsStream(resourcesDir + "part1_code_iteration.txt");
+        part1CodeIteration = ReadFileHelper.readFile(stream);
+        stream = getClass().getResourceAsStream(resourcesDir + "part2_code.txt");
+        part2Code = ReadFileHelper.readFile(stream);
+        stream = getClass().getResourceAsStream(resourcesDir + "part3_code_without_stop.txt");
+        part3CodeWithoutStop = ReadFileHelper.readFile(stream);
+        stream = getClass().getResourceAsStream(resourcesDir + "part3_code_with_stop.txt");
+        part3CodeWithStop = ReadFileHelper.readFile(stream);
         
         oldCode = mainClass.getEditor().getCode();
-        mainClass.getEditor().setCode(partOneCodeRecursion);
+        mainClass.getEditor().setCode(part1CodeRecursion);
+        //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="Init part1 menuItems">
+        part1TextMenuItem = new JMenuItem(Lang.part1TextMenuItem);
+        part1TextMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                part1TextFrame.setVisible(true);
+                part1TextFrame.toFront();
+            }
+        });
+        
+        part1CodeRecursionMenuItem = new JMenuItem(Lang.part1CodeRecursionMenuItem);
+        part1CodeRecursionMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainClass.getEditor().setCode(part1CodeRecursion);
+            }
+        });
+        
+        part1CodeIterationMenuItem = new JMenuItem(Lang.part1CodeIterationMenuItem);
+        part1CodeIterationMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainClass.getEditor().setCode(part1CodeIteration);
+            }
+        });
+        
+        part1gotoPart2MenuItem = new JMenuItem(Lang.part1gotoPart2MenuItem);
+        part1gotoPart2MenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JMenu lessonMenu = mainClass.getLessonMenu();
+                lessonMenu.removeAll();
+                mainClass.getDesktop().remove(part1TextFrame);
+                
+                lessonMenu.add(part2TextMenuItem);
+                lessonMenu.add(part2CodeMenuItem);
+                lessonMenu.add(new JSeparator());
+                lessonMenu.add(part2gotoPart1MenuItem);
+                lessonMenu.add(part2gotoPart3MenuItem);
+                
+                mainClass.getEditor().setCode(part2Code);
+                mainClass.getDesktop().add(part2TextFrame);
+                part2TextFrame.setVisible(true);
+                part2TextFrame.toFront();
+                mainClass.getDesktop().repaint();
+            }
+        });
+        //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="Init part2 menuItems">
+        part2TextMenuItem = new JMenuItem(Lang.part2TextMenuItem);
+        part2TextMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                part2TextFrame.setVisible(true);
+                part2TextFrame.toFront();
+            }
+        });
+        
+        part2CodeMenuItem = new JMenuItem(Lang.part2CodeMenuItem);
+        part2CodeMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainClass.getEditor().setCode(part2Code);
+            }
+        });
+        
+        part2gotoPart1MenuItem = new JMenuItem(Lang.part2gotoPart1MenuItem);
+        part2gotoPart1MenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JMenu lessonMenu = mainClass.getLessonMenu();
+                lessonMenu.removeAll();
+                mainClass.getDesktop().remove(part2TextFrame);
+                
+                lessonMenu.add(part1TextMenuItem);
+                lessonMenu.add(part1CodeRecursionMenuItem);
+                lessonMenu.add(part1CodeIterationMenuItem);
+                lessonMenu.add(new JSeparator());
+                lessonMenu.add(part1gotoPart2MenuItem);
+                
+                mainClass.getEditor().setCode(part1CodeRecursion);
+                mainClass.getDesktop().add(part1TextFrame);
+                part1TextFrame.setVisible(true);
+                part1TextFrame.toFront();
+                mainClass.getDesktop().repaint();
+            }
+        });
+        
+        part2gotoPart3MenuItem = new JMenuItem(Lang.part2gotoPart3MenuItem);
+        part2gotoPart3MenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JMenu lessonMenu = mainClass.getLessonMenu();
+                lessonMenu.removeAll();
+                mainClass.getDesktop().remove(part2TextFrame);
+                
+                lessonMenu.add(part3TextMenuItem);
+                lessonMenu.add(part3CodeWithoutStopMenuItem);
+                lessonMenu.add(part3CodeWithStopMenuItem);
+                lessonMenu.add(new JSeparator());
+                lessonMenu.add(part3gotoPart2MenuItem);
+                
+                mainClass.getEditor().setCode(part3CodeWithoutStop);
+                mainClass.getDesktop().add(part3TextFrame);
+                part3TextFrame.setVisible(true);
+                part3TextFrame.toFront();
+                mainClass.getDesktop().repaint();
+            }
+        });
+        //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="Init part3 menuItems">
+        part3TextMenuItem = new JMenuItem(Lang.part3TextMenuItem);
+        part3TextMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                part3TextFrame.setVisible(true);
+                part3TextFrame.toFront();
+            }
+        });
+        
+        part3CodeWithoutStopMenuItem = new JMenuItem(Lang.part3CodeWithoutStopMenuItem);
+        part3CodeWithoutStopMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainClass.getEditor().setCode(part3CodeWithoutStop);
+            }
+        });
+        
+        part3CodeWithStopMenuItem = new JMenuItem(Lang.part3CodeWithStopMenuItem);
+        part3CodeWithStopMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainClass.getEditor().setCode(part3CodeWithStop);
+            }
+        });
+        
+        part3gotoPart2MenuItem = new JMenuItem(Lang.part3gotoPart2MenuItem);
+        part3gotoPart2MenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JMenu lessonMenu = mainClass.getLessonMenu();
+                lessonMenu.removeAll();
+                mainClass.getDesktop().remove(part3TextFrame);
+                
+                lessonMenu.add(part2TextMenuItem);
+                lessonMenu.add(part2CodeMenuItem);
+                lessonMenu.add(new JSeparator());
+                lessonMenu.add(part2gotoPart1MenuItem);
+                lessonMenu.add(part2gotoPart3MenuItem);
+                
+                mainClass.getEditor().setCode(part2Code);
+                mainClass.getDesktop().add(part2TextFrame);
+                part2TextFrame.setVisible(true);
+                part2TextFrame.toFront();
+                mainClass.getDesktop().repaint();
+            }
+        });
         //</editor-fold>
         
         //<editor-fold defaultstate="collapsed" desc="InitMenu">
         JMenu lessonMenu = mainClass.getLessonMenu();
-        
-        partOneTextLessonMenuItem = new JMenuItem(Lang.partOneTextLessonMenuItem);
-        lessonMenu.add(partOneTextLessonMenuItem);
-        partOneCodeLessonMenuItem = new JMenuItem(Lang.partOneCodeLessonMenuItem);
-        lessonMenu.add(partOneCodeLessonMenuItem);
+
+        lessonMenu.add(part1TextMenuItem);
+        lessonMenu.add(part1CodeRecursionMenuItem);
+        lessonMenu.add(part1CodeIterationMenuItem);
         lessonMenu.add(new JSeparator());
-        
-        partTwoTextLessonMenuItem = new JMenuItem(Lang.partTwoTextLessonMenuItem);
-        lessonMenu.add(partTwoTextLessonMenuItem);
-        partTwoCodeLessonMenuItem = new JMenuItem(Lang.partTwoCodeLessonMenuItem);
-        lessonMenu.add(partTwoCodeLessonMenuItem);
-        lessonMenu.add(new JSeparator());
-        
-        partThreeTextLessonMenuItem = new JMenuItem(Lang.partThreeTextLessonMenuItem);
-        lessonMenu.add(partThreeTextLessonMenuItem);
-        partThreeCodeLessonMenuItem = new JMenuItem(Lang.partThreeCodeLessonMenuItem);
-        lessonMenu.add(partThreeCodeLessonMenuItem);
+        lessonMenu.add(part1gotoPart2MenuItem);
         
         lessonMenu.setEnabled(true);
+        
+        mainClass.addToDesktop(part1TextFrame);
+        part1TextFrame.setVisible(true);
         //</editor-fold>
         
     }
@@ -192,12 +348,20 @@ public class RecursionIntroLesson implements Lesson {
     private static class Lang {
         public static final String textFrameTitle = "Tablica liczb";
         
-        public static final String partOneTextLessonMenuItem = "Treść zadania";
-        public static final String partOneCodeLessonMenuItem = "Kod funkcji";
-        public static final String partTwoTextLessonMenuItem = "Treść zadania";
-        public static final String partTwoCodeLessonMenuItem = "Kod funkcji";
-        public static final String partThreeTextLessonMenuItem = "Treść zadania";
-        public static final String partThreeCodeLessonMenuItem = "Kod funkcji";
+        public static final String part1TextMenuItem = "Treść zadania (o rekurncji)";
+        public static final String part1CodeRecursionMenuItem = "Funkcja rekurencyjna";
+        public static final String part1CodeIterationMenuItem = "Funkcja itaracyjna";
+        public static final String part1gotoPart2MenuItem = ">>> Część II";
+        
+        public static final String part2TextMenuItem = "Treść zadania (o stosie)";
+        public static final String part2CodeMenuItem = "Funkcja przykładowa";
+        public static final String part2gotoPart1MenuItem = "<<< Część I";
+        public static final String part2gotoPart3MenuItem = ">>> Część III";
+        
+        public static final String part3TextMenuItem = "Treść zadania (o warunku stopu)";
+        public static final String part3CodeWithoutStopMenuItem = "Funkcja bez warunku stopu";
+        public static final String part3CodeWithStopMenuItem = "Funkcja z warunkiem stopu";
+        public static final String part3gotoPart2MenuItem = "<<< Część II";
         
         
         public static final String loadTabPaneError = "Nie można załadować tej zakładki.";
