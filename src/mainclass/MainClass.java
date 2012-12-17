@@ -47,7 +47,6 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.ActionMapUIResource;
 import lesson.EmptyLesson;
 import lesson._01A_Introduction.IntroductionLesson;
 import lesson._01B_MinElement.MinElementLesson;
@@ -389,6 +388,7 @@ public class MainClass {
             }
         });
         chooseLessonMenu.add(chooseMinElementLessonMenuItem);
+        chooseLessonMenu.add(new JSeparator());
         
         chooseRecursionIntroLessonMenuItem = new JMenuItem(Lang.chooseRecursionIntroLesson);
         chooseRecursionIntroLessonMenuItem.addActionListener(new ActionListener()
@@ -422,6 +422,7 @@ public class MainClass {
             }
         });
         chooseLessonMenu.add(chooseArithmeticSeriesLessonMenuItem);
+        chooseLessonMenu.add(new JSeparator());
 
         chooseEuclideanAlgorithmLessonMenuItem = new JMenuItem(Lang.chooseEuclideanAlgorithmLessonMenuItem);
         chooseEuclideanAlgorithmLessonMenuItem.addActionListener(new ActionListener() {

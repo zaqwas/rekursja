@@ -1,0 +1,18 @@
+void wczytaj_n(&n){}
+
+//Rozwiązanie rekurencyjne
+int suma_ciagu_arytmetycznego(n)
+{
+  if (n <= 0)
+    return 0;
+  
+  return n + suma_ciagu_arytmetycznego(n-1);
+}
+
+void main()
+var n, wynik;
+{
+  wczytaj_n(&n);
+  wynik = suma_ciagu_arytmetycznego(n);
+  writeln("S(",n,") = ",wynik);
+}
