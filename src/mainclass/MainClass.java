@@ -52,7 +52,8 @@ import lesson._01A_Introduction.IntroductionLesson;
 import lesson._01B_MinElement.MinElementLesson;
 import lesson._02A_RecursionIntro.RecursionIntroLesson;
 import lesson._02B_ArithmeticSeries.ArithmeticSeriesLesson;
-import lesson._03A_EuclideanAlgorithm.EuclideanAlgorithmLesson;
+import lesson._03A_Exponentiation.ExponentiationLesson;
+import lesson._03B_EuclideanAlgorithm.EuclideanAlgorithmLesson;
 import parser.ProgramError;
 import stack.StackOfInstances;
 import statistics.Statistics;
@@ -104,6 +105,7 @@ public class MainClass {
     private JMenuItem chooseRecursionIntroLessonMenuItem;
     private JMenuItem chooseArithmeticSeriesLessonMenuItem;
     private JMenuItem chooseEuclideanAlgorithmLessonMenuItem;
+    private JMenuItem chooseExponentiationLessonMenuItem;
     
     private Font statusLabelFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
     private FontMetrics statusLabelFontMetrics;
@@ -423,6 +425,21 @@ public class MainClass {
         });
         chooseLessonMenu.add(chooseArithmeticSeriesLessonMenuItem);
         chooseLessonMenu.add(new JSeparator());
+        
+        chooseExponentiationLessonMenuItem = new JMenuItem(Lang.chooseExponentiationLessonMenuItem);
+        chooseExponentiationLessonMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (lesson != null) {
+                    lesson.close();
+                    lesson = null;
+                }
+
+                lesson = new ExponentiationLesson(MainClass.this);
+                lesson.start();
+            }
+        });
+        chooseLessonMenu.add(chooseExponentiationLessonMenuItem);
 
         chooseEuclideanAlgorithmLessonMenuItem = new JMenuItem(Lang.chooseEuclideanAlgorithmLessonMenuItem);
         chooseEuclideanAlgorithmLessonMenuItem.addActionListener(new ActionListener() {
@@ -1055,6 +1072,7 @@ public class MainClass {
         public static String chooseMinElementLesson = "Minimalny element";
         public static String chooseRecursionIntroLesson = "Wprowadzenie do rekurencji";
         public static String chooseArithmeticSeriesLessonMenuItem = "Suma ciągu arytmetycznego";
+        public static String chooseExponentiationLessonMenuItem = "Potęgowanie";
         public static String chooseEuclideanAlgorithmLessonMenuItem = "Algorytm Euklidesa";
         
         public static String file = "Plik";

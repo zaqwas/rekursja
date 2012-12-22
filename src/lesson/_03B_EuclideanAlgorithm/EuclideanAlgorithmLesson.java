@@ -1,4 +1,4 @@
-package lesson._03A_EuclideanAlgorithm;
+package lesson._03B_EuclideanAlgorithm;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
 import lesson._02B_ArithmeticSeries.*;
