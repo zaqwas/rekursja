@@ -38,7 +38,7 @@ import parser.ProgramError;
 import syntax.SyntaxTree;
 //</editor-fold>
 
-public class MainEditorManager {
+public class CodeEditor {
     
     //<editor-fold defaultstate="collapsed" desc="Components">
     private JInternalFrame frame;
@@ -555,11 +555,13 @@ public class MainEditorManager {
     public void setCode(String text) {
         ArrayList<Range> unmodLines = unmodifyingLines;
         unmodifyingLines = null;
+        unmodLines.clear();
         if ( text.isEmpty() ) {
             editorTextPane.setText(text);
+            unmodifyingLines = unmodLines;
             return;
         }
-        Range range = text.charAt(0) == '\0' ? null : new Range(0);
+        Range range = text.charAt(0) == '~' ? null : new Range(0);
         StringBuilder sb = new StringBuilder();
         int line = 0;
         for (int i = range == null ? 1 : 0; i < text.length(); i++) {
@@ -567,15 +569,14 @@ public class MainEditorManager {
             if ( c=='\r') {
                 continue;
             }
-            if ( c=='\0') {
+            if (c=='~' && text.charAt(i-1)=='\n') {
                 if ( range==null ) {
-                    range = new Range(++line);
+                    range = new Range(line);
                 } else {
-                    range.end = line++;
+                    range.end = line-1;
                     unmodLines.add(range);
                     range = null;
                 }
-                sb.append('\n');
             } else {
                 if ( c=='\n') {
                     line++;
@@ -595,7 +596,36 @@ public class MainEditorManager {
     }
     
     public String getCode() {
-        return editorTextPane.getText();
+        String str = editorTextPane.getText();
+        if ( unmodifyingLines==null || unmodifyingLines.isEmpty() ) {
+            return str;
+        }
+        StringBuilder sb = new StringBuilder(str);
+        int offset = 0;
+        boolean skipFirst = true;
+        if (unmodifyingLines.get(0).start !=0 )
+        {
+            sb.insert(0, '~');
+            offset++;
+            skipFirst = false;
+        }
+        for(Range r : unmodifyingLines)
+        {
+            int newLine;
+            if ( !skipFirst ) {
+                newLine = indexesOfNewLines.get(r.start-1);
+                sb.insert(newLine+offset+1, '~');
+                offset++;
+            }
+            skipFirst = false;
+            if (r.end+1 == numberOfLines) {
+                break;
+            }
+            newLine = indexesOfNewLines.get(r.end);
+            sb.insert(newLine+offset+1, '~');
+            offset++;
+        }
+        return sb.toString();
     }
     
     public SyntaxTree getSyntaxTree() {
@@ -663,7 +693,7 @@ public class MainEditorManager {
 
     
     //<editor-fold defaultstate="collapsed" desc="Constructor">
-    public MainEditorManager (MainClass mainClass) {
+    public CodeEditor (MainClass mainClass) {
         this.mainClass = mainClass;
         frame = new JInternalFrame(Lang.frameTitle);
         
@@ -986,23 +1016,23 @@ public class MainEditorManager {
         
         setCode(
                 "var qw[20], zx;\n"
-                + "\0"
-                + "void swap1(a&,b&)\n"
+                + "\n"
+                + "~void swap1(a&,b&)\n"
                 + "var q, w[3], e;\n"
                 + "{\n"
                 + "  q = a;\n"
                 + "  a = b;\n"
                 + "  b = q;\n"
-                + "}\0"
+                + "}\n"
                 + "\n"
-                + "void swap2(a,tab[],b&)\n"
+                + "~void swap2(a,tab[],b&)\n"
                 + "var q, w[3], e;\n"
                 + "{\n"
                 + "  e = tab[a];\n"
                 + "  tab[a] = tab[b];\n"
                 + "  tab[b] = e;\n"
                 + "}\n"
-                + "\0"
+                + "~\n"
                 + "void main()\n"
                 + "var g[3], t, b;\n"
                 + "{\n"
@@ -1012,7 +1042,7 @@ public class MainEditorManager {
                 + "  g[t]=2; g[b]=3;\n"
                 + "  swap2(t, g, b);\n"
                 + "  write(g[t],\" \",g[b],\"\\n\");\n"
-                + "}\0"
+                + "}"
                 );
         //</editor-fold>
         
@@ -1044,5 +1074,4 @@ public class MainEditorManager {
     //</editor-fold>
     
 }
-//TODO save and load function - probably to remove
-//TODO skrót klawiszowy do sprawdź składnię
+//TODO save to file

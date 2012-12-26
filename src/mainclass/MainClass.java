@@ -1,7 +1,7 @@
 package mainclass;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
-import codeeditor.MainEditorManager;
+import codeeditor.CodeEditor;
 import console.Console;
 import instancetree.TreeOfInstances;
 import interpreter.InterpreterThread;
@@ -115,7 +115,7 @@ public class MainClass {
     private FontMetrics statusLabelFontMetrics;
     private StringCreator statusCreator;
     
-    private MainEditorManager editorMgr;
+    private CodeEditor editorMgr;
     private InstanceFrame instanceFrame;
     private Console console;
     private StackOfInstances stack;
@@ -658,7 +658,7 @@ public class MainClass {
 //        lesson.start();
         
         //<editor-fold defaultstate="collapsed" desc="Init Frames">
-        editorMgr = new MainEditorManager(this);
+        editorMgr = new CodeEditor(this);
         desktop.add(editorMgr.getFrame());
         editorMgr.getFrame().show();
 
@@ -732,7 +732,7 @@ public class MainClass {
     }
     
     //<editor-fold defaultstate="collapsed" desc="Get main frames methods">
-    public MainEditorManager getEditor() {
+    public CodeEditor getEditor() {
         return editorMgr;
     }
     public InstanceFrame getInstanceFrame() {

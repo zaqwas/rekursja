@@ -1,21 +1,19 @@
 package interpreter;
 
-import codeeditor.MainEditorManager;
-import instancetree.TreeOfInstances;
-import interpreter.arguments.Argument;
-import java.awt.FontMetrics;
-import mainclass.MainClass;
+import codeeditor.CodeEditor;
 import instanceframe.InstanceFrame;
+import instancetree.TreeOfInstances;
 import java.math.BigInteger;
 import lesson.Lesson;
+import mainclass.MainClass;
 import stack.StackOfInstances;
 import statistics.Statistics;
 import stringcreator.StringCreator;
-import syntax.function.Function;
 import syntax.SyntaxNode;
 import syntax.SyntaxNodeIndexed;
 import syntax.SyntaxTree;
 import syntax.expression.Call;
+import syntax.function.Function;
 
 public class InterpreterThread extends Thread {
 
@@ -36,7 +34,7 @@ public class InterpreterThread extends Thread {
     private Instance stopInstance;
     
     private MainClass mainClass;
-    private MainEditorManager editorMgr;
+    private CodeEditor editorMgr;
     private InstanceFrame instanceFrame;
     private StackOfInstances stack;
     private TreeOfInstances tree;
