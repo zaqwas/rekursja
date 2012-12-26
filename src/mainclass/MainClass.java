@@ -54,6 +54,8 @@ import lesson._02A_RecursionIntro.RecursionIntroLesson;
 import lesson._02B_ArithmeticSeries.ArithmeticSeriesLesson;
 import lesson._03A_Exponentiation.ExponentiationLesson;
 import lesson._03B_EuclideanAlgorithm.EuclideanAlgorithmLesson;
+import lesson._03C_HornerSchema.HornerSchemaLesson;
+import lesson._03D_BinarySearch.BinarySearchLesson;
 import parser.ProgramError;
 import stack.StackOfInstances;
 import statistics.Statistics;
@@ -104,8 +106,10 @@ public class MainClass {
     private JMenuItem chooseMinElementLessonMenuItem;
     private JMenuItem chooseRecursionIntroLessonMenuItem;
     private JMenuItem chooseArithmeticSeriesLessonMenuItem;
-    private JMenuItem chooseEuclideanAlgorithmLessonMenuItem;
     private JMenuItem chooseExponentiationLessonMenuItem;
+    private JMenuItem chooseEuclideanAlgorithmLessonMenuItem;
+    private JMenuItem chooseHornerSchemaLessonMenuItem;
+    private JMenuItem chooseBinarySearchLessonMenuItem;
     
     private Font statusLabelFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
     private FontMetrics statusLabelFontMetrics;
@@ -455,6 +459,36 @@ public class MainClass {
             }
         });
         chooseLessonMenu.add(chooseEuclideanAlgorithmLessonMenuItem);
+        
+        chooseHornerSchemaLessonMenuItem = new JMenuItem(Lang.chooseHornerSchemaLessonMenuItem);
+        chooseHornerSchemaLessonMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (lesson != null) {
+                    lesson.close();
+                    lesson = null;
+                }
+
+                lesson = new HornerSchemaLesson(MainClass.this);
+                lesson.start();
+            }
+        });
+        chooseLessonMenu.add(chooseHornerSchemaLessonMenuItem);
+        
+        chooseBinarySearchLessonMenuItem = new JMenuItem(Lang.chooseBinarySearchLessonMenuItem);
+        chooseBinarySearchLessonMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (lesson != null) {
+                    lesson.close();
+                    lesson = null;
+                }
+
+                lesson = new BinarySearchLesson(MainClass.this);
+                lesson.start();
+            }
+        });
+        chooseLessonMenu.add(chooseBinarySearchLessonMenuItem);
         //</editor-fold>
         
         //<editor-fold defaultstate="collapsed" desc="Init help menu">
@@ -1073,7 +1107,9 @@ public class MainClass {
         public static String chooseRecursionIntroLesson = "Wprowadzenie do rekurencji";
         public static String chooseArithmeticSeriesLessonMenuItem = "Suma ciągu arytmetycznego";
         public static String chooseExponentiationLessonMenuItem = "Potęgowanie";
-        public static String chooseEuclideanAlgorithmLessonMenuItem = "Algorytm Euklidesa";
+        public static String chooseEuclideanAlgorithmLessonMenuItem = "Największy wspólny dzielnik";
+        public static String chooseHornerSchemaLessonMenuItem = "Wartość wielomianu";
+        public static String chooseBinarySearchLessonMenuItem = "Wyszukiwanie elementu";
         
         public static String file = "Plik";
         public static String openFileDots = "Otwórz plik...";
@@ -1143,7 +1179,21 @@ public class MainClass {
 //            AcrylLookAndFeel.setCurrentTheme(props);
 //            UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
             
-//            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+            UIDefaults def = UIManager.getLookAndFeel().getDefaults();
+            def.put("TextPane.contentMargins", new Insets(0,0,0,0));
+            
+            final Painter pBtn = (Painter)def.get("Button[Enabled].backgroundPainter");
+            Painter<Component> p3 = new Painter<Component>() {
+                @Override
+                public void paint(Graphics2D g, Component c, int width, int height) {
+                    g.translate(-2, -2);
+                    pBtn.paint(g, c, width+4, height+4);
+                    g.translate(2, 2);
+                }
+            };
+            def.put("Button[Enabled].backgroundPainter", p3);
+            def.put("Button.contentMargins", new Insets(2,4,2,4));
         } catch (Exception ex) {
             System.exit(1);
         }

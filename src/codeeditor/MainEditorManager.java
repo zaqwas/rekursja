@@ -564,6 +564,9 @@ public class MainEditorManager {
         int line = 0;
         for (int i = range == null ? 1 : 0; i < text.length(); i++) {
             char c = text.charAt(i);
+            if ( c=='\r') {
+                continue;
+            }
             if ( c=='\0') {
                 if ( range==null ) {
                     range = new Range(++line);

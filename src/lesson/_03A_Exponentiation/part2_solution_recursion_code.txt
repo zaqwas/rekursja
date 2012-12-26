@@ -1,7 +1,7 @@
 void wczytaj_xn(&x,&n){}
 
 //Rozwiązanie rekurencyjne:
-void potega(x,n)
+int potega(x,n)
 {
   if (n <= 0)
     return 1;
@@ -10,8 +10,9 @@ void potega(x,n)
 }
 
 void main()
-var x, n;
+var x, n, wynik;
 {
   wczytaj_xn(&x, &n);
-  potega(x,n);
+  wynik = potega(x,n);
+  writeln(x,"^",n," = ",wynik);
 }

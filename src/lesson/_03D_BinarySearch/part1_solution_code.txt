@@ -1,0 +1,21 @@
+void wczytaj_xn(&x,&n){}
+
+//Rozwiązanie ireracyjne:
+int potega(x,n)
+var i, wynik;
+{
+  wynik = 1;
+  
+  for (i=1; i<=n; i++)
+    wynik *= x;
+  
+  return wynik;
+}
+
+void main()
+var x, n, wynik;
+{
+  wczytaj_xn(&x, &n);
+  wynik = potega(x,n);
+  writeln(x,"^",n," = ",wynik);
+}
