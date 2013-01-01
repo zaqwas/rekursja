@@ -1,0 +1,37 @@
+void start(n&, m&){}
+void sprawdz(){}
+int porownaj(i1,i2){ return 0; }
+void przenies(idx,tab,idxCel){}
+
+//Rozwiązanie użytkownika:
+void scal(n,m)
+var i, j, k;
+{
+  i=0; j=0; k=0;
+  while(i<n && j<m) {
+    if (porownaj(i,j) <= 0) {
+      przenies(i,0,k);
+      i++;
+    } else {
+      przenies(j,1,k);
+      j++;
+    }
+    k++;
+  }
+  while (i<n) {
+    przenies(i,0,k);
+    i++; k++;
+  }
+  while (j<m) {
+    przenies(j,1,k);
+    j++; k++;
+  }
+}
+
+void main()
+var n, m;
+{
+  start(n,m);
+  scal(n,m);
+  sprawdz();
+}

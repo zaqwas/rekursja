@@ -1,0 +1,34 @@
+void start(n&){}
+void sprawdz(i1,i2){}
+int porownaj(i1,i2){ return 0; }
+void zamien(i1,i2){}
+
+//Rozwiązanie użytkownika:
+void podziel(n,i1&,i2&)
+var i, p;
+{
+  i1=0; i2=n; i=1;
+  
+  while(i<i2) {
+    p = porownaj(i,k);
+    
+    if(p==0) {
+      i++;
+    } else if (p<0) {
+      zamien(i,i1);
+      i1++;
+      i++;
+    } else {
+      i2--;
+      zamien(i,i2);
+    }
+  }
+}
+
+void main()
+var n, i1, i2;
+{
+  start(n);
+  podziel(n,i1,i2);
+  sprawdz(i1,i2);
+}

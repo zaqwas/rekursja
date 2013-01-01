@@ -56,6 +56,8 @@ import lesson._03A_Exponentiation.ExponentiationLesson;
 import lesson._03B_EuclideanAlgorithm.EuclideanAlgorithmLesson;
 import lesson._03C_HornerSchema.HornerSchemaLesson;
 import lesson._03D_BinarySearch.BinarySearchLesson;
+import lesson._06A_MergeFunction.MergeFunctionLesson;
+import lesson._07A_PartitionFunction.PartitionFunctionLesson;
 import parser.ProgramError;
 import stack.StackOfInstances;
 import statistics.Statistics;
@@ -110,6 +112,8 @@ public class MainClass {
     private JMenuItem chooseEuclideanAlgorithmLessonMenuItem;
     private JMenuItem chooseHornerSchemaLessonMenuItem;
     private JMenuItem chooseBinarySearchLessonMenuItem;
+    private JMenuItem chooseMergeFunctionLessonMenuItem;
+    private JMenuItem choosePartitionFunctionLessonMenuItem;
     
     private Font statusLabelFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
     private FontMetrics statusLabelFontMetrics;
@@ -489,6 +493,40 @@ public class MainClass {
             }
         });
         chooseLessonMenu.add(chooseBinarySearchLessonMenuItem);
+        
+        chooseLessonMenu.add(new JSeparator());
+        
+        chooseMergeFunctionLessonMenuItem = new JMenuItem(Lang.chooseMergeFunctionLessonMenuItem);
+        chooseMergeFunctionLessonMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (lesson != null) {
+                    lesson.close();
+                    lesson = null;
+                }
+
+                lesson = new MergeFunctionLesson(MainClass.this);
+                lesson.start();
+            }
+        });
+        chooseLessonMenu.add(chooseMergeFunctionLessonMenuItem);
+
+        chooseLessonMenu.add(new JSeparator());
+        
+        choosePartitionFunctionLessonMenuItem = new JMenuItem(Lang.choosePartitionFunctionLessonMenuItem);
+        choosePartitionFunctionLessonMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (lesson != null) {
+                    lesson.close();
+                    lesson = null;
+                }
+
+                lesson = new PartitionFunctionLesson(MainClass.this);
+                lesson.start();
+            }
+        });
+        chooseLessonMenu.add(choosePartitionFunctionLessonMenuItem);
         //</editor-fold>
         
         //<editor-fold defaultstate="collapsed" desc="Init help menu">
@@ -1110,6 +1148,8 @@ public class MainClass {
         public static String chooseEuclideanAlgorithmLessonMenuItem = "Największy wspólny dzielnik";
         public static String chooseHornerSchemaLessonMenuItem = "Wartość wielomianu";
         public static String chooseBinarySearchLessonMenuItem = "Wyszukiwanie elementu";
+        public static String chooseMergeFunctionLessonMenuItem = "Scalanie posortowanych ciągów";
+        public static String choosePartitionFunctionLessonMenuItem = "Podział tablicy";
         
         public static String file = "Plik";
         public static String openFileDots = "Otwórz plik...";

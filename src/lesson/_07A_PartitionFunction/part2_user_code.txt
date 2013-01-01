@@ -1,0 +1,38 @@
+void start(n&){}
+void sprawdz(i1,i2){}
+int porownaj(i){ return 0; }
+void zamien(i1,i2){}
+void przenies(idx,idxCel){}
+
+//Rozwiązanie użytkownika:
+void podziel(n,i1&,i2&)
+var i, p, k;
+{
+  przenies(0,0);
+  i1=0; i2=n; k=1;
+  
+  for(i=1; i<n; i++) {
+    p = porownaj(i);
+
+    if (p==0) {
+      przenies(i,k);
+      k++;
+    } else if (p<0) {
+      przenies(i,k);
+      zamien(i,i1);
+      i1++; 
+      k++;
+    } else {
+      i2--;
+      przenies(i,i2);
+    }
+  }
+}
+
+void main()
+var n, i1, i2;
+{
+  start(n);
+  podziel(n,i1,i2);
+  sprawdz(i1,i2);
+}
