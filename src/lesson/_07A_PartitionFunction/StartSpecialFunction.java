@@ -23,7 +23,7 @@ class StartSpecialFunction extends SpecialFunctionBehavior {
 
     @Override
     public int getArgumentsLength() {
-        return 2;
+        return 1;
     }
     @Override
     public VariableType getArgumentType(int index) {
@@ -32,10 +32,8 @@ class StartSpecialFunction extends SpecialFunctionBehavior {
 
     @Override
     public SyntaxNode commit(Instance instance) {
-        BigInteger n = arrayFrame.getArraySizeBigInt(1);
-        BigInteger m = arrayFrame.getArraySizeBigInt(1);
+        BigInteger n = arrayFrame.getArraySizeBigInt();
         ((ArgReference) instance.getArgument(0)).setValue(n);
-        ((ArgReference) instance.getArgument(1)).setValue(m);
         return null;
     }
 

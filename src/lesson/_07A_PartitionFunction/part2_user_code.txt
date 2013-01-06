@@ -1,6 +1,6 @@
 void start(n&){}
 void sprawdz(i1,i2){}
-int porownaj(i){ return 0; }
+int porownaj(i){}
 void zamien(i1,i2){}
 void przenies(idx,idxCel){}
 
@@ -19,7 +19,7 @@ var i, p, k;
       k++;
     } else if (p<0) {
       przenies(i,k);
-      zamien(i,i1);
+      zamien(i1,k);
       i1++; 
       k++;
     } else {

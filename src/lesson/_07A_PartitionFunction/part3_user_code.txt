@@ -1,26 +1,26 @@
 void start(n&){}
 void sprawdz(i1,i2){}
-int porownaj(i1,i2){ return 0; }
+int porownaj(i1,i2){}
 void zamien(i1,i2){}
 
 //Rozwiązanie użytkownika:
 void podziel(n,i1&,i2&)
-var i, p;
+var k, p;
 {
-  i1=0; i2=n; i=1;
+  i1=0; i2=n; k=1;
   
-  while(i<i2) {
-    p = porownaj(i,k);
+  while(k<i2) {
+    p = porownaj(k,i1);
     
     if(p==0) {
-      i++;
+      k++;
     } else if (p<0) {
-      zamien(i,i1);
+      zamien(k,i1);
       i1++;
-      i++;
+      k++;
     } else {
       i2--;
-      zamien(i,i2);
+      zamien(k,i2);
     }
   }
 }

@@ -46,8 +46,9 @@ public class PartitionFunctionLesson implements Lesson {
         Part2Hint1Shown(4), Part2Hint2Shown(5),
         Part2PseudocodeShown(6), Part2SolutionShown(7), 
         Part3Shown(8),
-        Part3HintShown(9), Part3PseudocodeShown(10), Part3SolutionShown(11), 
-        SummaryShown(12);
+        Part3Hint1Shown(9), Part3Hint2Shown(10), 
+        Part3PseudocodeShown(11), Part3SolutionShown(12), 
+        SummaryShown(13);
         public final byte Id;
 
         State(int id) {
@@ -69,7 +70,7 @@ public class PartitionFunctionLesson implements Lesson {
     private ChosenCode part1ChosenCode = ChosenCode.User;
     private ChosenCode part2ChosenCode = ChosenCode.User;
     private ChosenCode part3ChosenCode = ChosenCode.User;
-    private int partSelected = 1;
+    private int selectedPart = 1;
     
     private MainClass mainClass;
     
@@ -77,12 +78,14 @@ public class PartitionFunctionLesson implements Lesson {
     private ArrayFrame arrayFrame;
     
     private JMenuItem part1TextMenuItem;
+    private JMenuItem part1FunctionsMenuItem;
     private JMenuItem part1PseudocodeMenuItem;
     private JRadioButtonMenuItem part1UserCodeMenuItem;
     private JRadioButtonMenuItem part1SolutionCodeMenuItem;
     private JMenuItem part1GotoPart2MenuItem;
     
     private JMenuItem part2TextMenuItem;
+    private JMenuItem part2FunctionsMenuItem;
     private JMenuItem part2Hint1MenuItem;
     private JMenuItem part2Hint2MenuItem;
     private JMenuItem part2PseudocodeMenuItem;
@@ -92,7 +95,9 @@ public class PartitionFunctionLesson implements Lesson {
     private JMenuItem part2GotoPart3MenuItem;
     
     private JMenuItem part3TextMenuItem;
-    private JMenuItem part3HintMenuItem;
+    private JMenuItem part3FunctionsMenuItem;
+    private JMenuItem part3Hint1MenuItem;
+    private JMenuItem part3Hint2MenuItem;
     private JMenuItem part3PseudocodeMenuItem;
     private JRadioButtonMenuItem part3UserCodeMenuItem;
     private JRadioButtonMenuItem part3SolutionCodeMenuItem;
@@ -107,15 +112,22 @@ public class PartitionFunctionLesson implements Lesson {
     private String part3UserCode;
     private String part3SolutionCode;
     
+    private StartSpecialFunction startSpecialFunction;
+    private CompareOneSpecialFunction compareOneSpecialFunction;
+    private CompareTwoSpecialFunction compareTwoSpecialFunction;
+    private MoveSpecialFunction moveSpecialFunction;
+    private SwapSpecialFunction swapSpecialFunction;
+    
+    
     public PartitionFunctionLesson(MainClass mainClass) {
         this.mainClass = mainClass;
     }
     
     //<editor-fold defaultstate="collapsed" desc="showNextHint">
     private void showNextHint() {
-        if (partSelected == 1) {
+        if (selectedPart == 1) {
             part1PseudocodeMenuItem.doClick();
-        } else if (partSelected == 2) {
+        } else if (selectedPart == 2) {
             if (state.Id < State.Part2Hint1Shown.Id) {
                 part2Hint1MenuItem.doClick();
             } else if (state == State.Part2Hint1Shown) {
@@ -124,8 +136,10 @@ public class PartitionFunctionLesson implements Lesson {
                 part2PseudocodeMenuItem.doClick();
             }
         } else {
-            if (state.Id < State.Part3HintShown.Id) {
-                part3HintMenuItem.doClick();
+            if (state.Id < State.Part3Hint1Shown.Id) {
+                part3Hint1MenuItem.doClick();
+            } else if (state == State.Part3Hint1Shown) {
+                part3Hint2MenuItem.doClick();
             } else {
                 part3PseudocodeMenuItem.doClick();
             }
@@ -135,17 +149,19 @@ public class PartitionFunctionLesson implements Lesson {
     
     //<editor-fold defaultstate="collapsed" desc="showSolutionConifrm">
     private boolean showSolutionConifrm(State state, JRadioButtonMenuItem menuItem, int showHintNr) {
-        if (state.Id >= state.Id) {
+        if (this.state.Id >= state.Id) {
             return true;
         }
         int option = JOptionPane.showOptionDialog(
                 null, Lang.showSolutionConifrm, Lang.question,
                 JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                new Object[]{Lang.showSolution, Lang.showHint, Lang.cancel},
+                new Object[]{Lang.cancel, Lang.showHint, Lang.showSolution},
                 Lang.showHint);
-        if (option != 0) {
+        if (option != 2) {
             menuItem.setSelected(true);
-            showNextHint();
+            if ( option == 1 ) {
+                showNextHint();
+            }
             return false;
         }
         textFrame.showHint(showHintNr);
@@ -161,8 +177,8 @@ public class PartitionFunctionLesson implements Lesson {
         int option = JOptionPane.showOptionDialog(
                 null, message, Lang.question,
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                new Object[]{Lang.yes, Lang.no}, Lang.no);
-        return option == 0;
+                new Object[]{Lang.no, Lang.yes}, Lang.no);
+        return option == 1;
     }
     //</editor-fold>
 
@@ -193,6 +209,17 @@ public class PartitionFunctionLesson implements Lesson {
     }
     //</editor-fold>
     
+    //<editor-fold defaultstate="collapsed" desc="initSpecialFunctions">
+    private void initSpecialFunctions() {
+        startSpecialFunction = new StartSpecialFunction(arrayFrame);
+        compareOneSpecialFunction = new CompareOneSpecialFunction(arrayFrame);
+        compareTwoSpecialFunction = new CompareTwoSpecialFunction(arrayFrame);
+        moveSpecialFunction = new MoveSpecialFunction(arrayFrame);
+        swapSpecialFunction = new SwapSpecialFunction(arrayFrame);
+    }
+    //</editor-fold>
+    
+    
     //<editor-fold defaultstate="collapsed" desc="initPart1MenuItems">
     private void initPart1MenuItems() {
         part1TextMenuItem = new JMenuItem(Lang.part1TextMenuItem);
@@ -200,6 +227,14 @@ public class PartitionFunctionLesson implements Lesson {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textFrame.gotoText();
+            }
+        });
+        
+        part1FunctionsMenuItem = new JMenuItem(Lang.part1FunctionsMenuItem);
+        part1FunctionsMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textFrame.gotoFunctions();
             }
         });
         
@@ -254,9 +289,13 @@ public class PartitionFunctionLesson implements Lesson {
                 if (!showConifrmDialog(Lang.showNextPartConifrm, State.Part1SolutionShown)) {
                     return;
                 }
+                if ( part1ChosenCode == ChosenCode.User ) {
+                    part1UserCode = mainClass.getEditor().getCode();
+                }
                 textFrame.showPart(2);
-                if (state.Id < State.SummaryShown.Id) {
-                    state = State.SummaryShown;
+                initPart2();
+                if (state.Id < State.Part2Shown.Id) {
+                    state = State.Part2Shown;
                     textFrame.gotoText();
                 }
             }
@@ -278,12 +317,20 @@ public class PartitionFunctionLesson implements Lesson {
             }
         });
         
+        part2FunctionsMenuItem = new JMenuItem(Lang.part2FunctionsMenuItem);
+        part2FunctionsMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textFrame.gotoFunctions();
+            }
+        });
+        
         part2Hint1MenuItem = new JMenuItem(Lang.part2Hint1MenuItem);
         part2Hint1MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( state.Id < State.Part2PseudocodeShown.Id ) {
-                    state = State.Part2PseudocodeShown;
+                if ( state.Id < State.Part2Hint1Shown.Id ) {
+                    state = State.Part2Hint1Shown;
                 }
                 textFrame.gotoHint(1);
             }
@@ -293,10 +340,13 @@ public class PartitionFunctionLesson implements Lesson {
         part2Hint2MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( state.Id < State.Part2PseudocodeShown.Id ) {
-                    state = State.Part2PseudocodeShown;
+                if (!showConifrmDialog(Lang.showHintConifrm, State.Part2Hint1Shown)) {
+                    return;
                 }
-                textFrame.gotoHint(1);
+                if ( state.Id < State.Part2Hint2Shown.Id ) {
+                    state = State.Part2Hint2Shown;
+                }
+                textFrame.gotoHint(2);
             }
         });
         
@@ -304,6 +354,9 @@ public class PartitionFunctionLesson implements Lesson {
         part2PseudocodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!showConifrmDialog(Lang.showHintConifrm, State.Part2Hint2Shown)) {
+                    return;
+                }
                 if ( state.Id < State.Part2PseudocodeShown.Id ) {
                     state = State.Part2PseudocodeShown;
                 }
@@ -348,7 +401,11 @@ public class PartitionFunctionLesson implements Lesson {
         part2GotoPart1MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if ( part2ChosenCode == ChosenCode.User ) {
+                    part2UserCode = mainClass.getEditor().getCode();
+                }
                 textFrame.showPart(1);
+                initPart1();
             }
         });
         
@@ -359,10 +416,14 @@ public class PartitionFunctionLesson implements Lesson {
                 if (!showConifrmDialog(Lang.showNextPartConifrm, State.Part2SolutionShown)) {
                     return;
                 }
-                textFrame.showPart(2);
+                if ( part2ChosenCode == ChosenCode.User ) {
+                    part2UserCode = mainClass.getEditor().getCode();
+                }
+                textFrame.showPart(3);
+                initPart3();
                 if (state.Id < State.Part3Shown.Id) {
-                    textFrame.gotoText();
                     state = State.Part3Shown;
+                    textFrame.gotoText();
                 }
             }
         });
@@ -383,14 +444,36 @@ public class PartitionFunctionLesson implements Lesson {
             }
         });
         
-        part3HintMenuItem = new JMenuItem(Lang.part3HintMenuItem);
-        part3HintMenuItem.addActionListener(new ActionListener() {
+        part3FunctionsMenuItem = new JMenuItem(Lang.part3FunctionsMenuItem);
+        part3FunctionsMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( state.Id < State.Part2PseudocodeShown.Id ) {
-                    state = State.Part2PseudocodeShown;
+                textFrame.gotoFunctions();
+            }
+        });
+        
+        part3Hint1MenuItem = new JMenuItem(Lang.part3Hint1MenuItem);
+        part3Hint1MenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if ( state.Id < State.Part3Hint1Shown.Id ) {
+                    state = State.Part3Hint1Shown;
                 }
                 textFrame.gotoHint(1);
+            }
+        });
+        
+        part3Hint2MenuItem = new JMenuItem(Lang.part3Hint2MenuItem);
+        part3Hint2MenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!showConifrmDialog(Lang.showHintConifrm, State.Part3Hint1Shown)) {
+                    return;
+                }
+                if ( state.Id < State.Part3Hint2Shown.Id ) {
+                    state = State.Part3Hint2Shown;
+                }
+                textFrame.gotoHint(2);
             }
         });
         
@@ -398,8 +481,11 @@ public class PartitionFunctionLesson implements Lesson {
         part3PseudocodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( state.Id < State.Part2PseudocodeShown.Id ) {
-                    state = State.Part2PseudocodeShown;
+                if (!showConifrmDialog(Lang.showHintConifrm, State.Part3Hint2Shown)) {
+                    return;
+                }
+                if ( state.Id < State.Part3PseudocodeShown.Id ) {
+                    state = State.Part3PseudocodeShown;
                 }
                 textFrame.gotoHint(3);
             }
@@ -422,7 +508,7 @@ public class PartitionFunctionLesson implements Lesson {
         part3SolutionCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!showSolutionConifrm(State.Part3PseudocodeShown, part3UserCodeMenuItem, 2)) {
+                if (!showSolutionConifrm(State.Part3PseudocodeShown, part3UserCodeMenuItem, 3)) {
                     return;
                 }
                 //TODO editor to front
@@ -432,9 +518,23 @@ public class PartitionFunctionLesson implements Lesson {
                 part3UserCode = mainClass.getEditor().getCode();
                 mainClass.getEditor().setCode(part3SolutionCode);
                 part3ChosenCode = ChosenCode.Solution;
-                if ( state.Id < State.Part2SolutionShown.Id ) {
-                    state = State.Part2SolutionShown;
+                if ( state.Id < State.Part3SolutionShown.Id ) {
+                    state = State.Part3SolutionShown;
                 }
+            }
+        });
+        
+        part3SummaryMenuItem = new JMenuItem(Lang.part3SummaryMenuItem);
+        part3SummaryMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!showConifrmDialog(Lang.showSummaryConifrm, State.Part3SolutionShown)) {
+                    return;
+                }
+                if ( state.Id < State.SummaryShown.Id ) {
+                    state = State.SummaryShown;
+                }
+                textFrame.gotoSummary();
             }
         });
         
@@ -442,7 +542,11 @@ public class PartitionFunctionLesson implements Lesson {
         part3GotoPart2MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if ( part3ChosenCode == ChosenCode.User ) {
+                    part3UserCode = mainClass.getEditor().getCode();
+                }
                 textFrame.showPart(2);
+                initPart2();
             }
         });
         
@@ -452,12 +556,16 @@ public class PartitionFunctionLesson implements Lesson {
     }
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="initLesson">
-    private void initLesson() {
+    
+    //<editor-fold defaultstate="collapsed" desc="initPart1">
+    private void initPart1() {
+        selectedPart = 1;
+        
         JMenu lessonMenu = mainClass.getLessonMenu();
         lessonMenu.removeAll();
 
         lessonMenu.add(part1TextMenuItem);
+        lessonMenu.add(part1FunctionsMenuItem);
         lessonMenu.add(new JSeparator());
         lessonMenu.add(part1PseudocodeMenuItem);
         lessonMenu.add(new JSeparator());
@@ -475,8 +583,97 @@ public class PartitionFunctionLesson implements Lesson {
             mainClass.getEditor().setCode(part1SolutionCode);
             part1SolutionCodeMenuItem.setSelected(true);
         }
+        
+        arrayFrame.setSelectedPart(1);
+        
+        SpecialFunctions.clear();
+        compareOneSpecialFunction.setSelectedPart(1);
+        SpecialFunctions.addSpecialFunction(startSpecialFunction);
+        SpecialFunctions.addSpecialFunction(compareOneSpecialFunction);
+        SpecialFunctions.addSpecialFunction(moveSpecialFunction);
     }
     //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="initPart2">
+    private void initPart2() {
+        selectedPart = 2;
+        
+        JMenu lessonMenu = mainClass.getLessonMenu();
+        lessonMenu.removeAll();
+
+        lessonMenu.add(part2TextMenuItem);
+        lessonMenu.add(part2FunctionsMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part2Hint1MenuItem);
+        lessonMenu.add(part2Hint2MenuItem);
+        lessonMenu.add(part2PseudocodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part2UserCodeMenuItem);
+        lessonMenu.add(part2SolutionCodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part2GotoPart1MenuItem);
+        lessonMenu.add(part2GotoPart3MenuItem);
+
+        lessonMenu.setEnabled(true);
+        
+        if (part2ChosenCode == ChosenCode.User) {
+            mainClass.getEditor().setCode(part2UserCode);
+            part2UserCodeMenuItem.setSelected(true);
+        } else {
+            mainClass.getEditor().setCode(part2SolutionCode);
+            part2SolutionCodeMenuItem.setSelected(true);
+        }
+        
+        arrayFrame.setSelectedPart(2);
+        
+        SpecialFunctions.clear();
+        compareOneSpecialFunction.setSelectedPart(2);
+        SpecialFunctions.addSpecialFunction(startSpecialFunction);
+        SpecialFunctions.addSpecialFunction(compareOneSpecialFunction);
+        SpecialFunctions.addSpecialFunction(moveSpecialFunction);
+        SpecialFunctions.addSpecialFunction(swapSpecialFunction);
+    }
+    //</editor-fold>    
+    
+    //<editor-fold defaultstate="collapsed" desc="initPart3">
+    private void initPart3() {
+        selectedPart = 3;
+        
+        JMenu lessonMenu = mainClass.getLessonMenu();
+        lessonMenu.removeAll();
+
+        lessonMenu.add(part3TextMenuItem);
+        lessonMenu.add(part3FunctionsMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part3Hint1MenuItem);
+        lessonMenu.add(part3Hint2MenuItem);
+        lessonMenu.add(part3PseudocodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part3UserCodeMenuItem);
+        lessonMenu.add(part3SolutionCodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part3SummaryMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part3GotoPart2MenuItem);
+
+        lessonMenu.setEnabled(true);
+        
+        if (part3ChosenCode == ChosenCode.User) {
+            mainClass.getEditor().setCode(part3UserCode);
+            part3UserCodeMenuItem.setSelected(true);
+        } else {
+            mainClass.getEditor().setCode(part3SolutionCode);
+            part3SolutionCodeMenuItem.setSelected(true);
+        }
+        
+        arrayFrame.setSelectedPart(3);
+        
+        SpecialFunctions.clear();
+        SpecialFunctions.addSpecialFunction(startSpecialFunction);
+        SpecialFunctions.addSpecialFunction(compareTwoSpecialFunction);
+        SpecialFunctions.addSpecialFunction(swapSpecialFunction);
+    }
+    //</editor-fold>    
     
     
     @Override
@@ -485,14 +682,13 @@ public class PartitionFunctionLesson implements Lesson {
         arrayFrame = new ArrayFrame(mainClass);
         
         initCodes(false);
+        initSpecialFunctions();
+        
         initPart1MenuItems();
         initPart2MenuItems();
         initPart3MenuItems();
-        initLesson();
         
-        SpecialFunctions.addSpecialFunction(new StartSpecialFunction(arrayFrame));
-        SpecialFunctions.addSpecialFunction(new CompareSpecialFunction(arrayFrame));
-        SpecialFunctions.addSpecialFunction(new MoveSpecialFunction(arrayFrame));
+        initPart1();
         
         arrayFrame.showFrame();
         //textFrame.showFrame();
@@ -514,33 +710,63 @@ public class PartitionFunctionLesson implements Lesson {
     
     @Override
     public void pauseStart(SyntaxNode node, final int delayTime) {
-        arrayFrame.updateResultValues();
+        if ( selectedPart == 3 ) {
+            compareTwoSpecialFunction.undo(node);
+        } else {
+            moveSpecialFunction.undo(node);
+        }
+        if (selectedPart == 2) {
+            compareOneSpecialFunction.undo(node);
+        }
+        if ( selectedPart > 1 ) {
+            swapSpecialFunction.undo(node);
+        }
+        
+        arrayFrame.updateArrays();
+        
+        if ( selectedPart < 3 ) {
+            compareOneSpecialFunction.pauseStart(node);
+            moveSpecialFunction.pauseStart(node, delayTime);
+        } else {
+            compareTwoSpecialFunction.pauseStart(node);
+        }
+        if ( selectedPart > 1 ) {
+            swapSpecialFunction.pauseStart(node, delayTime);
+        }
     }
 
     @Override
     public void pauseStop(SyntaxNode node) {
+        compareOneSpecialFunction.pauseStop();
+        compareTwoSpecialFunction.pauseStop();
+        moveSpecialFunction.pauseStop();
+        swapSpecialFunction.pauseStop();
     }
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
         public static final String part1TextMenuItem = "Treść zadania";
+        public static final String part1FunctionsMenuItem = "Funkcje specjalne";
         public static final String part1PseudocodeMenuItem = "Pseudokod";
         public static final String part1UserCodeMenuItem = "Rozwiązanie użytkownika";
         public static final String part1SolutionCodeMenuItem = "Rozwiązanie wzorcowe";
         public static final String part1GotoPart2MenuItem = ">>> Część II";
         
         public static final String part2TextMenuItem = "Treść zadania";
+        public static final String part2FunctionsMenuItem = "Funkcje specjalne";
         public static final String part2Hint1MenuItem = "Wskazówka I";
         public static final String part2Hint2MenuItem = "Wskazówka II";
-        public static final String part2PseudocodeMenuItem = "Wskazówka III";
+        public static final String part2PseudocodeMenuItem = "Wskazówka III: pseudokod";
         public static final String part2UserCodeMenuItem = "Rozwiązanie użytkownika";
         public static final String part2SolutionCodeMenuItem = "Rozwiązanie wzorcowe";
         public static final String part2GotoPart1MenuItem = "<<< Część I";
         public static final String part2GotoPart3MenuItem = ">>> Część III";
         
         public static final String part3TextMenuItem = "Treść zadania";
-        public static final String part3HintMenuItem = "Wskazówka I";
-        public static final String part3PseudocodeMenuItem = "Wskazówka II";
+        public static final String part3FunctionsMenuItem = "Funkcje specjalne";
+        public static final String part3Hint1MenuItem = "Wskazówka I";
+        public static final String part3Hint2MenuItem = "Wskazówka II";
+        public static final String part3PseudocodeMenuItem = "Wskazówka III: pseudokod";
         public static final String part3UserCodeMenuItem = "Rozwiązanie użytkownika";
         public static final String part3SolutionCodeMenuItem = "Rozwiązanie wzorcowe";
         public static final String part3SummaryMenuItem = "Podsumowanie";

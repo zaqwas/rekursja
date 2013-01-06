@@ -72,6 +72,10 @@ public class Function extends SyntaxNodeIdx implements FunctionDeclaration {
         funcitonBehavior.setFunction(this);
     }
     
+    public FunctionBehavior getFunctionBehavior() {
+        return funcitonBehavior;
+    }
+    
     @Override
     public String getName() {
         return name;

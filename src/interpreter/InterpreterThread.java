@@ -131,6 +131,7 @@ public class InterpreterThread extends Thread {
         tree.start(mainInstance);
         statistics.start();
 
+        runStatus = RunStatus.RUNNING;
         while (currentInstance != null) {
             if (reqStatus == RequestStatus.STOP) {
                 currentInstance = null;

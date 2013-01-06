@@ -1,0 +1,119 @@
+#empty {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
+  -fx-background-image: null;
+}
+#empty:focused {
+  -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
+  -fx-background-image: null;
+}
+#emptyCompared {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+#emptyCompared:focused {
+  -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+
+
+#comparing {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, orange;
+  -fx-background-image: null;
+}
+#comparing:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, orange;
+  -fx-background-image: null;
+}
+#comparingCompared {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, orange;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+#comparingCompared:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, orange;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+
+
+#equal {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00ff80;
+  -fx-background-image: null;
+}
+#equal:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00ff80;
+  -fx-background-image: null;
+}
+
+#equalCompared {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00ff80;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+#equalCompared:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00ff80;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+
+
+#less {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00f0f0;
+  -fx-background-image: null;
+}
+#less:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00f0f0;
+  -fx-background-image: null;
+}
+#lessCompared {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00f0f0;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+#lessCompared:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00f0f0;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+
+
+#greater {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00c0ff;
+  -fx-background-image: null;
+}
+#greater:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00c0ff;
+  -fx-background-image: null;
+}
+#greaterCompared {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00c0ff;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+#greaterCompared:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00c0ff;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
