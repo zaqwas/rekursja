@@ -3,8 +3,8 @@ package syntax.statement.assigment;
 import interpreter.Instance;
 import interpreter.accessvar.AccessArray;
 import interpreter.accessvar.AccessInteger;
-import java.awt.FontMetrics;
 import java.math.BigInteger;
+import parser.ProgramError;
 import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 import syntax.SyntaxNodeIdx;
@@ -32,21 +32,53 @@ public class Assigment extends SyntaxNodeIdx {
     }
     
     @Override
-    public SyntaxNode commit(Instance instance) {
-        BigInteger result = eval(instance);
-        if ( !variable.hasArrayIndex() ) {
-            ((AccessInteger) variable.getAccessVar()).setValue(instance, result);
-            return jump;
+    public SyntaxNode commit(Instance instance) throws ProgramError {
+        if (variable.hasArrayIndex()) {
+            BigInteger value = instance.popStack();
+            BigInteger index = instance.popStack();
+            AccessArray access = (AccessArray) variable.getAccessVar();
+            access.checkIndex(instance, index, variable.arrayIndex);
+            if (operationType != OperationType.NOTHING) {
+                BigInteger val = access.getValue(instance, index);
+                variable.checkInitializedArray(val, index);
+                value = compute(val, value);
+            }
+            checkProperValue(value);
+            access.setValue(instance, index, value);
+        } else {
+            BigInteger value = instance.popStack();
+            AccessInteger access = (AccessInteger) variable.getAccessVar();
+            if (operationType != OperationType.NOTHING) {
+                BigInteger val = access.getValue(instance);
+                variable.checkInitialized(val);
+                value = compute(val, value);
+            }
+            checkProperValue(value);
+            access.setValue(instance, value);
         }
-        BigInteger idx = instance.popStack();
-        AccessArray arr = (AccessArray) variable.getAccessVar();
-        int idxErr = arr.checkIndex(instance, idx);
-        if ( idxErr!=0 ) {
-            //TODO check size
-            throw new RuntimeException();
-        }
-        arr.setValue(instance, idx, result);
         return jump;
+    }
+    
+    private BigInteger compute(BigInteger v1, BigInteger v2) throws ProgramError {
+        try {
+            return operationType.eval(v1, v2);
+        } catch (ProgramError pe) {
+            pe.setIndexes(getLeftIndex(), getRightIndex());
+            throw pe;
+        }
+    }
+    private void checkProperValue(BigInteger value) throws ProgramError {
+        String error = null;
+        if (value.compareTo(MAX_VALUE) > 0) {
+            error = Lang.exceedMaxValue;
+        }
+        if (value.compareTo(MIN_VALUE) < 0) {
+            error = Lang.exceedMinValue;
+        }
+        if (error != null) {
+            SyntaxNodeIdx sn = operationType == OperationType.NOTHING ? expresion : this;
+            throw new ProgramError(error, sn.getLeftIndex(), sn.getRightIndex());
+        }
     }
 
     @Override
@@ -82,19 +114,6 @@ public class Assigment extends SyntaxNodeIdx {
         };
     }
     
-    private BigInteger eval(Instance instance) {
-        if ( operationType==OperationType.NOTHING ) {
-            return instance.popStack();
-        }
-        if ( operationType.isLogicOperation() ) {
-            BigInteger value = instance.popStack();
-            return operationType.eval(value);
-        }
-        BigInteger rightValue = instance.popStack();
-        BigInteger leftValue = instance.popStack();
-        return operationType.eval(leftValue, rightValue);
-    }
-
     @Override
     public void printDebug() {
         System.out.println("Assigment: " + operationType);

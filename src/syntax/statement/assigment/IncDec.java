@@ -3,12 +3,13 @@ package syntax.statement.assigment;
 import interpreter.Instance;
 import interpreter.accessvar.AccessArray;
 import interpreter.accessvar.AccessInteger;
-import java.awt.FontMetrics;
 import java.math.BigInteger;
+import parser.ProgramError;
 import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 import syntax.SyntaxNodeIdx;
 import syntax.expression.Variable;
+import syntax.expression.operators.OperationType;
 
 public class IncDec extends SyntaxNodeIdx {
     public Variable variable;
@@ -25,16 +26,41 @@ public class IncDec extends SyntaxNodeIdx {
     }
 
     @Override
-    public SyntaxNode commit(Instance instance) {
-        BigInteger result = eval(instance);
-        if ( !variable.hasArrayIndex() ) {
-            ((AccessInteger) variable.getAccessVar()).setValue(instance, result);
-            return jump;
+    public SyntaxNode commit(Instance instance) throws ProgramError {
+        if (variable.hasArrayIndex()) {
+            BigInteger index = instance.popStack();
+            AccessArray access = (AccessArray) variable.getAccessVar();
+            access.checkIndex(instance, index, variable.arrayIndex);
+            BigInteger value = access.getValue(instance, index);
+            variable.checkInitializedArray(value, index);
+            value = increasing ? value.add(BigInteger.ONE) : value.subtract(BigInteger.ONE);
+            checkProperValue(value);
+            access.setValue(instance, index, value);
+        } else {
+            AccessInteger access = (AccessInteger) variable.getAccessVar();
+            BigInteger value = access.getValue(instance);
+            variable.checkInitialized(value);
+            value = increasing ? value.add(BigInteger.ONE) : value.subtract(BigInteger.ONE);
+            checkProperValue(value);
+            access.setValue(instance, value);
         }
-        //unnecessery to check index
-        BigInteger idx = instance.popStack();
-        ((AccessArray) variable.getAccessVar()).setValue(instance, idx, result);
         return jump;
+    }
+    
+    private void checkProperValue(BigInteger value) throws ProgramError {
+        String error = null;
+        if (increasing) {
+            if (value.compareTo(MAX_VALUE) > 0) {
+                error = Lang.exceedMaxValue;
+            }
+        } else {
+            if (value.compareTo(MIN_VALUE) < 0) {
+                error = Lang.exceedMinValue;
+            }
+        }
+        if (error != null) {
+            throw new ProgramError(error, getLeftIndex(), getRightIndex());
+        }
     }
     
     @Override

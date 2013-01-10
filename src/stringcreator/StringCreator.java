@@ -6,8 +6,7 @@ public abstract class StringCreator {
     
     protected FontMetrics fontMetrics;
     
-    public void setFontMetrics(FontMetrics fontMetrics)
-    {
+    public void setFontMetrics(FontMetrics fontMetrics) {
         this.fontMetrics = fontMetrics;
     }
     

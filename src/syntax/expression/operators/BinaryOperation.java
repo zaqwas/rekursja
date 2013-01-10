@@ -2,6 +2,7 @@ package syntax.expression.operators;
 
 import interpreter.Instance;
 import java.math.BigInteger;
+import parser.ProgramError;
 import syntax.expression.SyntaxNodeExpr;
 
 public class BinaryOperation extends Operation {
@@ -23,13 +24,20 @@ public class BinaryOperation extends Operation {
     }
     
     @Override
-    protected BigInteger getValue(Instance instance) {
+    protected BigInteger getValue(Instance instance) throws ProgramError {
         if ( operationType.isLogicOperation() ) {
             BigInteger value = instance.popStack();
             return operationType.eval(value);
         }
         BigInteger rightValue = instance.popStack();
         BigInteger leftValue = instance.popStack();
-        return operationType.eval(leftValue, rightValue);
+        BigInteger value;
+        try {
+            value = operationType.eval(leftValue, rightValue);
+        } catch (ProgramError pe) {
+            pe.setIndexes(indexL, indexR);
+            throw pe;
+        }
+        return value;
     }
 }

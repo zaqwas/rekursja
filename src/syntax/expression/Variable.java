@@ -8,6 +8,7 @@ import interpreter.accessvar.VariableType;
 import interpreter.arguments.ArgInteger;
 import interpreter.arguments.Argument;
 import java.math.BigInteger;
+import parser.ProgramError;
 import syntax.SyntaxNode;
 
 public class Variable extends SyntaxNodeExpr {
@@ -55,7 +56,7 @@ public class Variable extends SyntaxNodeExpr {
             case INTEGER:
                 argCreator = new ArgumentCreator() {
                     @Override
-                    public Argument getArgument(Instance instance) {
+                    public Argument getArgument(Instance instance) throws ProgramError {
                         return new ArgInteger(getValue(instance));
                     }
                 };
@@ -80,14 +81,10 @@ public class Variable extends SyntaxNodeExpr {
                 }
                 argCreator = new ArgumentCreator() {
                     @Override
-                    public Argument getArgument(Instance instance) {
+                    public Argument getArgument(Instance instance) throws ProgramError {
                         BigInteger idx = instance.popStack();
                         AccessArray arr = (AccessArray) accessVar;
-                        int idxErr = arr.checkIndex(instance, idx);
-                        if (idxErr != 0) {
-                            //TODO check size
-                            throw new RuntimeException();
-                        }
+                        arr.checkIndex(instance, idx, arrayIndex);
                         return arr.getReference(instance, idx);
                     }
                 };
@@ -100,7 +97,7 @@ public class Variable extends SyntaxNodeExpr {
             setCommitter(new Committer() {
                 private int size = -paramIndex;
                 @Override
-                public SyntaxNode commit(Instance instance) {
+                public SyntaxNode commit(Instance instance) throws ProgramError {
                     instance.pushArgsArray(size);
                     instance.setArgument(0, argCreator.getArgument(instance));
                     return jump;
@@ -110,7 +107,7 @@ public class Variable extends SyntaxNodeExpr {
         }
         setCommitter(new Committer() {
             @Override
-            public SyntaxNode commit(Instance instance) {
+            public SyntaxNode commit(Instance instance) throws ProgramError {
                 instance.setArgument(paramIndex, argCreator.getArgument(instance));
                 return jump;
             }
@@ -119,22 +116,35 @@ public class Variable extends SyntaxNodeExpr {
     //</editor-fold>
     
     @Override
-    protected BigInteger getValue(Instance instance) {
+    protected BigInteger getValue(Instance instance) throws ProgramError {
         if ( arrayIndex==null ) {
-            return ((AccessInteger) accessVar).getValue(instance);
+            BigInteger value = ((AccessInteger) accessVar).getValue(instance);
+            checkInitialized(value);
+            return value;
         }
         BigInteger idx = instance.popStack();
         AccessArray arr = (AccessArray) accessVar;
-        int idxErr = arr.checkIndex(instance, idx);
-        if ( idxErr!=0 ) {
-            //TODO check size
-            throw new RuntimeException();
+        arr.checkIndex(instance, idx, arrayIndex);
+        BigInteger value = arr.getValue(instance, idx);
+        checkInitializedArray(value, idx);
+        return value;
+    }
+    
+    public void checkInitialized(BigInteger value) throws ProgramError {
+        if (value == null) {
+            String str = String.format(Lang.notInitializedValue, name);
+            throw new ProgramError(str, indexL, indexR);
         }
-        return arr.getValue(instance, idx);
+    }
+    public void checkInitializedArray(BigInteger value, BigInteger index) throws ProgramError {
+        if (value == null) {
+            String str = String.format(Lang.notInitializedArrayValue, name, index);
+            throw new ProgramError(str, indexL, indexR);
+        }
     }
     
     private interface ArgumentCreator {
-        public Argument getArgument(Instance instance);
+        public Argument getArgument(Instance instance) throws ProgramError;
     }
     
     @Override

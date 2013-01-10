@@ -4,6 +4,8 @@ import interpreter.Instance;
 import interpreter.arguments.ArgArray;
 import interpreter.arguments.ArgReference;
 import java.math.BigInteger;
+import parser.ProgramError;
+import syntax.expression.SyntaxNodeExpr;
 
 public abstract class AccessArray extends AccessVar {
     
@@ -26,9 +28,22 @@ public abstract class AccessArray extends AccessVar {
 
     public abstract int getSizeInteger(Instance instance);
 
-    public final int checkIndex(Instance instance, BigInteger index) {
-        return index.compareTo(BigInteger.ZERO) < 0 ? -1
-                : (index.compareTo(getSizeBigInt(instance)) >= 0 ? 1 : 0);
+    public final void checkIndex(Instance instance, BigInteger index, SyntaxNodeExpr arrayIndex)
+            throws ProgramError {
+        if (index.signum() < 0) {
+            throw new ProgramError(Lang.indexNegativ, arrayIndex.getLeftIndex(), arrayIndex.getRightIndex());
+        }
+        if (index.compareTo(getSizeBigInt(instance)) >= 0) {
+            String str = String.format(Lang.indexExceedSize, getSizeInteger(instance));
+            throw new ProgramError(str, arrayIndex.getLeftIndex(), arrayIndex.getRightIndex());
+        }
     }
-
+    
+    //<editor-fold defaultstate="collapsed" desc="Language">
+    private static class Lang {
+        public static final String indexNegativ = "Indeks tablicy jest ujemny";
+        public static final String indexExceedSize = "Indeks tablicy przekracza jej rozmiar (%d)";
+    }
+    //</editor-fold>
+    
 }

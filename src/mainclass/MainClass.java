@@ -61,7 +61,7 @@ import lesson._07A_PartitionFunction.PartitionFunctionLesson;
 import parser.ProgramError;
 import stack.StackOfInstances;
 import statistics.Statistics;
-import stringcreator.FastStringCreator;
+import stringcreator.SimpleEagerStringCreator;
 import stringcreator.StringCreator;
 import syntax.SyntaxTree;
 //</editor-fold>
@@ -861,26 +861,21 @@ public class MainClass {
     
     public void setStatus(StringCreator statusCreator) {
         this.statusCreator = statusCreator;
-        statusCreator.setFontMetrics(statusLabelFontMetrics);
+        if (statusCreator != null) {
+            statusCreator.setFontMetrics(statusLabelFontMetrics);
+        }
+        if ( error!=null ) {
+            statusPanel.setBorder(blackBorder);
+            error = null;
+        }
         setStatusLabelText();
     }
     
     public void setError(ProgramError error) {
         this.error = error;
-        StringBuilder sb = new StringBuilder();
-        sb.append(Lang.line).append(error.getLine()).append(Lang.position).
-                append(error.getPosition()).append("] ").append(error.getMessage());
-        setStatus(new FastStringCreator(sb.toString()));
+        statusCreator = error.getStringCreator();
         statusPanel.setBorder(redBorder);
-    }
-    
-    public void clearError() {
-        if ( error!=null ) {
-            statusPanel.setBorder(blackBorder);
-            statusCreator = null;
-            setStatusLabelText();
-            error = null;
-        }
+        setStatusLabelText();
     }
     
     public void clearThread() {

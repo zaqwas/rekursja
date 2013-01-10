@@ -467,7 +467,7 @@ public class CodeEditor {
                 }
                 setProperLineNumbers();
                 syntaxTree = null;
-                mainClass.clearError();
+                mainClass.setStatus(null);
                 statusLabel.setText(Lang.modified);
                 return;
                 //</editor-fold>
@@ -636,15 +636,24 @@ public class CodeEditor {
             //TODO należy wyeliminować parserError zastępując go ProgramError
             syntaxTree = null;
             ProgramError pe = new ProgramError(Langs.getParseError(ex.code), ex.index, ex.index);
-            int line = getLine(ex.index) + 1;
-            int position = ex.index - (line == 1 ? -1 : indexesOfNewLines.get(line - 2));
-            pe.setLineAndPosition(line, position);
+            setLineAndPositionInProgramError(pe);
             selectText(ex.index, ex.index);
             mainClass.setError(pe);
             statusLabel.setText(Lang.syntaxError);
         }
         return syntaxTree;
     }
+    
+    public void setLineAndPositionInProgramError(ProgramError programError) {
+        if ( !programError.isIndexSet() ) {
+            return;
+        }
+        int index = programError.getLeftIndex();
+        int line = getLine(index) + 1;
+        int position = index - (line == 1 ? -1 : indexesOfNewLines.get(line - 2));
+        programError.setLineAndPosition(line, position);
+    }
+            
     
     public void savePosition(DataOutputStream dataOutputStream) throws IOException {
         dataOutputStream.writeInt(frame.getX());
@@ -1033,10 +1042,12 @@ public class CodeEditor {
                 + "  tab[b] = e;\n"
                 + "}\n"
                 + "~\n"
+                + "int aaa(a&) { a = 5; return 5; }\n"
                 + "void main()\n"
                 + "var g[3], t, b;\n"
                 + "{\n"
-                + "  t=1; b=2;\n"
+                + "  //t=2; t+=aaa(t); write(t);"
+                + "  g[t]=5; b=2;\n"
                 + "  swap1(t,b);\n"
                 + "  write(t,\" \",b,\"\\n\");\n"
                 + "  g[t]=2; g[b]=3;\n"

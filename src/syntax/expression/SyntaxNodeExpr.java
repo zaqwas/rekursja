@@ -3,8 +3,8 @@ package syntax.expression;
 import interpreter.Instance;
 import interpreter.accessvar.VariableType;
 import interpreter.arguments.ArgInteger;
-import interpreter.arguments.Argument;
 import java.math.BigInteger;
+import parser.ProgramError;
 import syntax.SyntaxNode;
 import syntax.SyntaxNodeIdx;
 
@@ -16,7 +16,7 @@ public abstract class SyntaxNodeExpr extends SyntaxNodeIdx {
     private Committer committer;
     
     @Override
-    public final SyntaxNode commit(Instance instance) {
+    public final SyntaxNode commit(Instance instance) throws ProgramError {
         return committer.commit(instance);
     }
     
@@ -26,7 +26,7 @@ public abstract class SyntaxNodeExpr extends SyntaxNodeIdx {
             committer = new Committer() {
                 private int size = - paramIndex;
                 @Override
-                public SyntaxNode commit(Instance instance) {
+                public SyntaxNode commit(Instance instance) throws ProgramError {
                     BigInteger value = getValue(instance);
                     instance.pushArgsArray(size);
                     instance.setArgument(0, new ArgInteger(value));
@@ -37,7 +37,7 @@ public abstract class SyntaxNodeExpr extends SyntaxNodeIdx {
         }
         committer = new Committer() {
             @Override
-            public SyntaxNode commit(Instance instance) {
+            public SyntaxNode commit(Instance instance) throws ProgramError {
                 BigInteger value = getValue(instance);
                 instance.setArgument(paramIndex, new ArgInteger(value));
                 return jump;
@@ -49,7 +49,7 @@ public abstract class SyntaxNodeExpr extends SyntaxNodeIdx {
         if (parentIsAnd) {
             committer = new Committer() {
                 @Override
-                public SyntaxNode commit(Instance instance) {
+                public SyntaxNode commit(Instance instance) throws ProgramError {
                     BigInteger value = getValue(instance);
                     if ( value.compareTo(BigInteger.ZERO)==0 ) {
                         instance.pushStack(value);
@@ -62,7 +62,7 @@ public abstract class SyntaxNodeExpr extends SyntaxNodeIdx {
         }
         committer = new Committer() {
             @Override
-            public SyntaxNode commit(Instance instance) {
+            public SyntaxNode commit(Instance instance) throws ProgramError {
                 BigInteger value = getValue(instance);
                 if (value.compareTo(BigInteger.ZERO) != 0) {
                     instance.pushStack(value);
@@ -72,27 +72,15 @@ public abstract class SyntaxNodeExpr extends SyntaxNodeIdx {
             }
         };
     }
-    
-    public void putValueOnStackTwice() {
-        committer = new Committer() {
-            @Override
-            public SyntaxNode commit(Instance instance) {
-                BigInteger value = getValue(instance);
-                instance.pushStack(value);
-                instance.pushStack(value);
-                return jump;
-            }
-        };
-    };
     //</editor-fold>
     
-    protected abstract BigInteger getValue(Instance instance);
+    protected abstract BigInteger getValue(Instance instance) throws ProgramError;
     
     protected final void setCommitter(Committer committer) {
         if ( committer==null ) {
             this.committer = new Committer() {
                 @Override
-                public SyntaxNode commit(Instance instance) {
+                public SyntaxNode commit(Instance instance) throws ProgramError {
                     instance.pushStack( getValue(instance) );
                     return jump;
                 }

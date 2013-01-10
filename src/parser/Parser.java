@@ -548,7 +548,7 @@ public final class Parser {
                     right.indexL = brTmp.indexL;
                     right.indexR = index;
 
-                    while (sOper.peek().getPriority() == 0) {
+                    while (!sOper.empty() && sOper.peek().getPriority() == 0) {
                         UnaryOperation uo = (UnaryOperation) sOper.pop();
                         uo.expresion = right;
                         uo.indexR = right.indexR;
@@ -596,6 +596,7 @@ public final class Parser {
                     while (!sOper.empty() && sOper.peek().getPriority() == 0) {
                         UnaryOperation uo = (UnaryOperation) sOper.pop();
                         uo.expresion = newVar;
+                        uo.indexR = newVar.indexR;
                         newVar = uo;
                     }
                     sVar.add(newVar);

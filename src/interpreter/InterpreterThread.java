@@ -4,10 +4,14 @@ import codeeditor.CodeEditor;
 import instanceframe.InstanceFrame;
 import instancetree.TreeOfInstances;
 import java.math.BigInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lesson.Lesson;
 import mainclass.MainClass;
+import parser.ProgramError;
 import stack.StackOfInstances;
 import statistics.Statistics;
+import stringcreator.SimpleLazyStringCreator;
 import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 import syntax.SyntaxNodeIndexed;
@@ -116,6 +120,7 @@ public class InterpreterThread extends Thread {
     public void run() {
         SyntaxNode nextNode = mainInstance.function;
         SyntaxNode prevNode = null;
+        ProgramError programError = null;
         
         Instance topStackInstance = mainInstance;
         Instance realInstance = mainInstance;
@@ -133,6 +138,9 @@ public class InterpreterThread extends Thread {
 
         runStatus = RunStatus.RUNNING;
         while (currentInstance != null) {
+            if (programError != null) {
+                break;
+            }
             if (reqStatus == RequestStatus.STOP) {
                 currentInstance = null;
                 break;
@@ -234,7 +242,12 @@ public class InterpreterThread extends Thread {
                     }
                 }
                 prevNode = call;
-                nextNode = prevNode.commit(realInstance);
+                
+                try {
+                    nextNode = prevNode.commit(realInstance);
+                } catch (ProgramError ex) {
+                    programError = ex;
+                }
                 //</editor-fold>
                 
             } else if (nextNode instanceof Call) {
@@ -273,21 +286,30 @@ public class InterpreterThread extends Thread {
                     statistics.addSyntaxNode(nextNode);
                 }
                 prevNode = nextNode;
-                nextNode = nextNode.commit(realInstance);
+                
+                try {
+                    nextNode = nextNode.commit(realInstance);
+                } catch (ProgramError ex) {
+                    programError = ex;
+                }
             }
         }
         
         
         runStatus = RunStatus.STOPPED;
-        mainClass.setStatus( new StringCreator() {
-            @Override
-            public String getString(int maxWidth) {
-                assert fontMetrics!=null : "FontMetrics not initialized.";
-                return "Program zatrzymany";
-            }
-        });
-        tree.update(mainInstance);
-        stack.clear();
+        if (programError == null) {
+            mainClass.setStatus(new SimpleLazyStringCreator("Program zatrzymany"));
+            tree.update(mainInstance);
+            stack.clear();
+            instanceFrame.clear();
+        } else {
+            mainClass.getEditor().setLineAndPositionInProgramError(programError);
+            mainClass.setError(programError);
+            instanceFrame.update(topStackInstance);
+            tree.update(topStackInstance);
+            stack.update(topStackInstance);
+        }
+        
         statistics.update();
         lesson.threadStop();
         mainClass.clearThread();
