@@ -30,12 +30,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import lesson.Lesson;
+import lesson.LessonLoader;
 import mainclass.MainClass;
 import parser.SpecialFunctions;
 import syntax.SyntaxNode;
 //</editor-fold>
 
 public class MergeFunctionLesson implements Lesson {
+
+    @Override
+    public LessonLoader getLessonLoader() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
     //<editor-fold defaultstate="collapsed" desc="Enums">
     private static enum State {
@@ -271,7 +277,6 @@ public class MergeFunctionLesson implements Lesson {
     //</editor-fold>
     
     
-    @Override
     public void start() {
         textFrame = new TextFrame(mainClass);
         arrayFrame = new ArrayFrame(mainClass);
@@ -300,8 +305,9 @@ public class MergeFunctionLesson implements Lesson {
     }
     
     @Override
-    public void pauseStart(SyntaxNode node, final int delayTime) {
+    public boolean pauseStart(SyntaxNode node, final int delayTime) {
         arrayFrame.updateResultValues();
+        return true;
     }
 
     @Override

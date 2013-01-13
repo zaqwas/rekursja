@@ -809,9 +809,10 @@ public class ArrayFrame {
     }
     //</editor-fold>
     
-    public ArrayFrame(MainClass mainClass) {
-        this.mainClass = mainClass;
-        frame = new JInternalFrame(Lang.frameTitle);
+    //<editor-fold defaultstate="collapsed" desc="initFrame">
+    private void initFrame()
+    {
+       frame = new JInternalFrame(Lang.frameTitle);
         final JFXPanel fxPanel = new JFXPanel();
         
         Platform.runLater(new Runnable() {
@@ -824,7 +825,6 @@ public class ArrayFrame {
         frame.setContentPane(fxPanel);
         frame.setResizable(false);
         frame.setVisible(false);
-        ArrayFrame.this.mainClass.getDesktop().add(frame);
         
         frame.addComponentListener(new ComponentAdapter() {
             @Override
@@ -838,6 +838,13 @@ public class ArrayFrame {
                 hideMenu();
             }
         });
+        mainClass.addAddictionalLessonFrame(Lang.frameTitle, frame);
+    }
+    //</editor-fold>
+    
+    public ArrayFrame(MainClass mainClass) {
+        this.mainClass = mainClass;
+        initFrame();
     }
     
     //<editor-fold defaultstate="collapsed" desc="Language">

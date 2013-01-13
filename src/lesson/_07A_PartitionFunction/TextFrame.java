@@ -409,15 +409,13 @@ class TextFrame {
         });
         
         frame.setContentPane(fxPanel);
-        frame.setPreferredSize(new Dimension(700, 500));
+        frame.setPreferredSize(new Dimension(600, 450));
         frame.setResizable(true);
         frame.setVisible(false);
-        mainClass.getDesktop().add(frame);
-        frame.pack();
+        mainClass.addAddictionalLessonFrame(Lang.frameMenuDescription, frame);
     }
     //</editor-fold>
 
-    
     //constructor:
     public TextFrame(MainClass mainClass) {
         this.mainClass = mainClass;
@@ -426,7 +424,8 @@ class TextFrame {
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
-        public static final String frameTitle = "Funkcja scal posortowane ciągi";
+        public static final String frameTitle = "Scalanie posortowanych ciągów";
+        public static final String frameMenuDescription = "Treść zadania";
         
         public static final String part1TextTabName = "Treść zadania";
         public static final String part1FunctionsTabName = "Funkcje specjalne";

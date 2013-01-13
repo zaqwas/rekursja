@@ -41,27 +41,23 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.TreeMap;
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import lesson.EmptyLesson;
-import lesson._01A_Introduction.IntroductionLesson;
-import lesson._01B_MinElement.MinElementLesson;
-import lesson._02A_RecursionIntro.RecursionIntroLesson;
-import lesson._02B_ArithmeticSeries.ArithmeticSeriesLesson;
-import lesson._03A_Exponentiation.ExponentiationLesson;
-import lesson._03B_EuclideanAlgorithm.EuclideanAlgorithmLesson;
-import lesson._03C_HornerSchema.HornerSchemaLesson;
-import lesson._03D_BinarySearch.BinarySearchLesson;
-import lesson._06A_MergeFunction.MergeFunctionLesson;
-import lesson._07A_PartitionFunction.PartitionFunctionLesson;
+import lesson.LessonLoader;
+import lesson._07A_PartitionFunction.PartitionFunctionLessonLoader;
 import parser.ProgramError;
 import stack.StackOfInstances;
 import statistics.Statistics;
-import stringcreator.SimpleEagerStringCreator;
 import stringcreator.StringCreator;
 import syntax.SyntaxTree;
 //</editor-fold>
@@ -75,65 +71,16 @@ public class MainClass {
     
     private JLabel statusLabel;
     private JPanel statusPanel;
-    
     private JDesktopPane desktop;
-    
     private JMenuBar menuBar;
+    
+    private JMenu lessonMenu;
     
     private JMenu fileMenu;
     private JMenuItem loadFileMenuItem;
     private JMenuItem saveFileMenuItem;
     private JMenuItem loadLessonMenuItem;
     private JMenuItem closeLessonMenuItem;
-    
-    private JMenu lessonMenu;
-    
-    private JButton runButton;
-    private JButton pauseButton;
-    private JButton stepIntoButton;
-    private JButton stepOverButton;
-    private JButton stepOutButton;
-    private JButton fastRunButton;
-    private JButton stopButton;
-    private JToolBar toolBar;
-    
-    private JLabel visualizationSpeedLabel;
-    private JSlider visualizationSpeedSlider;
-    
-    private JPanel lessonPanel;
-    //</editor-fold>
-    
-    private JMenu chooseLessonMenu;
-    private JMenuItem chooseIntroductionLessonMenuItem;
-    private JMenuItem chooseMinElementLessonMenuItem;
-    private JMenuItem chooseRecursionIntroLessonMenuItem;
-    private JMenuItem chooseArithmeticSeriesLessonMenuItem;
-    private JMenuItem chooseExponentiationLessonMenuItem;
-    private JMenuItem chooseEuclideanAlgorithmLessonMenuItem;
-    private JMenuItem chooseHornerSchemaLessonMenuItem;
-    private JMenuItem chooseBinarySearchLessonMenuItem;
-    private JMenuItem chooseMergeFunctionLessonMenuItem;
-    private JMenuItem choosePartitionFunctionLessonMenuItem;
-    
-    private Font statusLabelFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
-    private FontMetrics statusLabelFontMetrics;
-    private StringCreator statusCreator;
-    
-    private CodeEditor editorMgr;
-    private InstanceFrame instanceFrame;
-    private Console console;
-    private StackOfInstances stack;
-    private TreeOfInstances tree;
-    private Statistics statistics;
-    
-    private InterpreterThread thread;
-    private Lesson defaultLesson = new EmptyLesson();
-    private Lesson lesson = defaultLesson;
-    
-    private ProgramError error;
-    private Border redBorder = BorderFactory.createLineBorder(Color.RED);
-    private Border blackBorder = BorderFactory.createLineBorder(Color.BLACK);
-    
     
     private JMenu programMenu;
     private JMenuItem runMenuItem;
@@ -147,11 +94,62 @@ public class MainClass {
     private JMenuItem fasterMenuItem;
     private JMenuItem checkSyntaxMenuItem;
     
+    private JMenu chooseLessonMenu;
+    private TreeMap<String, LessonLoader> lessonMap = new TreeMap<>();
+    
+    private JMenuItem chooseIntroductionLessonMenuItem;
+    private JMenuItem chooseMinElementLessonMenuItem;
+    private JMenuItem chooseRecursionIntroLessonMenuItem;
+    private JMenuItem chooseArithmeticSeriesLessonMenuItem;
+    private JMenuItem chooseExponentiationLessonMenuItem;
+    private JMenuItem chooseEuclideanAlgorithmLessonMenuItem;
+    private JMenuItem chooseHornerSchemaLessonMenuItem;
+    private JMenuItem chooseBinarySearchLessonMenuItem;
+    private JMenuItem chooseMergeFunctionLessonMenuItem;
+    private JMenuItem choosePartitionFunctionLessonMenuItem;
+    
     private JMenu helpMenu;
     private JMenuItem helpMenuItem;
     private JMenuItem aboutMenuItem;
-    
     private JDialog aboutDialog;
+    
+    private JToolBar toolBar;
+    private JButton runButton;
+    private JButton pauseButton;
+    private JButton stepIntoButton;
+    private JButton stepOverButton;
+    private JButton stepOutButton;
+    private JButton fastRunButton;
+    private JButton stopButton;
+    
+    private JLabel visualizationSpeedLabel;
+    private JSlider visualizationSpeedSlider;
+    private JPanel lessonPanel;
+    
+    private CodeEditor editor;
+    private StackOfInstances stack;
+    private TreeOfInstances tree;
+    private InstanceFrame instanceFrame;
+    private Console console;
+    private Statistics statistics;
+    
+    private InterpreterThread thread;
+    private Lesson emptyLesson = new EmptyLesson();
+    private Lesson lesson = emptyLesson;
+    
+    private Font statusLabelFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
+    private FontMetrics statusLabelFontMetrics;
+    private Border redBorder = BorderFactory.createLineBorder(Color.RED);
+    private Border blackBorder = BorderFactory.createLineBorder(Color.BLACK);
+    private ProgramError error;
+    private StringCreator statusCreator;
+    //</editor-fold>
+
+    private JMenu windowMenu;
+    private ArrayList<JInternalFrame> windowFrame = new ArrayList<>();
+    private ArrayList<InternalFrameListener> windowLessonFrameListener = new ArrayList<>();
+    private ArrayList<JInternalFrame> windowLessonFrame = new ArrayList<>();
+    private ArrayList<JMenu> windowLessonFrameMenu = new ArrayList<>();
     
     
     public MainClass() {    
@@ -192,7 +190,7 @@ public class MainClass {
             @Override
             public void mousePressed(MouseEvent e) {
                 if ( error!=null ) {
-                    editorMgr.selectText(error.getLeftIndex(), error.getRightIndex());
+                    editor.selectText(error.getLeftIndex(), error.getRightIndex());
                 }
             }
         });
@@ -269,8 +267,12 @@ public class MainClass {
         //<editor-fold defaultstate="collapsed" desc="Init Menu">
         menuBar = new JMenuBar();
         mainFrame.setJMenuBar(menuBar);
+        
+        lessonMenu = new JMenu(Lang.lessonMenu);
+        lessonMenu.setEnabled(false);
+        menuBar.add(lessonMenu);
 
-        fileMenu = new JMenu(Lang.file);
+        fileMenu = new JMenu(Lang.fileMenu);
         menuBar.add(fileMenu);
 
         loadFileMenuItem = new JMenuItem(Lang.openFileDots);
@@ -308,14 +310,10 @@ public class MainClass {
             }
         });
         fileMenu.add(closeLessonMenuItem);
-        
-        lessonMenu = new JMenu(Lang.lesson);
-        lessonMenu.setEnabled(false);
-        menuBar.add(lessonMenu);
         //</editor-fold>
         
         //<editor-fold defaultstate="collapsed" desc="Init program menu">
-        programMenu = new JMenu(Lang.program);
+        programMenu = new JMenu(Lang.programMenu);
         menuBar.add(programMenu);
         
         runMenuItem = new JMenuItem(Lang.run);
@@ -335,25 +333,25 @@ public class MainClass {
         programMenu.add(stepOverMenuItem);
         
         stepOutMenuItem = new JMenuItem(Lang.stepOut);
-        stepOutMenuItem.setAccelerator(KeyStroke.getKeyStroke("F9"));
+        stepOutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F8, InputEvent.ALT_DOWN_MASK));
         programMenu.add(stepOutMenuItem);
         
         fastRunMenuItem = new JMenuItem(Lang.fastRun);
-        fastRunMenuItem.setAccelerator(KeyStroke.getKeyStroke("F10"));
+        fastRunMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, InputEvent.ALT_DOWN_MASK));
         programMenu.add(fastRunMenuItem);
         
         stopMenuItem = new JMenuItem(Lang.stop);
-        stopMenuItem.setAccelerator(KeyStroke.getKeyStroke("F11"));
+        stopMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6, InputEvent.ALT_DOWN_MASK));
         programMenu.add(stopMenuItem);
         
         programMenu.add(new JSeparator());
         
         slowerMenuItem = new JMenuItem(Lang.slower);
-        slowerMenuItem.setAccelerator(KeyStroke.getKeyStroke('-',InputEvent.CTRL_DOWN_MASK));
+        slowerMenuItem.setAccelerator(KeyStroke.getKeyStroke('-',InputEvent.ALT_DOWN_MASK));
         programMenu.add(slowerMenuItem);
         
         fasterMenuItem = new JMenuItem(Lang.faster);
-        fasterMenuItem.setAccelerator(KeyStroke.getKeyStroke('=',InputEvent.CTRL_DOWN_MASK));
+        fasterMenuItem.setAccelerator(KeyStroke.getKeyStroke('=',InputEvent.ALT_DOWN_MASK));
         programMenu.add(fasterMenuItem);
         
         programMenu.add(new JSeparator());
@@ -363,171 +361,193 @@ public class MainClass {
         programMenu.add(checkSyntaxMenuItem);
         //</editor-fold>
         
+        initChooseLessonMenu();
+        //old
         //<editor-fold defaultstate="collapsed" desc="Init choose lesson menu">
-        chooseLessonMenu = new JMenu(Lang.chooseLesson);
-        menuBar.add(chooseLessonMenu);
-        
-        chooseIntroductionLessonMenuItem = new JMenuItem(Lang.chooseIntroductionLesson);
-        chooseIntroductionLessonMenuItem.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if ( lesson!=null ) {
-                    lesson.close();
-                    lesson = null;
-                }
-                
-                lesson = new IntroductionLesson(MainClass.this);
-                lesson.start();
-            }
-        });
-        chooseLessonMenu.add(chooseIntroductionLessonMenuItem);
-        
-        chooseMinElementLessonMenuItem = new JMenuItem(Lang.chooseMinElementLesson);
-        chooseMinElementLessonMenuItem.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if ( lesson!=null ) {
-                    lesson.close();
-                    lesson = null;
-                }
-                
-                lesson = new MinElementLesson(MainClass.this);
-                lesson.start();
-            }
-        });
-        chooseLessonMenu.add(chooseMinElementLessonMenuItem);
-        chooseLessonMenu.add(new JSeparator());
-        
-        chooseRecursionIntroLessonMenuItem = new JMenuItem(Lang.chooseRecursionIntroLesson);
-        chooseRecursionIntroLessonMenuItem.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if ( lesson!=null ) {
-                    lesson.close();
-                    lesson = null;
-                }
-                
-                lesson = new RecursionIntroLesson(MainClass.this);
-                lesson.start();
-            }
-        });
-        chooseLessonMenu.add(chooseRecursionIntroLessonMenuItem);
-        
-        
-        chooseArithmeticSeriesLessonMenuItem = new JMenuItem(Lang.chooseArithmeticSeriesLessonMenuItem);
-        chooseArithmeticSeriesLessonMenuItem.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if ( lesson!=null ) {
-                    lesson.close();
-                    lesson = null;
-                }
-                
-                lesson = new ArithmeticSeriesLesson(MainClass.this);
-                lesson.start();
-            }
-        });
-        chooseLessonMenu.add(chooseArithmeticSeriesLessonMenuItem);
-        chooseLessonMenu.add(new JSeparator());
-        
-        chooseExponentiationLessonMenuItem = new JMenuItem(Lang.chooseExponentiationLessonMenuItem);
-        chooseExponentiationLessonMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if (lesson != null) {
-                    lesson.close();
-                    lesson = null;
-                }
-
-                lesson = new ExponentiationLesson(MainClass.this);
-                lesson.start();
-            }
-        });
-        chooseLessonMenu.add(chooseExponentiationLessonMenuItem);
-
-        chooseEuclideanAlgorithmLessonMenuItem = new JMenuItem(Lang.chooseEuclideanAlgorithmLessonMenuItem);
-        chooseEuclideanAlgorithmLessonMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if (lesson != null) {
-                    lesson.close();
-                    lesson = null;
-                }
-
-                lesson = new EuclideanAlgorithmLesson(MainClass.this);
-                lesson.start();
-            }
-        });
-        chooseLessonMenu.add(chooseEuclideanAlgorithmLessonMenuItem);
-        
-        chooseHornerSchemaLessonMenuItem = new JMenuItem(Lang.chooseHornerSchemaLessonMenuItem);
-        chooseHornerSchemaLessonMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if (lesson != null) {
-                    lesson.close();
-                    lesson = null;
-                }
-
-                lesson = new HornerSchemaLesson(MainClass.this);
-                lesson.start();
-            }
-        });
-        chooseLessonMenu.add(chooseHornerSchemaLessonMenuItem);
-        
-        chooseBinarySearchLessonMenuItem = new JMenuItem(Lang.chooseBinarySearchLessonMenuItem);
-        chooseBinarySearchLessonMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if (lesson != null) {
-                    lesson.close();
-                    lesson = null;
-                }
-
-                lesson = new BinarySearchLesson(MainClass.this);
-                lesson.start();
-            }
-        });
-        chooseLessonMenu.add(chooseBinarySearchLessonMenuItem);
-        
-        chooseLessonMenu.add(new JSeparator());
-        
-        chooseMergeFunctionLessonMenuItem = new JMenuItem(Lang.chooseMergeFunctionLessonMenuItem);
-        chooseMergeFunctionLessonMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if (lesson != null) {
-                    lesson.close();
-                    lesson = null;
-                }
-
-                lesson = new MergeFunctionLesson(MainClass.this);
-                lesson.start();
-            }
-        });
-        chooseLessonMenu.add(chooseMergeFunctionLessonMenuItem);
-
-        chooseLessonMenu.add(new JSeparator());
-        
-        choosePartitionFunctionLessonMenuItem = new JMenuItem(Lang.choosePartitionFunctionLessonMenuItem);
-        choosePartitionFunctionLessonMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if (lesson != null) {
-                    lesson.close();
-                    lesson = null;
-                }
-
-                lesson = new PartitionFunctionLesson(MainClass.this);
-                lesson.start();
-            }
-        });
-        chooseLessonMenu.add(choosePartitionFunctionLessonMenuItem);
+//        chooseLessonMenu = new JMenu(Lang.chooseLesson);
+//        menuBar.add(chooseLessonMenu);
+//        
+//        chooseIntroductionLessonMenuItem = new JMenuItem(Lang.chooseIntroductionLesson);
+//        chooseIntroductionLessonMenuItem.addActionListener(new ActionListener()
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                if ( lesson!=null ) {
+//                    lesson.close();
+//                    lesson = null;
+//                }
+//                
+//                lesson = new IntroductionLesson(MainClass.this);
+//                lesson.start();
+//            }
+//        });
+//        chooseLessonMenu.add(chooseIntroductionLessonMenuItem);
+//        
+//        chooseMinElementLessonMenuItem = new JMenuItem(Lang.chooseMinElementLesson);
+//        chooseMinElementLessonMenuItem.addActionListener(new ActionListener()
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                if ( lesson!=null ) {
+//                    lesson.close();
+//                    lesson = null;
+//                }
+//                
+//                lesson = new MinElementLesson(MainClass.this);
+//                lesson.start();
+//            }
+//        });
+//        chooseLessonMenu.add(chooseMinElementLessonMenuItem);
+//        chooseLessonMenu.add(new JSeparator());
+//        
+//        chooseRecursionIntroLessonMenuItem = new JMenuItem(Lang.chooseRecursionIntroLesson);
+//        chooseRecursionIntroLessonMenuItem.addActionListener(new ActionListener()
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                if ( lesson!=null ) {
+//                    lesson.close();
+//                    lesson = null;
+//                }
+//                
+//                lesson = new RecursionIntroLesson(MainClass.this);
+//                lesson.start();
+//            }
+//        });
+//        chooseLessonMenu.add(chooseRecursionIntroLessonMenuItem);
+//        
+//        
+//        chooseArithmeticSeriesLessonMenuItem = new JMenuItem(Lang.chooseArithmeticSeriesLessonMenuItem);
+//        chooseArithmeticSeriesLessonMenuItem.addActionListener(new ActionListener()
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                if ( lesson!=null ) {
+//                    lesson.close();
+//                    lesson = null;
+//                }
+//                
+//                lesson = new ArithmeticSeriesLesson(MainClass.this);
+//                lesson.start();
+//            }
+//        });
+//        chooseLessonMenu.add(chooseArithmeticSeriesLessonMenuItem);
+//        chooseLessonMenu.add(new JSeparator());
+//        
+//        chooseExponentiationLessonMenuItem = new JMenuItem(Lang.chooseExponentiationLessonMenuItem);
+//        chooseExponentiationLessonMenuItem.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                if (lesson != null) {
+//                    lesson.close();
+//                    lesson = null;
+//                }
+//
+//                lesson = new ExponentiationLesson(MainClass.this);
+//                lesson.start();
+//            }
+//        });
+//        chooseLessonMenu.add(chooseExponentiationLessonMenuItem);
+//
+//        chooseEuclideanAlgorithmLessonMenuItem = new JMenuItem(Lang.chooseEuclideanAlgorithmLessonMenuItem);
+//        chooseEuclideanAlgorithmLessonMenuItem.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                if (lesson != null) {
+//                    lesson.close();
+//                    lesson = null;
+//                }
+//
+//                lesson = new EuclideanAlgorithmLesson(MainClass.this);
+//                lesson.start();
+//            }
+//        });
+//        chooseLessonMenu.add(chooseEuclideanAlgorithmLessonMenuItem);
+//        
+//        chooseHornerSchemaLessonMenuItem = new JMenuItem(Lang.chooseHornerSchemaLessonMenuItem);
+//        chooseHornerSchemaLessonMenuItem.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                if (lesson != null) {
+//                    lesson.close();
+//                    lesson = null;
+//                }
+//
+//                lesson = new HornerSchemaLesson(MainClass.this);
+//                lesson.start();
+//            }
+//        });
+//        chooseLessonMenu.add(chooseHornerSchemaLessonMenuItem);
+//        
+//        chooseBinarySearchLessonMenuItem = new JMenuItem(Lang.chooseBinarySearchLessonMenuItem);
+//        chooseBinarySearchLessonMenuItem.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                if (lesson != null) {
+//                    lesson.close();
+//                    lesson = null;
+//                }
+//
+//                lesson = new BinarySearchLesson(MainClass.this);
+//                lesson.start();
+//            }
+//        });
+//        chooseLessonMenu.add(chooseBinarySearchLessonMenuItem);
+//        
+//        chooseLessonMenu.add(new JSeparator());
+//        
+//        chooseMergeFunctionLessonMenuItem = new JMenuItem(Lang.chooseMergeFunctionLessonMenuItem);
+//        chooseMergeFunctionLessonMenuItem.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                if (lesson != null) {
+//                    lesson.close();
+//                    lesson = null;
+//                }
+//
+//                lesson = new MergeFunctionLesson(MainClass.this);
+//                lesson.start();
+//            }
+//        });
+//        chooseLessonMenu.add(chooseMergeFunctionLessonMenuItem);
+//
+//        chooseLessonMenu.add(new JSeparator());
+//        
+//        choosePartitionFunctionLessonMenuItem = new JMenuItem(Lang.choosePartitionFunctionLessonMenuItem);
+//        choosePartitionFunctionLessonMenuItem.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                if (lesson != null) {
+//                    lesson.close();
+//                    lesson = null;
+//                }
+//
+//                lesson = new PartitionFunctionLesson(MainClass.this);
+//                lesson.start();
+//            }
+//        });
+//        chooseLessonMenu.add(choosePartitionFunctionLessonMenuItem);
         //</editor-fold>
+        
+        windowMenu = new JMenu(Lang.windowMenu);
+        menuBar.add(windowMenu);
+        JMenuItem cascade = new JMenuItem(Lang.cascadeLayoutMenuItem);
+        cascade.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int offset = 0;
+                for(JInternalFrame frame : windowFrame) {
+                    frame.pack();
+                    frame.setLocation(offset, offset);
+                    frame.setVisible(true);
+                    frame.toFront();
+                    offset += 30;
+                }
+            }
+        });
+        windowMenu.add(cascade);
+        windowMenu.add(new JSeparator());
+        
         
         //<editor-fold defaultstate="collapsed" desc="Init help menu">
         aboutDialog = new AboutFrame();
@@ -678,7 +698,6 @@ public class MainClass {
         mainFrame.getContentPane().setLayout(layout);
         //</editor-fold>
         
-
         
         
         mainFrame.setSize(800, 600);
@@ -694,84 +713,153 @@ public class MainClass {
 //        lesson.start();
 //        lesson = new BubbleSortLesson(this);
 //        lesson.start();
+//        
+//        //<editor-fold defaultstate="collapsed" desc="Init Frames">
+//        editor = new CodeEditor(this);
+//        desktop.add(editor.getFrame());
+//        editor.getFrame().show();
+//
+//        console = new Console();
+//        desktop.add(console.getFrame());
+//        console.getFrame().show();
+//        
+//        tree = new TreeOfInstances(this);
+//        desktop.add(tree.getFrame());
+//        tree.getFrame().show();
+//        
+//        instanceFrame = new InstanceFrame(this);
+//        desktop.add(instanceFrame.getFrame());
+//        instanceFrame.getFrame().show();
+//
+//        stack = new StackOfInstances(this, instanceFrame);
+//        desktop.add(stack.getFrame());
+//        stack.getFrame().show();
+//        
+//        statistics = new Statistics();
+//        desktop.add(statistics.getFrame());
+//        statistics.getFrame().show();
+//        //</editor-fold>
+//        
         
-        //<editor-fold defaultstate="collapsed" desc="Init Frames">
-        editorMgr = new CodeEditor(this);
-        desktop.add(editorMgr.getFrame());
-        editorMgr.getFrame().show();
-
+        editor = new CodeEditor(this);
         console = new Console();
-        desktop.add(console.getFrame());
-        console.getFrame().show();
-        
         tree = new TreeOfInstances(this);
-        desktop.add(tree.getFrame());
-        tree.getFrame().show();
-        
         instanceFrame = new InstanceFrame(this);
-        desktop.add(instanceFrame.getFrame());
-        instanceFrame.getFrame().show();
-
         stack = new StackOfInstances(this, instanceFrame);
-        desktop.add(stack.getFrame());
-        stack.getFrame().show();
-        
         statistics = new Statistics();
-        desktop.add(statistics.getFrame());
-        statistics.getFrame().show();
-        //</editor-fold>
+        
+        addFrame(Lang.codeEditorMenu, editor.getFrame(), false);
+        addFrame(Lang.callStackMenu, stack.getFrame(), false);
+        addFrame(Lang.callTreeMenu, tree.getFrame(), false);
+        addFrame(Lang.instanceFrameMenu, instanceFrame.getFrame(), false);
+        addFrame(Lang.consoleMenu, console.getFrame(), false);
+        addFrame(Lang.statisticsMenu, statistics.getFrame(), false);
+        cascade.doClick();
         
         loadMainFramesPositions();
+    }
+    
+    private void initChooseLessonMenu() {
+        chooseLessonMenu = new JMenu(Lang.chooseLesson);
+        menuBar.add(chooseLessonMenu);
+        addLessonLoader(new PartitionFunctionLessonLoader());
+    }
+    private void addLessonLoader(final LessonLoader loader) {
+        lessonMap.put(loader.getLessonKey(), loader);
+        
+        JMenuItem menuItem = new JMenuItem(loader.getLessonName());
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                lesson.close();
+                lesson = loader.getLesson(MainClass.this, null);
+            }
+        });
+        chooseLessonMenu.add(menuItem);
+    }
+    
+    public void addAddictionalLessonFrame(String title, JInternalFrame frame) {
+        addFrame(title, frame, true);
+    }
+    public void removeAddictionalLessonFrame(JInternalFrame frame) {
+        frame.setVisible(false);
+        desktop.remove(frame);
+        
+        int idx = windowLessonFrame.indexOf(frame);
+        frame.removeInternalFrameListener(windowLessonFrameListener.get(idx));
+        windowMenu.remove(9+idx);
+        windowLessonFrameListener.remove(idx);
+        windowLessonFrameMenu.remove(idx);
+        windowLessonFrame.remove(idx);
+        windowFrame.remove(frame);
+        if ( windowLessonFrame.isEmpty() ) {
+            windowMenu.remove(8);
+        }
+    }
+    
+    private void addFrame(String title, final JInternalFrame frame, boolean lessonFrame) {
+        JMenu menu = new JMenu(title);
 
-        
-        
-        
-        
-//        System.out.println(statusLabel.getY());
-//        ProgramError err = new ProgramError("Jakiś błąd", 30, 35);
-//        err.setLineAndPosition(1, 1);
-//        setError(err);
-        
-//        statusPanel.setBorder(blackBorder);
-//        //setStatus(new FastStringCreator("[Linia: 21; Pozycja:24] Kaban"));
-//        //setError("Kaban", 1, 2);
-        
-//        JButton dupa = new JButton("dupa");
-//        dupa.addActionListener(new ActionListener() {
-//            boolean kaban = true;
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                System.out.println(e.getActionCommand());
-//                statusPanel.setBorder(kaban?redBorder:blackBorder);
-//                kaban=!kaban;
-//            }
-//        });
-//        dupa.setActionCommand("dupa");
-//        lessonPanel.add(dupa);
-//        mainFrame.revalidate();
-//        
-//        InputMap keyMap = new ComponentInputMap(dupa);
-//        keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), "action");
-//
-//        ActionMap actionMap = new ActionMapUIResource();
-//        actionMap.put("action", new AbstractAction() {
-//            boolean kaban = true;
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                System.out.println(e.getSource().toString());
-//                System.out.println(e.getActionCommand());
-//                statusPanel.setBorder(kaban?redBorder:blackBorder);
-//                kaban=!kaban;
-//            }
-//        });
-//
-//        SwingUtilities.replaceUIActionMap(dupa, actionMap);
-//        SwingUtilities.replaceUIInputMap(dupa, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);
+        final JCheckBoxMenuItem show = new JCheckBoxMenuItem(Lang.showHideMenu);
+        show.setSelected(frame.isVisible());
+        show.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.setVisible(!frame.isVisible());
+            }
+        });
+        menu.add(show);
+
+        JMenuItem restore = new JMenuItem(Lang.restoreMenu);
+        restore.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.pack();
+                frame.setLocation(0, 0);
+                frame.setVisible(true);
+                frame.toFront();
+            }
+        });
+        menu.add(restore);
+
+        int modifiers;
+        char key;
+        if (lessonFrame) {
+            key = (char) ('1' + windowLessonFrame.size());
+            modifiers = InputEvent.CTRL_DOWN_MASK;
+            windowLessonFrame.add(frame);
+            if (windowLessonFrameMenu.isEmpty()) {
+                windowMenu.add(new JSeparator());
+            }
+            windowLessonFrameMenu.add(menu);
+        } else {
+            key = (char) ('1' + windowFrame.size());
+            modifiers = InputEvent.ALT_DOWN_MASK;
+        }
+        desktop.add(frame);
+        windowFrame.add(frame);
+        show.setAccelerator(KeyStroke.getKeyStroke(key, modifiers));
+        modifiers = modifiers | InputEvent.SHIFT_DOWN_MASK;
+        restore.setAccelerator(KeyStroke.getKeyStroke(key, modifiers));
+
+        frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+        frame.setClosable(true);
+        InternalFrameListener listener = new InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+                show.setSelected(false);
+            }
+        };
+        frame.addInternalFrameListener(listener);
+        if (lessonFrame) {
+            windowLessonFrameListener.add(listener);
+        }
+        windowMenu.add(menu);
     }
     
     //<editor-fold defaultstate="collapsed" desc="Get main frames methods">
     public CodeEditor getEditor() {
-        return editorMgr;
+        return editor;
     }
     public InstanceFrame getInstanceFrame() {
         return instanceFrame;
@@ -804,6 +892,45 @@ public class MainClass {
     //</editor-fold>
     
     
+    private void loadMainFramesPositions(DataInputStream stream, boolean showMessage) throws IOException {
+        byte buffor[] = new byte[10];
+        stream.read(buffor);
+        for (byte b : buffor) {
+            if ((b < '0' || '9' < b) && (b < 'A' || 'Z' < b) && (b < 'a' || 'z' < b)) {
+                if (showMessage) {
+                    JOptionPane.showMessageDialog(null, Lang.notSaveLessonFile);
+                }
+                return;
+            }
+        }
+        String key = new String(buffor);
+        LessonLoader loader = lessonMap.get(key);
+        if (loader == null) {
+            if (showMessage) {
+                JOptionPane.showMessageDialog(null, Lang.notSaveLessonFile);
+            }
+            return;
+        }
+    }
+    
+    public void saveMainFramesPositions(DataInputStream stream) {
+        File dir = new File(MainClass.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+        if (dir.isFile()) {
+            dir = dir.getParentFile();
+        }
+        String path = dir.getAbsolutePath() + File.separator + "defaultSave";
+        try {
+            DataOutputStream dataOutputStream = new DataOutputStream(
+                    new FileOutputStream(path));
+            editor.savePosition(dataOutputStream);
+            instanceFrame.savePosition(dataOutputStream);
+            console.savePosition(dataOutputStream);
+            stack.savePosition(dataOutputStream);
+            tree.savePosition(dataOutputStream);
+            statistics.savePosition(dataOutputStream);
+        } catch (IOException ex) {
+        }
+    }
     //<editor-fold defaultstate="collapsed" desc="Load/Save frames positions">
     public void loadMainFramesPositions() {
         File dir = new File(MainClass.class.getProtectionDomain().getCodeSource().getLocation().getPath());
@@ -814,7 +941,7 @@ public class MainClass {
         try {
             DataInputStream dataInputStream = new DataInputStream(
                     new FileInputStream(path));
-            editorMgr.loadPosition(dataInputStream);
+            editor.loadPosition(dataInputStream);
             instanceFrame.loadPosition(dataInputStream);
             console.loadPosition(dataInputStream);
             stack.loadPosition(dataInputStream);
@@ -834,7 +961,7 @@ public class MainClass {
         try {
             DataOutputStream dataOutputStream = new DataOutputStream(
                     new FileOutputStream(path));
-            editorMgr.savePosition(dataOutputStream);
+            editor.savePosition(dataOutputStream);
             instanceFrame.savePosition(dataOutputStream);
             console.savePosition(dataOutputStream);
             stack.savePosition(dataOutputStream);
@@ -892,7 +1019,7 @@ public class MainClass {
     //<editor-fold defaultstate="collapsed" desc="Run-buttons functions">
     private void tryStartThread() {
         if ( thread==null ) {
-            SyntaxTree syntaxTree = editorMgr.getSyntaxTree();
+            SyntaxTree syntaxTree = editor.getSyntaxTree();
             if (syntaxTree != null) {
                 thread = new InterpreterThread(syntaxTree, this);
                 thread.start();
@@ -950,7 +1077,7 @@ public class MainClass {
     //<editor-fold defaultstate="collapsed" desc="Visualisation speed and CheckSyntax functions">
     private void checkSyntaxClick()
     {
-        editorMgr.getSyntaxTree();
+        editor.getSyntaxTree();
     }
     private void increaseVisualistaionSpeed()
     {
@@ -1018,7 +1145,7 @@ public class MainClass {
         chooser.setDialogTitle(Lang.open);
         int returnVal = chooser.showOpenDialog(mainFrame);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            editorMgr.load(chooser.getSelectedFile().getAbsolutePath());
+            editor.load(chooser.getSelectedFile().getAbsolutePath());
         }
     }                                            
 
@@ -1028,7 +1155,7 @@ public class MainClass {
         chooser.setDialogTitle(Lang.save);
         int returnVal = chooser.showOpenDialog(mainFrame);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            editorMgr.save(chooser.getSelectedFile().getAbsolutePath());
+            editor.save(chooser.getSelectedFile().getAbsolutePath());
         }
     }
     //</editor-fold>
@@ -1131,10 +1258,10 @@ public class MainClass {
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
-        public static String frameTitle = "Rekursja";
+        public static String frameTitle = "System REKURENCJA";
         public static String statusDots = "Status...";
         
-        public static String chooseLesson = "Wybierz lekcję";
+        public static String chooseLesson = "Wybór lekcji";
         public static String chooseIntroductionLesson = "Wprowadzenie";
         public static String chooseMinElementLesson = "Minimalny element";
         public static String chooseRecursionIntroLesson = "Wprowadzenie do rekurencji";
@@ -1146,15 +1273,27 @@ public class MainClass {
         public static String chooseMergeFunctionLessonMenuItem = "Scalanie posortowanych ciągów";
         public static String choosePartitionFunctionLessonMenuItem = "Podział tablicy";
         
-        public static String file = "Plik";
+        public static String lessonMenu = "Lekcja";
+        
+        public static String fileMenu = "Plik";
         public static String openFileDots = "Otwórz plik...";
         public static String saveFileDots = "Zapisz plik...";
         public static String open = "Otwórz";
         public static String save = "Zapisz";
         public static String loadLessonDots = "Wczytaj lekcję...";
         public static String closeLesson = "Zamknij lekcję";
+        public static String notSaveLessonFile = "Wybrany plik nie jest zapisem stanu lekcji.";
         
-        public static String lesson = "Lekcja";
+        public static String windowMenu = "Okno";
+        public static String cascadeLayoutMenuItem = "Ułóż okna kaskadowo";
+        public static String showHideMenu = "Pokaż / Ukryj";
+        public static String restoreMenu = "Przywróć";
+        public static String codeEditorMenu = "Edytor kodu";
+        public static String callStackMenu = "Stos wywołań";
+        public static String callTreeMenu = "Drzewo wywołań";
+        public static String instanceFrameMenu = "Okno instancji";
+        public static String consoleMenu = "Konsola";
+        public static String statisticsMenu = "Statystyka";
         
         public static String line = "[Linia: ";
         public static String position = "; Pozycja: ";
@@ -1167,7 +1306,7 @@ public class MainClass {
         public static String showHelp = "Pokaż pomoc";
         public static String about = "O programie";
         
-        public static String program = "Program";
+        public static String programMenu = "Program";
         public static String run = "Uruchom";
         public static String pause = "Pauza";
         public static String stepInto = "Skocz do";

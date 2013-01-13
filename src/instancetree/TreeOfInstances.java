@@ -565,7 +565,6 @@ public class TreeOfInstances {
         frame.setLayout(layout);
         //</editor-fold>
         
-        frame.pack();
     }
     //</editor-fold>
     

@@ -31,12 +31,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import lesson.Lesson;
+import lesson.LessonLoader;
 import mainclass.MainClass;
 import parser.SpecialFunctions;
 import syntax.SyntaxNode;
 //</editor-fold>
 
 public class PartitionFunctionLesson implements Lesson {
+
+    @Override
+    public LessonLoader getLessonLoader() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
     //<editor-fold defaultstate="collapsed" desc="Enums">
     private static enum State {
@@ -676,7 +682,6 @@ public class PartitionFunctionLesson implements Lesson {
     //</editor-fold>    
     
     
-    @Override
     public void start() {
         textFrame = new TextFrame(mainClass);
         arrayFrame = new ArrayFrame(mainClass);
@@ -690,7 +695,7 @@ public class PartitionFunctionLesson implements Lesson {
         
         initPart1();
         
-        arrayFrame.showFrame();
+        //arrayFrame.showFrame();
         //textFrame.showFrame();
     }
     
@@ -709,7 +714,7 @@ public class PartitionFunctionLesson implements Lesson {
     }
     
     @Override
-    public void pauseStart(SyntaxNode node, final int delayTime) {
+    public boolean pauseStart(SyntaxNode node, final int delayTime) {
         if ( selectedPart == 3 ) {
             compareTwoSpecialFunction.undo(node);
         } else {
@@ -733,6 +738,7 @@ public class PartitionFunctionLesson implements Lesson {
         if ( selectedPart > 1 ) {
             swapSpecialFunction.pauseStart(node, delayTime);
         }
+        return true;
     }
 
     @Override

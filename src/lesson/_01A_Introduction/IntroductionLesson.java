@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import lesson.Lesson;
+import lesson.LessonLoader;
 import mainclass.MainClass;
 import syntax.SyntaxNode;
 
@@ -28,7 +29,6 @@ public class IntroductionLesson implements Lesson {
         this.mainClass = mainClass;
     }
     
-    @Override
     public void start() {
         
         //<editor-fold defaultstate="collapsed" desc="Setting code in editor">
@@ -82,7 +82,8 @@ public class IntroductionLesson implements Lesson {
     }
 
     @Override
-    public void pauseStart(SyntaxNode node, int delayTime) {
+    public boolean pauseStart(SyntaxNode node, int delayTime) {
+        return true;
     }
 
     @Override
@@ -95,6 +96,11 @@ public class IntroductionLesson implements Lesson {
 
     @Override
     public void threadStop() {
+    }
+
+    @Override
+    public LessonLoader getLessonLoader() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     //<editor-fold defaultstate="collapsed" desc="Language">

@@ -45,6 +45,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.DocumentFilter.FilterBypass;
 import lesson.Lesson;
+import lesson.LessonLoader;
 import mainclass.MainClass;
 import parser.SpecialFunctions;
 import syntax.SyntaxNode;
@@ -195,7 +196,6 @@ public class FindElementLesson implements Lesson {
     }
     //</editor-fold>
     
-    @Override
     public void start() {
         frame = new JInternalFrame(Lang.arrayFrameTitle);
         
@@ -597,7 +597,8 @@ public class FindElementLesson implements Lesson {
     }
     
     @Override
-    public void pauseStart(SyntaxNode node, final int delayTime) {
+    public boolean pauseStart(SyntaxNode node, final int delayTime) {
+        return true;
 //        if (node == null || node != callNode) {
 //            updateTextFieldsPosition();
 //            return;
@@ -648,6 +649,11 @@ public class FindElementLesson implements Lesson {
 //            currValuesTextField[prevIdx2].setForeground(Color.BLACK);
 //        }
 //        callNode = null;
+    }
+
+    @Override
+    public LessonLoader getLessonLoader() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     

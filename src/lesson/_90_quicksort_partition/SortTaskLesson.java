@@ -35,6 +35,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.DocumentFilter.FilterBypass;
 import lesson.Lesson;
+import lesson.LessonLoader;
 import mainclass.MainClass;
 import parser.SpecialFunctions;
 import syntax.SyntaxNode;
@@ -145,7 +146,6 @@ public class SortTaskLesson implements Lesson {
         currValuesTextField[idx2] = tmp;
     }
     
-    @Override
     public void start() {
         frame = new JInternalFrame();
         
@@ -579,10 +579,10 @@ public class SortTaskLesson implements Lesson {
     }
     
     @Override
-    public void pauseStart(SyntaxNode node, final int delayTime) {
+    public boolean pauseStart(SyntaxNode node, final int delayTime) {
         if (node == null || node != callNode) {
             updateTextFieldsPosition();
-            return;
+            return true;
         }
         currValuesTextField[prevIdx1].setForeground(Color.RED);
         currValuesTextField[prevIdx2].setForeground(Color.RED);
@@ -615,6 +615,7 @@ public class SortTaskLesson implements Lesson {
             }).start();
         }
         updateTextFieldsPosition();
+        return true;
     }
 
     @Override
@@ -630,6 +631,11 @@ public class SortTaskLesson implements Lesson {
             currValuesTextField[prevIdx2].setForeground(Color.BLACK);
         }
         callNode = null;
+    }
+
+    @Override
+    public LessonLoader getLessonLoader() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     

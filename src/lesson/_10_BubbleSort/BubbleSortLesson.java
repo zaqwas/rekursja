@@ -45,6 +45,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.DocumentFilter.FilterBypass;
 import lesson.Lesson;
+import lesson.LessonLoader;
 import mainclass.MainClass;
 import parser.SpecialFunctions;
 import syntax.SyntaxNode;
@@ -245,7 +246,6 @@ public class BubbleSortLesson implements Lesson {
     //</editor-fold>
     
     
-    @Override
     public void start() {
         valuesFrame = new JInternalFrame(Lang.arrayFrameTitle);
         
@@ -744,10 +744,10 @@ public class BubbleSortLesson implements Lesson {
     }
     
     @Override
-    public void pauseStart(SyntaxNode node, final int delayTime) {
+    public boolean pauseStart(SyntaxNode node, final int delayTime) {
         if (node == null || node != callNode) {
             updateCurrentValuesTextFieldsPosition();
-            return;
+            return true;
         }
         currentValuesTextField[prevIdx1].setForeground(Color.RED);
         currentValuesTextField[prevIdx2].setForeground(Color.RED);
@@ -781,6 +781,7 @@ public class BubbleSortLesson implements Lesson {
                 }
             }).start();
         }
+        return true;
     }
 
     @Override
@@ -796,6 +797,11 @@ public class BubbleSortLesson implements Lesson {
             currentValuesTextField[prevIdx2].setForeground(Color.BLACK);
         }
         callNode = null;
+    }
+
+    @Override
+    public LessonLoader getLessonLoader() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     

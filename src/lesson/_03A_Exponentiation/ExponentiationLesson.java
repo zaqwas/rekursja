@@ -30,11 +30,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import lesson.Lesson;
+import lesson.LessonLoader;
 import mainclass.MainClass;
 import syntax.SyntaxNode;
 //</editor-fold>
 
 public class ExponentiationLesson implements Lesson {
+
+    @Override
+    public LessonLoader getLessonLoader() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
     //<editor-fold defaultstate="collapsed" desc="Enums">
     private static enum State 
@@ -431,7 +437,6 @@ public class ExponentiationLesson implements Lesson {
     }
     //</editor-fold>
     
-    @Override
     public void start() {
         
         initPart1TextFrame();
@@ -756,7 +761,8 @@ public class ExponentiationLesson implements Lesson {
     }
     
     @Override
-    public void pauseStart(SyntaxNode node, final int delayTime) {
+    public boolean pauseStart(SyntaxNode node, final int delayTime) {
+        return true;
     }
 
     @Override

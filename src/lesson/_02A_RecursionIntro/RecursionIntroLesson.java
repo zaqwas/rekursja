@@ -15,6 +15,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import lesson.Lesson;
+import lesson.LessonLoader;
 import mainclass.MainClass;
 import syntax.SyntaxNode;
 //</editor-fold>
@@ -62,7 +63,6 @@ public class RecursionIntroLesson implements Lesson {
         this.mainClass = mainClass;
     }
     
-    @Override
     public void start() {
         
         //<editor-fold defaultstate="collapsed" desc="Part1TextFrame">
@@ -337,11 +337,17 @@ public class RecursionIntroLesson implements Lesson {
     }
     
     @Override
-    public void pauseStart(SyntaxNode node, final int delayTime) {
+    public boolean pauseStart(SyntaxNode node, final int delayTime) {
+        return true;
     }
 
     @Override
     public void pauseStop(SyntaxNode node) {
+    }
+
+    @Override
+    public LessonLoader getLessonLoader() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     //<editor-fold defaultstate="collapsed" desc="Language">
