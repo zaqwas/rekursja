@@ -28,6 +28,18 @@ public class InterpreterThread extends Thread {
         PAUSED, RUNNING, STOPPED, DELAY;
     }
     
+    private final static int[] delayArray = {
+        8000, 7000, 6000, 5200, 4600,
+        4000, 3600, 3200, 2800, 2400,
+        2000, 1600, 1300, 1000, 750, 
+        500, 350, 200, 100, 50
+    };
+    
+    public static int getDelayTime(int speedLevel) {
+        assert 0 <= speedLevel && speedLevel < 20;
+        return delayArray[speedLevel];
+    }
+    
     private RunStatus runStatus;
     private RequestStatus reqStatus;
     private int delayTime = 1000;
@@ -85,7 +97,9 @@ public class InterpreterThread extends Thread {
     //</editor-fold>
     
 
-    public InterpreterThread(SyntaxTree syntaxTree, MainClass mainClass) {
+    public InterpreterThread(SyntaxTree syntaxTree, MainClass mainClass, int speedLevel) {
+        assert 0 <= speedLevel && speedLevel < 20;
+        
         this.syntaxTree = syntaxTree;
         this.mainClass = mainClass;
         
@@ -102,6 +116,13 @@ public class InterpreterThread extends Thread {
         currentInstance = mainInstance;
         reqStatus = RequestStatus.PAUSE;
         runStatus = RunStatus.PAUSED;
+        
+        delayTime = delayArray[speedLevel];
+    }
+    
+    public void setSpeedLevel(int speedLevel) {
+        assert 0 <= speedLevel && speedLevel < 20;
+        delayTime = delayArray[speedLevel];
     }
     
     private boolean checkPauseStatus() {
@@ -135,6 +156,7 @@ public class InterpreterThread extends Thread {
         stack.start(mainInstance);
         tree.start(mainInstance);
         statistics.start();
+        mainClass.getConsole().start();
 
         runStatus = RunStatus.RUNNING;
         while (currentInstance != null) {
@@ -164,17 +186,17 @@ public class InterpreterThread extends Thread {
                     tree.mark();
                     stack.mark();
                 }
-                lesson.pauseStart(prevNode, delayTime);
-                if ( runStatus == RunStatus.DELAY ) {
+                boolean wait = lesson.pauseStart(prevNode, delayTime);
+                if ( wait && runStatus == RunStatus.DELAY ) {
                     try {
                         sleep(delayTime);
                     } catch (InterruptedException ex) {
                     }
-                    if (reqStatus == RequestStatus.PAUSE) {
-                        runStatus = RunStatus.PAUSED;
-                    } else {
-                        runStatus = RunStatus.RUNNING;
-                    }
+                }
+                if (reqStatus == RequestStatus.PAUSE) {
+                    runStatus = RunStatus.PAUSED;
+                } else {
+                    runStatus = RunStatus.RUNNING;
                 }
                 if ( runStatus == RunStatus.PAUSED ) {
                     while (reqStatus == RequestStatus.PAUSE) {

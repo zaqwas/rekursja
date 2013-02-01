@@ -12,6 +12,8 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Random;
 import javax.swing.BorderFactory;
@@ -45,6 +47,11 @@ import syntax.function.SpecialFunctionBehavior;
 //</editor-fold>
 
 public class SortLesson implements Lesson {
+    
+        @Override
+    public void save(DataOutputStream stream) throws IOException {
+        mainClass.saveFramesPositionAndSettnings(stream);
+    }
     
     private JInternalFrame frame;
     private JPanel startValuesPanel;

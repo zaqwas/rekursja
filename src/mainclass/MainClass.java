@@ -16,9 +16,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -41,9 +38,15 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.Border;
@@ -52,6 +55,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import javax.swing.filechooser.FileFilter;
 import lesson.EmptyLesson;
 import lesson.LessonLoader;
 import lesson._07A_PartitionFunction.PartitionFunctionLessonLoader;
@@ -69,18 +73,36 @@ public class MainClass {
     //<editor-fold defaultstate="collapsed" desc="Components">
     private JFrame mainFrame;
     
+    private JMenuBar menuBar;
+    
+    private JToolBar toolBar;
+    private JButton runButton;
+    private JButton pauseButton;
+    private JButton stepIntoButton;
+    private JButton stepOverButton;
+    private JButton stepOutButton;
+    private JButton fastRunButton;
+    private JButton stopButton;
+    private JLabel visualizationSpeedLabel;
+    private JSlider visualizationSpeedSlider;
+    
+    private JPanel lessonPanel;
     private JLabel statusLabel;
     private JPanel statusPanel;
     private JDesktopPane desktop;
-    private JMenuBar menuBar;
     
     private JMenu lessonMenu;
     
     private JMenu fileMenu;
-    private JMenuItem loadFileMenuItem;
-    private JMenuItem saveFileMenuItem;
-    private JMenuItem loadLessonMenuItem;
+    private JMenuItem loadLessonStateMenuItem;
+    private JMenuItem saveLessonStateMenuItem;
+    private JMenuItem saveAsLessonStateMenuItem;
     private JMenuItem closeLessonMenuItem;
+    
+    private FileFilter fileLessonFilter;    
+    private File saveLessonDirectory;
+    private File saveLessonFile;
+    private File saveReportDirectory;
     
     private JMenu programMenu;
     private JMenuItem runMenuItem;
@@ -95,36 +117,28 @@ public class MainClass {
     private JMenuItem checkSyntaxMenuItem;
     
     private JMenu chooseLessonMenu;
+    
+    private EmptyLesson emptyLesson = new EmptyLesson(this);
+    private Lesson lesson = emptyLesson;
     private TreeMap<String, LessonLoader> lessonMap = new TreeMap<>();
     
-    private JMenuItem chooseIntroductionLessonMenuItem;
-    private JMenuItem chooseMinElementLessonMenuItem;
-    private JMenuItem chooseRecursionIntroLessonMenuItem;
-    private JMenuItem chooseArithmeticSeriesLessonMenuItem;
-    private JMenuItem chooseExponentiationLessonMenuItem;
-    private JMenuItem chooseEuclideanAlgorithmLessonMenuItem;
-    private JMenuItem chooseHornerSchemaLessonMenuItem;
-    private JMenuItem chooseBinarySearchLessonMenuItem;
-    private JMenuItem chooseMergeFunctionLessonMenuItem;
-    private JMenuItem choosePartitionFunctionLessonMenuItem;
+//    private JMenuItem chooseIntroductionLessonMenuItem;
+//    private JMenuItem chooseMinElementLessonMenuItem;
+//    private JMenuItem chooseRecursionIntroLessonMenuItem;
+//    private JMenuItem chooseArithmeticSeriesLessonMenuItem;
+//    private JMenuItem chooseExponentiationLessonMenuItem;
+//    private JMenuItem chooseEuclideanAlgorithmLessonMenuItem;
+//    private JMenuItem chooseHornerSchemaLessonMenuItem;
+//    private JMenuItem chooseBinarySearchLessonMenuItem;
+//    private JMenuItem chooseMergeFunctionLessonMenuItem;
+//    private JMenuItem choosePartitionFunctionLessonMenuItem;
     
     private JMenu helpMenu;
     private JMenuItem helpMenuItem;
     private JMenuItem aboutMenuItem;
     private JDialog aboutDialog;
     
-    private JToolBar toolBar;
-    private JButton runButton;
-    private JButton pauseButton;
-    private JButton stepIntoButton;
-    private JButton stepOverButton;
-    private JButton stepOutButton;
-    private JButton fastRunButton;
-    private JButton stopButton;
-    
-    private JLabel visualizationSpeedLabel;
-    private JSlider visualizationSpeedSlider;
-    private JPanel lessonPanel;
+
     
     private CodeEditor editor;
     private StackOfInstances stack;
@@ -134,22 +148,20 @@ public class MainClass {
     private Statistics statistics;
     
     private InterpreterThread thread;
-    private Lesson emptyLesson = new EmptyLesson();
-    private Lesson lesson = emptyLesson;
-    
+    private ProgramError error;
+    private StringCreator statusCreator;
     private Font statusLabelFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
     private FontMetrics statusLabelFontMetrics;
     private Border redBorder = BorderFactory.createLineBorder(Color.RED);
     private Border blackBorder = BorderFactory.createLineBorder(Color.BLACK);
-    private ProgramError error;
-    private StringCreator statusCreator;
     //</editor-fold>
 
     private JMenu windowMenu;
-    private ArrayList<JInternalFrame> windowFrame = new ArrayList<>();
-    private ArrayList<InternalFrameListener> windowLessonFrameListener = new ArrayList<>();
-    private ArrayList<JInternalFrame> windowLessonFrame = new ArrayList<>();
-    private ArrayList<JMenu> windowLessonFrameMenu = new ArrayList<>();
+    private JMenuItem cascadeRestoreWindowsMenuItem;
+    private ArrayList<JInternalFrame> internalFrames = new ArrayList<>();
+    private ArrayList<JInternalFrame> internalLessonFrames = new ArrayList<>();
+    private ArrayList<InternalFrameListener> internalLessonFrameListeners = new ArrayList<>();
+    private ArrayList<JMenu> internalLessonFrameMenu = new ArrayList<>();
     
     
     public MainClass() {    
@@ -157,12 +169,14 @@ public class MainClass {
         mainFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                saveMainFramesPositions();
+                saveDefaultLessonState();
             }
         });
         mainFrame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        desktop = new JDesktopPane();
         
+        lessonMap.put(emptyLesson.getLessonKey(), emptyLesson);
+        
+        desktop = new JDesktopPane();
         lessonPanel = new JPanel();
         
         //<editor-fold defaultstate="collapsed" desc="Init statusLabel">
@@ -275,34 +289,40 @@ public class MainClass {
         fileMenu = new JMenu(Lang.fileMenu);
         menuBar.add(fileMenu);
 
-        loadFileMenuItem = new JMenuItem(Lang.openFileDots);
-        loadFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        loadLessonStateMenuItem = new JMenuItem(Lang.loadLessonState);
+        loadLessonStateMenuItem.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openFile();
+                loadLessonStateMenuItemAction();
             }
         });
-        fileMenu.add(loadFileMenuItem);
-
-        saveFileMenuItem = new JMenuItem(Lang.saveFileDots);
-        saveFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveFile();
-            }
-        });
-        fileMenu.add(saveFileMenuItem);
+        fileMenu.add(loadLessonStateMenuItem);
         
-        loadLessonMenuItem = new JMenuItem(Lang.loadLessonDots);
-        loadLessonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        fileMenu.add(new JSeparator());
+        
+        saveLessonStateMenuItem = new JMenuItem(Lang.saveLessonState);
+        saveLessonStateMenuItem.setEnabled(false);
+        saveLessonStateMenuItem.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadLesson();
+                saveLessonStateMenuItemAction();
             }
         });
-        fileMenu.add(loadLessonMenuItem);
+        fileMenu.add(saveLessonStateMenuItem);
+
+        saveAsLessonStateMenuItem = new JMenuItem(Lang.saveAsLessonState);
+        saveAsLessonStateMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsLessonStateMenuItemAction();
+            }
+        });
+        fileMenu.add(saveAsLessonStateMenuItem);
+        
+        fileMenu.add(new JSeparator());
 
         closeLessonMenuItem = new JMenuItem(Lang.closeLesson);
+        closeLessonMenuItem.setEnabled(false);
         closeLessonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -310,6 +330,19 @@ public class MainClass {
             }
         });
         fileMenu.add(closeLessonMenuItem);
+        
+        fileLessonFilter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                String name = f.getName();
+                return name.endsWith(".saveLesson");
+            }
+
+            @Override
+            public String getDescription() {
+                return Lang.lessonSaveDescription;
+            }
+        };
         //</editor-fold>
         
         //<editor-fold defaultstate="collapsed" desc="Init program menu">
@@ -531,12 +564,12 @@ public class MainClass {
         
         windowMenu = new JMenu(Lang.windowMenu);
         menuBar.add(windowMenu);
-        JMenuItem cascade = new JMenuItem(Lang.cascadeLayoutMenuItem);
-        cascade.addActionListener(new ActionListener() {
+        cascadeRestoreWindowsMenuItem = new JMenuItem(Lang.cascadeLayoutMenuItem);
+        cascadeRestoreWindowsMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int offset = 0;
-                for(JInternalFrame frame : windowFrame) {
+                for(JInternalFrame frame : internalFrames) {
                     frame.pack();
                     frame.setLocation(offset, offset);
                     frame.setVisible(true);
@@ -545,7 +578,7 @@ public class MainClass {
                 }
             }
         });
-        windowMenu.add(cascade);
+        windowMenu.add(cascadeRestoreWindowsMenuItem);
         windowMenu.add(new JSeparator());
         
         
@@ -702,7 +735,6 @@ public class MainClass {
         
         mainFrame.setSize(800, 600);
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //mainFrame.setUndecorated(true);
         mainFrame.setVisible(true);
         
         //lesson = new SortLesson(this);
@@ -713,8 +745,8 @@ public class MainClass {
 //        lesson.start();
 //        lesson = new BubbleSortLesson(this);
 //        lesson.start();
-//        
-//        //<editor-fold defaultstate="collapsed" desc="Init Frames">
+        
+        //<editor-fold defaultstate="collapsed" desc="Init Frames">
 //        editor = new CodeEditor(this);
 //        desktop.add(editor.getFrame());
 //        editor.getFrame().show();
@@ -738,11 +770,11 @@ public class MainClass {
 //        statistics = new Statistics();
 //        desktop.add(statistics.getFrame());
 //        statistics.getFrame().show();
-//        //</editor-fold>
-//        
+        //</editor-fold>
+
         
         editor = new CodeEditor(this);
-        console = new Console();
+        console = new Console(this);
         tree = new TreeOfInstances(this);
         instanceFrame = new InstanceFrame(this);
         stack = new StackOfInstances(this, instanceFrame);
@@ -754,16 +786,17 @@ public class MainClass {
         addFrame(Lang.instanceFrameMenu, instanceFrame.getFrame(), false);
         addFrame(Lang.consoleMenu, console.getFrame(), false);
         addFrame(Lang.statisticsMenu, statistics.getFrame(), false);
-        cascade.doClick();
         
-        loadMainFramesPositions();
+        loadDefaultLessonState();
     }
     
+    //<editor-fold defaultstate="collapsed" desc="InitChooseLessonMenu">
     private void initChooseLessonMenu() {
         chooseLessonMenu = new JMenu(Lang.chooseLesson);
         menuBar.add(chooseLessonMenu);
         addLessonLoader(new PartitionFunctionLessonLoader());
     }
+    
     private void addLessonLoader(final LessonLoader loader) {
         lessonMap.put(loader.getLessonKey(), loader);
         
@@ -771,91 +804,73 @@ public class MainClass {
         menuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                lesson.close();
-                lesson = loader.getLesson(MainClass.this, null);
+                try {
+                    lesson.close();
+                    lesson = loader.getLesson(MainClass.this, null);
+                    setSaveLessonFile(null);
+                    closeLessonMenuItem.setEnabled(true);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, Lang.loadLessonStateError);
+                    System.exit(0);
+                }
             }
         });
         chooseLessonMenu.add(menuItem);
     }
+    //</editor-fold>
     
-    public void addAddictionalLessonFrame(String title, JInternalFrame frame) {
-        addFrame(title, frame, true);
-    }
-    public void removeAddictionalLessonFrame(JInternalFrame frame) {
-        frame.setVisible(false);
-        desktop.remove(frame);
-        
-        int idx = windowLessonFrame.indexOf(frame);
-        frame.removeInternalFrameListener(windowLessonFrameListener.get(idx));
-        windowMenu.remove(9+idx);
-        windowLessonFrameListener.remove(idx);
-        windowLessonFrameMenu.remove(idx);
-        windowLessonFrame.remove(idx);
-        windowFrame.remove(frame);
-        if ( windowLessonFrame.isEmpty() ) {
-            windowMenu.remove(8);
+    
+    //<editor-fold defaultstate="collapsed" desc="Files and directories">
+    public File getJarDirectory() {
+        File dir = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+        if (dir.isFile()) {
+            dir = dir.getParentFile();
         }
+        return dir;
     }
-    
-    private void addFrame(String title, final JInternalFrame frame, boolean lessonFrame) {
-        JMenu menu = new JMenu(title);
 
-        final JCheckBoxMenuItem show = new JCheckBoxMenuItem(Lang.showHideMenu);
-        show.setSelected(frame.isVisible());
-        show.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.setVisible(!frame.isVisible());
-            }
-        });
-        menu.add(show);
+    public File getSaveLessonDirectory() {
+        if (saveLessonDirectory != null) {
+            return saveLessonDirectory;
+        }
+        return getJarDirectory();
+    }
 
-        JMenuItem restore = new JMenuItem(Lang.restoreMenu);
-        restore.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.pack();
-                frame.setLocation(0, 0);
-                frame.setVisible(true);
-                frame.toFront();
-            }
-        });
-        menu.add(restore);
+    public File getSaveLessonFile() {
+        return saveLessonFile;
+    }
 
-        int modifiers;
-        char key;
-        if (lessonFrame) {
-            key = (char) ('1' + windowLessonFrame.size());
-            modifiers = InputEvent.CTRL_DOWN_MASK;
-            windowLessonFrame.add(frame);
-            if (windowLessonFrameMenu.isEmpty()) {
-                windowMenu.add(new JSeparator());
-            }
-            windowLessonFrameMenu.add(menu);
+    public void setSaveLessonFile(File file) {
+        assert file.isFile();
+        saveLessonFile = file;
+        if (file != null) {
+            saveLessonDirectory = file.getParentFile();
+            saveLessonStateMenuItem.setEnabled(true);
         } else {
-            key = (char) ('1' + windowFrame.size());
-            modifiers = InputEvent.ALT_DOWN_MASK;
+            saveLessonStateMenuItem.setEnabled(false);
         }
-        desktop.add(frame);
-        windowFrame.add(frame);
-        show.setAccelerator(KeyStroke.getKeyStroke(key, modifiers));
-        modifiers = modifiers | InputEvent.SHIFT_DOWN_MASK;
-        restore.setAccelerator(KeyStroke.getKeyStroke(key, modifiers));
-
-        frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
-        frame.setClosable(true);
-        InternalFrameListener listener = new InternalFrameAdapter() {
-            @Override
-            public void internalFrameClosing(InternalFrameEvent e) {
-                show.setSelected(false);
-            }
-        };
-        frame.addInternalFrameListener(listener);
-        if (lessonFrame) {
-            windowLessonFrameListener.add(listener);
-        }
-        windowMenu.add(menu);
     }
+
+    public File getSaveReportDirectory() {
+        if (saveReportDirectory != null) {
+            return saveReportDirectory;
+        }
+        if (saveLessonDirectory != null) {
+            return saveLessonDirectory;
+        }
+        return getJarDirectory();
+    }
+
+    public void setSaveReportFile(File file) {
+        assert file != null;
+        if (file.isDirectory()) {
+            saveReportDirectory = file;
+        } else {
+            saveReportDirectory = file.getParentFile();
+        }
+    }
+    //</editor-fold>
+
     
     //<editor-fold defaultstate="collapsed" desc="Get main frames methods">
     public CodeEditor getEditor() {
@@ -889,86 +904,266 @@ public class MainClass {
     public void removeFromDesktop(JInternalFrame frame) {
         desktop.remove(frame);
     }
+    
+    public void addAddictionalLessonFrame(String title, JInternalFrame frame) {
+        addFrame(title, frame, true);
+    }
+    public void removeAddictionalLessonFrame(JInternalFrame frame) {
+        frame.setVisible(false);
+        desktop.remove(frame);
+        
+        int idx = internalLessonFrames.indexOf(frame);
+        internalLessonFrames.remove(idx);
+        internalFrames.remove(frame);
+        
+        InternalFrameListener listener = internalLessonFrameListeners.get(idx);
+        frame.removeInternalFrameListener(listener);
+        internalLessonFrameListeners.remove(idx);
+        
+        JMenu menu = internalLessonFrameMenu.get(idx);
+        internalLessonFrameMenu.remove(idx);
+        windowMenu.remove(menu);
+        if (internalLessonFrames.isEmpty()) {
+            windowMenu.remove(windowMenu.getItemCount()-1);
+        }
+    }
+    
+    private void addFrame(String title, final JInternalFrame frame, boolean lessonFrame) {
+        JMenu menu = new JMenu(title);
+
+        final JCheckBoxMenuItem show = new JCheckBoxMenuItem(Lang.showHideMenu);
+        show.setSelected(frame.isVisible());
+        show.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.setVisible(!frame.isVisible());
+            }
+        });
+        menu.add(show);
+
+        JMenuItem restore = new JMenuItem(Lang.restoreMenu);
+        restore.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.pack();
+                frame.setLocation(0, 0);
+                frame.setVisible(true);
+                frame.toFront();
+            }
+        });
+        menu.add(restore);
+
+        int modifiers;
+        char key;
+        if (lessonFrame) {
+            key = (char) ('1' + internalLessonFrames.size());
+            modifiers = InputEvent.CTRL_DOWN_MASK;
+            internalLessonFrames.add(frame);
+            if (internalLessonFrameMenu.isEmpty()) {
+                windowMenu.add(new JSeparator());
+            }
+            internalLessonFrameMenu.add(menu);
+        } else {
+            key = (char) ('1' + internalFrames.size());
+            modifiers = InputEvent.ALT_DOWN_MASK;
+        }
+        desktop.add(frame);
+        internalFrames.add(frame);
+        show.setAccelerator(KeyStroke.getKeyStroke(key, modifiers));
+        modifiers = modifiers | InputEvent.SHIFT_DOWN_MASK;
+        restore.setAccelerator(KeyStroke.getKeyStroke(key, modifiers));
+
+        frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+        frame.setClosable(true);
+        InternalFrameListener listener = new InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+                show.setSelected(false);
+            }
+            @Override
+            public void internalFrameOpened(InternalFrameEvent e) {
+                show.setSelected(true);
+            }
+        };
+        frame.addInternalFrameListener(listener);
+        if (lessonFrame) {
+            internalLessonFrameListeners.add(listener);
+        }
+        windowMenu.add(menu);
+    }
     //</editor-fold>
     
     
-    private void loadMainFramesPositions(DataInputStream stream, boolean showMessage) throws IOException {
+    //<editor-fold defaultstate="collapsed" desc="Load/Save framesPositionAndSettnings">
+    public void loadFramesPositionAndSettnings(DataInputStream stream) throws IOException {
+        for (JInternalFrame frame : internalFrames) {
+            int x = stream.readInt(), y = stream.readInt();
+            if (frame.isResizable()) {
+                int w = stream.readInt(), h = stream.readInt();
+                frame.setBounds(x, y, w, h);
+            } else {
+                frame.pack();
+                frame.setLocation(x, y);
+            }
+            frame.setVisible(stream.readBoolean());
+        }
+        int lenght = internalFrames.size();
+        for (int i = 0; i < lenght; i++) {
+            byte idx = stream.readByte();
+            internalFrames.get(idx).toBack();
+        }
+        console.loadAdditionalFrameOptions(stream);
+    }
+
+    public void saveFramesPositionAndSettnings(DataOutputStream stream) throws IOException {
+        byte zOrder[] = new byte[internalFrames.size()];
+        byte idx = 0;
+        for (JInternalFrame frame : internalFrames) {
+            stream.writeInt(frame.getX());
+            stream.writeInt(frame.getY());
+            if (frame.isResizable()) {
+                stream.writeInt(frame.getWidth());
+                stream.writeInt(frame.getHeight());
+            }
+            zOrder[desktop.getComponentZOrder(frame)] = idx++;
+            stream.writeBoolean(frame.isVisible());
+        }
+        for(byte b : zOrder) {
+            stream.writeByte(b);
+        }
+        console.saveAdditionalFrameOptions(stream);
+    }
+    //</editor-fold>
+    
+    
+    //<editor-fold defaultstate="collapsed" desc="Load/Save private functions">
+    private boolean loadLessonState(DataInputStream stream) throws IOException {
         byte buffor[] = new byte[10];
         stream.read(buffor);
         for (byte b : buffor) {
             if ((b < '0' || '9' < b) && (b < 'A' || 'Z' < b) && (b < 'a' || 'z' < b)) {
-                if (showMessage) {
-                    JOptionPane.showMessageDialog(null, Lang.notSaveLessonFile);
-                }
-                return;
+                stream.close();
+                return false;
             }
         }
         String key = new String(buffor);
         LessonLoader loader = lessonMap.get(key);
         if (loader == null) {
-            if (showMessage) {
-                JOptionPane.showMessageDialog(null, Lang.notSaveLessonFile);
-            }
-            return;
+            stream.close();
+            return false;
         }
+        lesson.close();
+        lesson = loader.getLesson(this, stream);
+        stream.close();
+        closeLessonMenuItem.setEnabled(lesson != emptyLesson);
+        return true;
     }
     
-    public void saveMainFramesPositions(DataInputStream stream) {
-        File dir = new File(MainClass.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-        if (dir.isFile()) {
-            dir = dir.getParentFile();
-        }
-        String path = dir.getAbsolutePath() + File.separator + "defaultSave";
-        try {
-            DataOutputStream dataOutputStream = new DataOutputStream(
-                    new FileOutputStream(path));
-            editor.savePosition(dataOutputStream);
-            instanceFrame.savePosition(dataOutputStream);
-            console.savePosition(dataOutputStream);
-            stack.savePosition(dataOutputStream);
-            tree.savePosition(dataOutputStream);
-            statistics.savePosition(dataOutputStream);
-        } catch (IOException ex) {
-        }
+    private void saveLessonState(DataOutputStream stream) throws IOException {
+        String key = lesson.getLessonLoader().getLessonKey();
+        stream.write(key.getBytes());
+        lesson.save(stream);
+        stream.close();
     }
-    //<editor-fold defaultstate="collapsed" desc="Load/Save frames positions">
-    public void loadMainFramesPositions() {
-        File dir = new File(MainClass.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-        if (dir.isFile()) {
-            dir = dir.getParentFile();
-        }
-        String path = dir.getAbsolutePath() + File.separator + "defaultSave";
+    
+    
+    private void loadDefaultLessonState() {
+        File file = new File(getJarDirectory(), "default.saveLesson");
+        boolean loaded = false;
         try {
-            DataInputStream dataInputStream = new DataInputStream(
-                    new FileInputStream(path));
-            editor.loadPosition(dataInputStream);
-            instanceFrame.loadPosition(dataInputStream);
-            console.loadPosition(dataInputStream);
-            stack.loadPosition(dataInputStream);
-            tree.loadPosition(dataInputStream);
-            statistics.loadPosition(dataInputStream);
+            DataInputStream stream = new DataInputStream(new FileInputStream(file));
+            loaded = loadLessonState(stream);
         } catch (FileNotFoundException ex) {
         } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, Lang.loadLessonStateError);
+            System.exit(0);
+        }
+        if (!loaded) {
+            cascadeRestoreWindowsMenuItem.doClick();
         }
     }
     
-    public void saveMainFramesPositions() {
-        File dir = new File(MainClass.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-        if (dir.isFile()) {
-            dir = dir.getParentFile();
-        }
-        String path = dir.getAbsolutePath() + File.separator + "defaultSave";
+    private void saveDefaultLessonState() {
+        File file = new File(getJarDirectory(), "default.saveLesson");
         try {
-            DataOutputStream dataOutputStream = new DataOutputStream(
-                    new FileOutputStream(path));
-            editor.savePosition(dataOutputStream);
-            instanceFrame.savePosition(dataOutputStream);
-            console.savePosition(dataOutputStream);
-            stack.savePosition(dataOutputStream);
-            tree.savePosition(dataOutputStream);
-            statistics.savePosition(dataOutputStream);
+            DataOutputStream stream = new DataOutputStream(new FileOutputStream(file));
+            saveLessonState(stream);
         } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, Lang.saveLessonStateError);
         }
+    }
+    
+    
+    private void loadLessonStateMenuItemAction() {
+        JFileChooser chooser = new JFileChooser(getSaveLessonDirectory());
+        chooser.setApproveButtonText(Lang.load);
+        chooser.setDialogTitle(Lang.load);
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.addChoosableFileFilter(fileLessonFilter);
+        
+        int returnVal = chooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            try {    
+                InputStream fileStream = new FileInputStream(file);
+                DataInputStream stream = new DataInputStream(fileStream);
+                if (loadLessonState(stream)) {
+                    setSaveLessonFile(file);
+                } else {
+                    JOptionPane.showMessageDialog(null, Lang.notSaveLessonFile);
+                }
+            } catch (FileNotFoundException ex) {
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, Lang.loadLessonStateError);
+                System.exit(0);
+            }
+        }
+    }
+    
+    private void saveLessonStateMenuItemAction() {
+        File file = getSaveLessonFile();
+        try {    
+            FileOutputStream fileStream = new FileOutputStream(file);
+            DataOutputStream stream = new DataOutputStream(fileStream);
+            saveLessonState(stream);
+            setSaveLessonFile(file);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, Lang.saveLessonStateError);
+        }
+    }
+
+    private void saveAsLessonStateMenuItemAction() {
+        JFileChooser chooser = new JFileChooser(getSaveLessonDirectory());
+        chooser.setApproveButtonText(Lang.save);
+        chooser.setDialogTitle(Lang.save);
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.addChoosableFileFilter(fileLessonFilter);
+        
+        int returnVal = chooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            if ( !file.getName().endsWith(".saveLesson") ) {
+                file = new File(file.getParentFile(), file.getName()+".saveLesson");
+            }
+            try {    
+                FileOutputStream fileStream = new FileOutputStream(file);
+                DataOutputStream stream = new DataOutputStream(fileStream);
+                saveLessonState(stream);
+                setSaveLessonFile(file);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, Lang.saveLessonStateError);
+            }
+        }
+    }
+    
+    private void closeLesson() {
+        if (lesson == emptyLesson) { 
+            return;
+        }
+        lesson.close();
+        lesson = emptyLesson;
+        setSaveLessonFile(null);
+        closeLessonMenuItem.setEnabled(false);
     }
     //</editor-fold>
     
@@ -1021,7 +1216,8 @@ public class MainClass {
         if ( thread==null ) {
             SyntaxTree syntaxTree = editor.getSyntaxTree();
             if (syntaxTree != null) {
-                thread = new InterpreterThread(syntaxTree, this);
+                thread = new InterpreterThread(syntaxTree, this, 
+                        visualizationSpeedSlider.getValue());
                 thread.start();
             }
         }
@@ -1075,27 +1271,27 @@ public class MainClass {
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Visualisation speed and CheckSyntax functions">
-    private void checkSyntaxClick()
-    {
+    private void checkSyntaxClick() {
         editor.getSyntaxTree();
     }
-    private void increaseVisualistaionSpeed()
-    {
+
+    private void increaseVisualistaionSpeed() {
         int value = visualizationSpeedSlider.getValue();
-        visualizationSpeedSlider.setValue(value+1);
+        visualizationSpeedSlider.setValue(value + 1);
     }
-    private void decreaseVisualistaionSpeed()
-    {
+
+    private void decreaseVisualistaionSpeed() {
         int value = visualizationSpeedSlider.getValue();
-        if ( value > visualizationSpeedSlider.getMinimum() )
-        {
-            visualizationSpeedSlider.setValue(value-1);
+        if (value > visualizationSpeedSlider.getMinimum()) {
+            visualizationSpeedSlider.setValue(value - 1);
         }
     }
-    private void visulaisationSpeedChanged()
-    {
-        //TODO
-        System.out.println(visualizationSpeedSlider.getValue());
+
+    private void visulaisationSpeedChanged() {
+        InterpreterThread th = this.thread;
+        if (th != null) {
+            th.setSpeedLevel(visualizationSpeedSlider.getValue());
+        }
     }
     //</editor-fold>
     
@@ -1108,55 +1304,6 @@ public class MainClass {
         int maxWidth = statusLabel.getWidth();
         String str = statusCreator.getString(maxWidth);
         statusLabel.setText(str);
-    }
-    
-    private void loadLesson() {
-        JFileChooser chooser = new JFileChooser(".");
-        chooser.setApproveButtonText(Lang.open);
-        chooser.setDialogTitle(Lang.open);
-        int returnVal = chooser.showOpenDialog(mainFrame);
-        if (returnVal != JFileChooser.APPROVE_OPTION) {
-            return;
-        }
-        try {
-            URL urls[] = new URL[]{chooser.getSelectedFile().toURI().toURL()};
-            ClassLoader cl = new URLClassLoader(urls);
-            Class starter = cl.loadClass("Starter");
-            Method start = starter.getMethod("start", MainClass.class);
-            if (start != null && lesson!=null) {
-                lesson.close();
-                lesson = null;
-            }
-            lesson = (Lesson) start.invoke(null, new Object[]{this});
-        } catch (Exception ex) {
-        }
-    }
-    
-    private void closeLesson() {
-        if (lesson != null) {
-            lesson.close();
-            lesson = null;
-        }
-    }
-    
-    private void openFile() {  
-        JFileChooser chooser = new JFileChooser(".");
-        chooser.setApproveButtonText(Lang.open);
-        chooser.setDialogTitle(Lang.open);
-        int returnVal = chooser.showOpenDialog(mainFrame);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            editor.load(chooser.getSelectedFile().getAbsolutePath());
-        }
-    }                                            
-
-    private void saveFile() {
-        JFileChooser chooser = new JFileChooser(".");
-        chooser.setApproveButtonText(Lang.save);
-        chooser.setDialogTitle(Lang.save);
-        int returnVal = chooser.showOpenDialog(mainFrame);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            editor.save(chooser.getSelectedFile().getAbsolutePath());
-        }
     }
     //</editor-fold>
     
@@ -1276,13 +1423,16 @@ public class MainClass {
         public static String lessonMenu = "Lekcja";
         
         public static String fileMenu = "Plik";
-        public static String openFileDots = "Otwórz plik...";
-        public static String saveFileDots = "Zapisz plik...";
-        public static String open = "Otwórz";
-        public static String save = "Zapisz";
-        public static String loadLessonDots = "Wczytaj lekcję...";
+        public static String loadLessonState = "Wczytaj stan lekcji...";
+        public static String saveLessonState = "Zapisz stan lekcji";
+        public static String saveAsLessonState = "Zapisz stan lekcji jako...";
         public static String closeLesson = "Zamknij lekcję";
+        public static String load = "Wczytaj";
+        public static String save = "Zapisz";
+        public static String lessonSaveDescription = "Plik stanu lekcji (*.saveLesson)";
         public static String notSaveLessonFile = "Wybrany plik nie jest zapisem stanu lekcji.";
+        public static String loadLessonStateError = "Podczas wczytywania stanu lekcji wystąpił błąd.";
+        public static String saveLessonStateError = "Podczas zapisywania stanu lekcji wystąpił błąd.";
         
         public static String windowMenu = "Okno";
         public static String cascadeLayoutMenuItem = "Ułóż okna kaskadowo";
@@ -1343,6 +1493,7 @@ public class MainClass {
     
     //<editor-fold defaultstate="collapsed" desc="Function main">
     public static void main(String[] args) {
+        Platform.setImplicitExit(false);
         try {
             //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
             //UIManager.setLookAndFeel("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");

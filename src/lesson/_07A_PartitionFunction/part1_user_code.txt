@@ -5,9 +5,9 @@ void przenies(idx,idxCel){}
 
 //Rozwiązanie użytkownika:
 void podziel(n,i1&,i2&)
-var i, k;
-{
-  k = 0;
+~var i, k;
+~{
+~  k = 0;
   for (i=0; i<n; i++) {
     if (porownaj(i)<0) {
       przenies(i,k);
@@ -28,7 +28,7 @@ var i, k;
       k++;
     }
   }
-}
+~}
 
 void main()
 var n, i1, i2;

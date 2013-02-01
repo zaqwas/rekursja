@@ -6,6 +6,7 @@ import interpreter.InterpreterThread;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.JEditorPane;
@@ -348,6 +349,11 @@ public class RecursionIntroLesson implements Lesson {
     @Override
     public LessonLoader getLessonLoader() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    @Override
+    public void save(DataOutputStream stream) throws IOException {
+        mainClass.saveFramesPositionAndSettnings(stream);
     }
     
     //<editor-fold defaultstate="collapsed" desc="Language">

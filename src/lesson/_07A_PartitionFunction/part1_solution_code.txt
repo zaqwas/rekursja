@@ -1,24 +1,27 @@
 void start(n&){}
-void sprawdz(){}
+void sprawdz(i1,i2){}
 int porownaj(i){ return 0; }
 void przenies(idx,idxCel){}
 
 //Rozwiązanie użytkownika:
-void podziel(n)
+void podziel(n,i1&,i2&)
 var i, k;
 {
+  k = 0;
   for (i=0; i<n; i++) {
     if (porownaj(i)<0) {
       przenies(i,k);
       k++;
     }
   }
+  i1 = k;
   for (i=0; i<n; i++) {
     if (porownaj(i)==0) {
       przenies(i,k);
       k++;
     }
   }
+  i2 = k;
   for (i=0; i<n; i++) {
     if (porownaj(i)>0) {
       przenies(i,k);
@@ -28,9 +31,9 @@ var i, k;
 }
 
 void main()
-var n;
+var n, i1, i2;
 {
   start(n);
-  scal(n);
-  sprawdz();
+  podziel(n,i1,i2);
+  sprawdz(i1,i2);
 }

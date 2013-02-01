@@ -13,6 +13,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Random;
@@ -802,6 +803,10 @@ public class BubbleSortLesson implements Lesson {
     @Override
     public LessonLoader getLessonLoader() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+        @Override
+    public void save(DataOutputStream stream) throws IOException {
+        mainClass.saveFramesPositionAndSettnings(stream);
     }
     
     

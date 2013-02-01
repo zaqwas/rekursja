@@ -1,48 +1,30 @@
 package lesson._07A_PartitionFunction;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
-import lesson._06A_MergeFunction.*;
-import lesson._02B_ArithmeticSeries.*;
 import helpers.ReadFileHelper;
 import interpreter.InterpreterThread;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.control.SelectionModel;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TitledPane;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javax.swing.ButtonGroup;
-import javax.swing.JEditorPane;
-import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
 import lesson.Lesson;
 import lesson.LessonLoader;
 import mainclass.MainClass;
 import parser.SpecialFunctions;
 import syntax.SyntaxNode;
+import syntax.expression.Call;
+import syntax.function.FunctionBehavior;
 //</editor-fold>
 
 public class PartitionFunctionLesson implements Lesson {
-
-    @Override
-    public LessonLoader getLessonLoader() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
     
     //<editor-fold defaultstate="collapsed" desc="Enums">
     private static enum State {
@@ -60,6 +42,21 @@ public class PartitionFunctionLesson implements Lesson {
         State(int id) {
             Id = (byte) id;
         }
+        
+        public static State getById(int id) {
+            assert 0 <= id && id <= 13;
+            
+            State[] values = values();
+            if ( values[id].Id == id ) {
+                return values[id];
+            }
+            for (State state : values) {
+                if ( state.Id == id ) {
+                    return state;
+                }
+            }
+            return null;
+        }
     }
     
     private static enum ChosenCode {
@@ -69,16 +66,23 @@ public class PartitionFunctionLesson implements Lesson {
         ChosenCode(int id) {
             Id = (byte) id;
         }
+        
+        public static ChosenCode getById(int id) {
+            assert id == 0 || id == 1;
+            return id == 0 ? User : Solution;
+        }
     }
     //</editor-fold>
     
+    //<editor-fold defaultstate="collapsed" desc="Variables and components">
     private State state = State.NothingShown;
     private ChosenCode part1ChosenCode = ChosenCode.User;
     private ChosenCode part2ChosenCode = ChosenCode.User;
     private ChosenCode part3ChosenCode = ChosenCode.User;
-    private int selectedPart = 1;
+    private byte selectedPart = 1;
     
     private MainClass mainClass;
+    private PartitionFunctionLessonLoader loader;
     
     private TextFrame textFrame;
     private ArrayFrame arrayFrame;
@@ -123,11 +127,95 @@ public class PartitionFunctionLesson implements Lesson {
     private CompareTwoSpecialFunction compareTwoSpecialFunction;
     private MoveSpecialFunction moveSpecialFunction;
     private SwapSpecialFunction swapSpecialFunction;
+    //</editor-fold>
     
     
-    public PartitionFunctionLesson(MainClass mainClass) {
+    //<editor-fold defaultstate="collapsed" desc="Constructor">
+    public PartitionFunctionLesson(MainClass mainClass, DataInputStream stream,
+            PartitionFunctionLessonLoader loader) throws IOException {
         this.mainClass = mainClass;
+        this.loader = loader;
+        
+        textFrame = new TextFrame(mainClass);
+        arrayFrame = new ArrayFrame(mainClass);
+        
+        initSpecialFunctions();
+        
+        initPart1MenuItems();
+        initPart2MenuItems();
+        initPart3MenuItems();
+        
+        if (stream == null) {
+            initCodes(true);
+            initPart1();
+            
+            textFrame.gotoText();
+            arrayFrame.frameToFront();
+        } else {
+            initCodes(false);
+            mainClass.loadFramesPositionAndSettnings(stream);
+            
+            selectedPart = stream.readByte();
+            state = State.getById(stream.readByte());
+            
+            part1ChosenCode = ChosenCode.getById(stream.readByte());
+            part2ChosenCode = ChosenCode.getById(stream.readByte());
+            part3ChosenCode = ChosenCode.getById(stream.readByte());
+            
+            part1UserCode = stream.readUTF();
+            part2UserCode = stream.readUTF();
+            part3UserCode = stream.readUTF();
+            
+            switch (selectedPart) {
+                case 1:
+                    initPart1();
+                    break;
+                case 2:
+                    initPart2();
+                    break;
+                case 3:
+                    initPart3();
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+            
+            TextFrame.State textState = TextFrame.State.Nothing;
+            byte shownPart;
+            if (state.Id < State.Part2Shown.Id) {
+                shownPart = 1;
+                if (state.Id >= State.Part1PseudocodeShown.Id) {
+                    textState = TextFrame.State.Hint1;
+                }
+            } else if (state.Id < State.Part3Shown.Id) {
+                shownPart = 2;
+                if (state.Id >= State.Part2PseudocodeShown.Id) {
+                    textState = TextFrame.State.Hint3;
+                } else if (state == State.Part2Hint2Shown) {
+                    textState = TextFrame.State.Hint2;
+                } else if (state == State.Part2Hint1Shown) {
+                    textState = TextFrame.State.Hint1;
+                }
+            } else {
+                shownPart = 3;
+                if (state == State.SummaryShown) {
+                    textState = TextFrame.State.Summary;
+                } else if (state.Id >= State.Part3PseudocodeShown.Id) {
+                    textState = TextFrame.State.Hint3;
+                } else if (state == State.Part3Hint2Shown) {
+                    textState = TextFrame.State.Hint2;
+                } else if (state == State.Part3Hint1Shown) {
+                    textState = TextFrame.State.Hint1;
+                }
+            }
+            textFrame.initialize(selectedPart, shownPart, textState);
+            textFrame.gotoText();
+        }
     }
+    //</editor-fold>
+    
+    
+    //private fucntions:
     
     //<editor-fold defaultstate="collapsed" desc="showNextHint">
     private void showNextHint() {
@@ -190,7 +278,7 @@ public class PartitionFunctionLesson implements Lesson {
 
     
     //<editor-fold defaultstate="collapsed" desc="initCodes">
-    private void initCodes(boolean onlySolutionCodes) {
+    private void initCodes(boolean initUserCodes) {
         InputStream stream;
         stream = getClass().getResourceAsStream("part1_solution_code.txt");
         part1SolutionCode = ReadFileHelper.readFile(stream);
@@ -201,7 +289,7 @@ public class PartitionFunctionLesson implements Lesson {
         stream = getClass().getResourceAsStream("part3_solution_code.txt");
         part3SolutionCode = ReadFileHelper.readFile(stream);
 
-        if (!onlySolutionCodes) {
+        if (initUserCodes) {
             stream = getClass().getResourceAsStream("part1_user_code.txt");
             part1UserCode = ReadFileHelper.readFile(stream);
 
@@ -298,7 +386,7 @@ public class PartitionFunctionLesson implements Lesson {
                 if ( part1ChosenCode == ChosenCode.User ) {
                     part1UserCode = mainClass.getEditor().getCode();
                 }
-                textFrame.showPart(2);
+                textFrame.gotoPart(2);
                 initPart2();
                 if (state.Id < State.Part2Shown.Id) {
                     state = State.Part2Shown;
@@ -410,7 +498,7 @@ public class PartitionFunctionLesson implements Lesson {
                 if ( part2ChosenCode == ChosenCode.User ) {
                     part2UserCode = mainClass.getEditor().getCode();
                 }
-                textFrame.showPart(1);
+                textFrame.gotoPart(1);
                 initPart1();
             }
         });
@@ -425,7 +513,7 @@ public class PartitionFunctionLesson implements Lesson {
                 if ( part2ChosenCode == ChosenCode.User ) {
                     part2UserCode = mainClass.getEditor().getCode();
                 }
-                textFrame.showPart(3);
+                textFrame.gotoPart(3);
                 initPart3();
                 if (state.Id < State.Part3Shown.Id) {
                     state = State.Part3Shown;
@@ -551,7 +639,7 @@ public class PartitionFunctionLesson implements Lesson {
                 if ( part3ChosenCode == ChosenCode.User ) {
                     part3UserCode = mainClass.getEditor().getCode();
                 }
-                textFrame.showPart(2);
+                textFrame.gotoPart(2);
                 initPart2();
             }
         });
@@ -682,25 +770,40 @@ public class PartitionFunctionLesson implements Lesson {
     //</editor-fold>    
     
     
-    public void start() {
-        textFrame = new TextFrame(mainClass);
-        arrayFrame = new ArrayFrame(mainClass);
+    
+    //public fucntions:
+    
+    @Override
+    public LessonLoader getLessonLoader() {
+        return loader;
+    }
+    
+    @Override
+    public void save(DataOutputStream stream) throws IOException {
+        mainClass.saveFramesPositionAndSettnings(stream);
+        stream.writeByte(selectedPart);
+        stream.writeByte(state.Id);
         
-        initCodes(false);
-        initSpecialFunctions();
+        stream.writeByte(part1ChosenCode.Id);
+        stream.writeByte(part2ChosenCode.Id);
+        stream.writeByte(part3ChosenCode.Id);
         
-        initPart1MenuItems();
-        initPart2MenuItems();
-        initPart3MenuItems();
-        
-        initPart1();
-        
-        //arrayFrame.showFrame();
-        //textFrame.showFrame();
+        stream.writeUTF(part1UserCode);
+        stream.writeUTF(part2UserCode);
+        stream.writeUTF(part3UserCode);
     }
     
     @Override
     public void close() {
+        JMenu lessonMenu = mainClass.getLessonMenu();
+        lessonMenu.removeAll();
+        lessonMenu.setEnabled(false);
+        
+        SpecialFunctions.clear();
+        
+        mainClass.removeAddictionalLessonFrame(textFrame.getFrame());
+        mainClass.removeAddictionalLessonFrame(arrayFrame.getFrame());
+        mainClass.getEditor().setCode(oldCode);
     }
     
     @Override
@@ -715,29 +818,20 @@ public class PartitionFunctionLesson implements Lesson {
     
     @Override
     public boolean pauseStart(SyntaxNode node, final int delayTime) {
-        if ( selectedPart == 3 ) {
-            compareTwoSpecialFunction.undo(node);
-        } else {
-            moveSpecialFunction.undo(node);
-        }
-        if (selectedPart == 2) {
-            compareOneSpecialFunction.undo(node);
-        }
-        if ( selectedPart > 1 ) {
-            swapSpecialFunction.undo(node);
-        }
+        compareTwoSpecialFunction.undo(node);
+        moveSpecialFunction.undo(node);
+        compareOneSpecialFunction.undo(node);
+        swapSpecialFunction.undo(node);
         
         arrayFrame.updateArrays();
         
-        if ( selectedPart < 3 ) {
-            compareOneSpecialFunction.pauseStart(node);
-            moveSpecialFunction.pauseStart(node, delayTime);
-        } else {
-            compareTwoSpecialFunction.pauseStart(node);
+        boolean wait = moveSpecialFunction.pauseStart(node, delayTime);
+        wait = wait && swapSpecialFunction.pauseStart(node, delayTime);
+        if ( !wait ) {
+            return false;
         }
-        if ( selectedPart > 1 ) {
-            swapSpecialFunction.pauseStart(node, delayTime);
-        }
+        compareOneSpecialFunction.pauseStart(node);
+        compareTwoSpecialFunction.pauseStart(node);
         return true;
     }
 
@@ -745,8 +839,6 @@ public class PartitionFunctionLesson implements Lesson {
     public void pauseStop(SyntaxNode node) {
         compareOneSpecialFunction.pauseStop();
         compareTwoSpecialFunction.pauseStop();
-        moveSpecialFunction.pauseStop();
-        swapSpecialFunction.pauseStop();
     }
     
     //<editor-fold defaultstate="collapsed" desc="Language">

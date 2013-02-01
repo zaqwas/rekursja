@@ -438,9 +438,8 @@ public class TreeOfInstances {
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    mouseClickedOnPanel(e.getX(), e.getY());
-                }
+                int btn = e.getButton();
+                mouseClickedOnPanel(e.getX(), e.getY(), btn != MouseEvent.BUTTON1);
             }
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -497,6 +496,11 @@ public class TreeOfInstances {
                         break;
                     case KeyEvent.VK_DELETE:
                         showButtonsMenuItem.doClick();
+                    case KeyEvent.VK_SPACE:
+                    case KeyEvent.VK_ENTER:
+                        if ( selectedInstance != null ) {
+                            TreeOfInstances.this.mainClass.getInstanceFrame().select(selectedInstance);
+                        }
                 }
             }
         });
@@ -891,10 +895,13 @@ public class TreeOfInstances {
         }
     }
 
-    private synchronized void mouseClickedOnPanel(int xDisplay, int yDisplay) {
+    private synchronized void mouseClickedOnPanel(int xDisplay, int yDisplay, boolean rightButton) {
         TreeNode node = localizeNode(xDisplay, yDisplay);
         if (node == null) {
             return;
+        }
+        if (rightButton) {
+            mainClass.getInstanceFrame().select(node.instance);
         }
         setNewSelectedNode(node);
     }

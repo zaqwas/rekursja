@@ -598,7 +598,7 @@ public class CodeEditor {
     public String getCode() {
         String str = editorTextPane.getText();
         if ( unmodifyingLines==null || unmodifyingLines.isEmpty() ) {
-            return str;
+            return "~" + str;
         }
         StringBuilder sb = new StringBuilder(str);
         int offset = 0;
@@ -1023,38 +1023,43 @@ public class CodeEditor {
         
         //setCode("\0_int\n\09int\n\0int9\n\0int");
         
+//        setCode(
+//                "var qw[20], zx;\n"
+//                + "\n"
+//                + "~void swap1(a&,b&)\n"
+//                + "var q, w[3], e;\n"
+//                + "{\n"
+//                + "  q = a;\n"
+//                + "  a = b;\n"
+//                + "  b = q;\n"
+//                + "}\n"
+//                + "\n"
+//                + "~void swap2(a,tab[],b&)\n"
+//                + "var q, w[3], e;\n"
+//                + "{\n"
+//                + "  e = tab[a];\n"
+//                + "  tab[a] = tab[b];\n"
+//                + "  tab[b] = e;\n"
+//                + "}\n"
+//                + "~\n"
+//                + "int aaa(a&) { a = 5; return 5; }\n"
+//                + "void main()\n"
+//                + "var g[3], t, b;\n"
+//                + "{\n"
+//                + "  //t=2; t+=aaa(t); write(t);"
+//                + "  g[t]=5; b=2;\n"
+//                + "  swap1(t,b);\n"
+//                + "  write(t,\" \",b,\"\\n\");\n"
+//                + "  g[t]=2; g[b]=3;\n"
+//                + "  swap2(t, g, b);\n"
+//                + "  write(g[t],\" \",g[b],\"\\n\");\n"
+//                + "}"
+//                );
         setCode(
-                "var qw[20], zx;\n"
-                + "\n"
-                + "~void swap1(a&,b&)\n"
-                + "var q, w[3], e;\n"
+                "~void main()\n"
                 + "{\n"
-                + "  q = a;\n"
-                + "  a = b;\n"
-                + "  b = q;\n"
-                + "}\n"
-                + "\n"
-                + "~void swap2(a,tab[],b&)\n"
-                + "var q, w[3], e;\n"
-                + "{\n"
-                + "  e = tab[a];\n"
-                + "  tab[a] = tab[b];\n"
-                + "  tab[b] = e;\n"
-                + "}\n"
-                + "~\n"
-                + "int aaa(a&) { a = 5; return 5; }\n"
-                + "void main()\n"
-                + "var g[3], t, b;\n"
-                + "{\n"
-                + "  //t=2; t+=aaa(t); write(t);"
-                + "  g[t]=5; b=2;\n"
-                + "  swap1(t,b);\n"
-                + "  write(t,\" \",b,\"\\n\");\n"
-                + "  g[t]=2; g[b]=3;\n"
-                + "  swap2(t, g, b);\n"
-                + "  write(g[t],\" \",g[b],\"\\n\");\n"
-                + "}"
-                );
+                + "  write(\"Hello cruel world!!!\\n\");\n"
+                + "}");
         //</editor-fold>
         
     }

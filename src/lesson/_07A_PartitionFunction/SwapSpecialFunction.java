@@ -64,21 +64,13 @@ class SwapSpecialFunction extends SpecialFunctionBehavior {
         arrayFrame.swapValue(lastIndex1, lastIndex2);
     }
     
-    
-    public void pauseStart(SyntaxNode node, int time) {
+    public boolean pauseStart(SyntaxNode node, int delayTime) {
         if (!(node instanceof Call) || ((Call)node).getFunction().getFunctionBehavior() != this) {
-            return;
+            return true;
         }
-        arrayFrame.animateSwap(lastIndex1, lastIndex2);        
+        arrayFrame.animateSwap(lastIndex1, lastIndex2, delayTime);
+        return false;
     }
-    public void pauseStop() {
-        while (arrayFrame.isAnimating()) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {}
-        }
-    }
-    
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {

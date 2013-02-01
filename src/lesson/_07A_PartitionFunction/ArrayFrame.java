@@ -1,20 +1,17 @@
 package lesson._07A_PartitionFunction;
 
+//<editor-fold defaultstate="collapsed" desc="Import classes">
+import interpreter.InterpreterThread;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.TranslateTransition;
 import javafx.animation.TranslateTransitionBuilder;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.NumberBinding;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -27,6 +24,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.CheckMenuItemBuilder;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.LabelBuilder;
@@ -46,6 +45,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import mainclass.MainClass;
+//</editor-fold>
 
 public class ArrayFrame {
 
@@ -53,17 +53,21 @@ public class ArrayFrame {
     private JInternalFrame frame;
     
     private int selectedPart = 1;
-    private boolean duringJavafx;
+    private boolean duringJavafxThread;
     private int animationSemaphore;
     private boolean noCheckStringProperty;
+    
     private SimpleIntegerProperty randomMaxValue = new SimpleIntegerProperty();
     private SimpleIntegerProperty arraySize = new SimpleIntegerProperty();
+    private SimpleIntegerProperty animationTime = new SimpleIntegerProperty();
+    
     private DoubleProperty arrayLayoutYProperty;
     private DoubleProperty arrayResultLayoutYProperty;
     private BooleanProperty arraySizeSliderDisableProperty;
     private BooleanProperty randomValuesButtonDisableProperty;
     private BooleanProperty randomIncOrderValuesButtonDisableProperty;
     private BooleanProperty randomDecOrderValuesButtonDisableProperty;
+    private BooleanProperty animationSynchronizedProperty;
     private TextField arrayTextField[] = new TextField[32];
     private TextField arrayResultTextField[] = new TextField[32];
     private TextField flyingTextField1;
@@ -82,9 +86,16 @@ public class ArrayFrame {
     private boolean comparedValue[] = new boolean[32];
 
     
-    //<editor-fold defaultstate="collapsed" desc="showFrame">
-    public void showFrame() {
+    //<editor-fold defaultstate="collapsed" desc="getFrame">
+    public JInternalFrame getFrame() {
+        return frame;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="frameToFront">
+    public void frameToFront() {
         frame.setVisible(true);
+        frame.toFront();
     }
     //</editor-fold>
     
@@ -118,7 +129,7 @@ public class ArrayFrame {
         }
         arraySizeBigInt = BigInteger.valueOf(arraySize.get());
         
-        duringJavafx = true;
+        duringJavafxThread = true;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -134,10 +145,10 @@ public class ArrayFrame {
                 if (selectedPart == 3) {
                     arrayResultTextField[0].setId("equal");
                 }
-                duringJavafx = false;
+                duringJavafxThread = false;
             }
         });
-        while (duringJavafx) {
+        while (duringJavafxThread) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ex) {
@@ -153,7 +164,7 @@ public class ArrayFrame {
         if (selectedPart == 2) {
             Arrays.fill(comparedValue, false);
         }
-        duringJavafx = true;
+        duringJavafxThread = true;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -167,10 +178,10 @@ public class ArrayFrame {
                 randomDecOrderValuesButtonDisableProperty.set(false);
                 
                 updateAllTextFields(selectedPart != 3, true);
-                duringJavafx = false;
+                duringJavafxThread = false;
             }
         });
-        while (duringJavafx) {
+        while (duringJavafxThread) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ex) {
@@ -182,15 +193,15 @@ public class ArrayFrame {
     
     //<editor-fold defaultstate="collapsed" desc="updateArrays">
     public void updateArrays() {
-        duringJavafx = true;
+        duringJavafxThread = true;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 updateAllTextFields(selectedPart != 3, true);
-                duringJavafx = false;
+                duringJavafxThread = false;
             }
         });
-        while (duringJavafx) {
+        while (duringJavafxThread) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ex) {
@@ -234,7 +245,7 @@ public class ArrayFrame {
     public void compareStart(final int idx1, final int idx2) {
         assert selectedPart < 3 && idx1 == 0;
         
-        duringJavafx = true;
+        duringJavafxThread = true;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -246,10 +257,10 @@ public class ArrayFrame {
                     arrayTextField[idx1].setId(id);
                     arrayTextField[idx2].setId("comparing");
                 }
-                duringJavafx = false;
+                duringJavafxThread = false;
             }
         });
-        while (duringJavafx) {
+        while (duringJavafxThread) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ex) {
@@ -263,7 +274,7 @@ public class ArrayFrame {
             comparedValue[idx1] = true;
             comparedValue[idx2] = true;
         }
-        duringJavafx = true;
+        duringJavafxThread = true;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -274,10 +285,10 @@ public class ArrayFrame {
                     updateTextField(idx1);
                     updateTextField(idx2);
                 }
-                duringJavafx = false;
+                duringJavafxThread = false;
             }
         });
-        while (duringJavafx) {
+        while (duringJavafxThread) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ex) {
@@ -304,11 +315,7 @@ public class ArrayFrame {
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="animations">
-    public boolean isAnimating() {
-        return animationSemaphore > 0;
-    }
-    
-    public void animateMove(final int idxSrc, final int idxDest) {
+    public void animateMove(final int idxSrc, final int idxDest, final int delayTime) {
         animationSemaphore = 1;
         Platform.runLater(new Runnable() {
             @Override
@@ -350,8 +357,10 @@ public class ArrayFrame {
                     }
                 };
 
+                final int delay = animationSynchronizedProperty.get() ? delayTime
+                        : InterpreterThread.getDelayTime(animationTime.get());
                 TranslateTransition transition = TranslateTransitionBuilder.create()
-                        .duration(Duration.millis(2000))
+                        .duration(Duration.millis(delay))
                         .node(flyingTextField1)
                         .fromX(xSrc)
                         .toX(xDest)
@@ -362,9 +371,14 @@ public class ArrayFrame {
                 transition.play();
             }
         });
+        while (animationSemaphore > 0) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {}
+        }
     }
     
-    public void animateSwap(final int idx1, final int idx2) {
+    public void animateSwap(final int idx1, final int idx2, final int delayTime) {
         animationSemaphore = 2;
         Platform.runLater(new Runnable() {
             @Override
@@ -433,8 +447,11 @@ public class ArrayFrame {
                     }
                 };
                 
+                final int delay = animationSynchronizedProperty.get() ? delayTime
+                        : InterpreterThread.getDelayTime(animationTime.get());
+                
                 TranslateTransition transition1 = TranslateTransitionBuilder.create()
-                        .duration(Duration.millis(2000))
+                        .duration(Duration.millis(delay))
                         .node(flyingTextField1)
                         .fromX(x1)
                         .toX(x2)
@@ -444,7 +461,7 @@ public class ArrayFrame {
                         .build();
                 
                 TranslateTransition transition2 = TranslateTransitionBuilder.create()
-                        .duration(Duration.millis(2000))
+                        .duration(Duration.millis(delay))
                         .node(flyingTextField2)
                         .fromX(x2)
                         .toX(x1)
@@ -457,6 +474,11 @@ public class ArrayFrame {
                 transition2.play();
             }
         });
+        while (animationSemaphore > 0) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {}
+        }
     }
     //</editor-fold>
     
@@ -756,6 +778,38 @@ public class ArrayFrame {
         randomValuesMenu.getItems().add(new CustomMenuItem(vboxMenu, false));
 
         menuBar.getMenus().add(randomValuesMenu);
+        //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="Init animation menu">
+        Menu animationMenu = new Menu("Animacja");
+
+        CheckMenuItem synchronizeMenuItem = CheckMenuItemBuilder.create()
+                .text("Synchronizuj czas animacji")
+                .selected(true)
+                .build();
+        animationSynchronizedProperty = synchronizeMenuItem.selectedProperty();
+        animationMenu.getItems().add(synchronizeMenuItem);
+        
+        slider = SliderBuilder.create()
+                .min(0).max(19).value(10)
+                .majorTickUnit(1)
+                .minorTickCount(0)
+                .snapToTicks(true)
+                .showTickMarks(true)
+                .prefWidth(200d)
+                .build();
+        slider.valueProperty().bindBidirectional(animationTime);
+        slider.disableProperty().bind(synchronizeMenuItem.selectedProperty());
+        animationTime.set(10);
+        
+        label = new Label("Czas animacji:");
+        label.setMaxWidth(Double.MAX_VALUE);
+
+        vboxMenu = new VBox();
+        vboxMenu.getChildren().addAll(label, slider);
+        animationMenu.getItems().add(new CustomMenuItem(vboxMenu, false));
+
+        menuBar.getMenus().add(animationMenu);
         //</editor-fold>
 
         label = LabelBuilder.create()
