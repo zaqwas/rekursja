@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Treść zadania</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script>
+<head>
+  <title>Funkcja dzieląca tablicę</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <script>
       function gotoHint1()
       {
         window.location.href = "#hint1";
@@ -27,68 +27,188 @@
         hint3.style.display = "inherit";
       }
     </script>
-  </head>
+    
+    <style type="text/css">
+      img {
+        margin-right: 3px;
+        float: left;
+      }
+      h2 {
+        padding-top: 20px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        text-align: center;
+        clear: both;
+      }
+      h2.firstHeader {
+        padding-top: 0px;
+      }
+      
+      p {
+        padding-top: 20px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        clear: left;
+      }
+      p.first {
+        padding-top: 10px;
+      }
+      p.underHr {
+        padding-top: 10px;
+      }
 
-  <body>
+      div.hr {
+        padding-top: 10px;
+        clear: both;
+      }
+      hr {
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
+
+      table {
+        margin-top: 10px;
+        margin-bottom: 0px;
+      }
+      td.first {
+        color: green;
+        white-space: nowrap;
+        vertical-align: text-top;
+      }
+      
+      div.hidden {
+        display: none;
+      }
+  </style>
+</head>
+
+<body>
+  <h2 id="hint1" class="firstHeader">Wskazówka I</h2>
+  <p class="first">
+    <img src="part2_hint1.png" alt="Nie udało załadować się obrazka"/>
+    W poprzedniej części w pierwszym przebiegu ustawialiśmy liczby mniejsze od "wartości osiowej", 
+    a w trzecim ustawialiśmy liczby większe od tej wartości. Zauważ, że te dwa przebiegi możemy wykonać w tym samym czasie. 
+    Liczy mniejsze od "wartości osiowej" powinniśmy umieszczać na początku tablicy wynikowej, 
+    a liczby większe na końcu tej tablicy. Poniższy rysunek obrazuje powyższą uwagę:
+  </p>
+
+
+  <div id="hint2" class="hidden">
+    <h2>Wskazówka II</h2>
+    <p class="first">
+      W poprzedniej wskazówce omówiliśmy problem liczb mniejszych i większych od „wartości osiowej”.
+      Teraz pozostało nam zająć się liczbami równymi tej wartości. 
+      Liczby równe powinniśmy umieszczać tuż za liczbami mniejszymi od „wartości osiowej”.
+    </p>
+
+
+    <p>
+      <img src="part2_hint2_1.png" alt="Nie udało załadować się obrazka"/>
+      Umieszczając kolejne elementy w tablicy wynikowej powinniśmy pamiętać, gdzie zaczyna i kończy się 
+      fragment tablicy zawierające liczby równe „wartości osiowej”. Nazwijmy ten fragment tablicy literą „B”. 
+      Ponadto znacznik początku nazwijmy „idx1”, natomiast znacznik końca nazwijmy „idx2”
+    </p>
     
-    <div id="hint1">
-      <h2 style="text-align: center">Wskazówka I - część II</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+    <div class="hr">
+      <hr>
     </div>
+
+    <p class="underHr">
+      <img src="part2_hint2_2.png" alt="Nie udało załadować się obrazka"/>
+      Kiedy będziemy chcieli umieścić kolejny element równy „wartości osiowej” 
+      powinniśmy umieścić go tuż za końcem fragmentu „B”.
+      Następnie powinniśmy przesunąć znacznik „idx2”.
+    </p>
     
-    <div id="hint2" style="display: none;">
-      <h2 style="text-align: center">Wskazówka II</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+    <div class="hr">
+      <hr>
     </div>
-    
-    <div id="hint3" style="display: none">
-      <h2 style="text-align: center">Wskazówka III</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-    </div>
-  </body>
-</html>
+
+    <p class="underHr">
+      <img src="part2_hint2_3.png" alt="Nie udało załadować się obrazka"/>
+      Rozważmy teraz umieszczenie elementu mniejszego od „wartości osiowej”.
+      W tym wypadku też powinniśmy umieścić go tuż za końcem fragmentu „B”.
+      Następnie powinniśmy zamienić ten element z początkowym elementem fragmentu „B”.
+      Na końcu powinniśmy przesunąć znaczniki „idx1” i „idx2”.
+    </p>
+  </div>
+  
+  <div id="hint3" class="hidden">
+    <h2>Wskazówka III - pseudokod algorytmu</h2>
+    <table>
+      <tr>
+        <td class="first">
+          Dane:
+        </td>
+        <td>
+          Liczba naturalna <i>n</i> i ciąg liczb 
+          <i>x</i><sub>0</sub>, <i>x</i><sub>1</sub>,..., <i>x</i><sub><i>n</i>-1</sub>
+        </td>
+      </tr>
+      <tr>
+        <td class="first">
+          Wynik:
+        </td>
+        <td>
+          Ciąg <i>y</i><sub>0</sub>, <i>y</i><sub>1</sub>,..., <i>y</i><sub><i>n</i>-1</sub>,
+          który jest podzielony na trzy części zgodnie z teścią zadania. <br/>
+          Ponadto funkcja powinna zwrócić dwa indeksy <i>idx1</i> oraz <i>idx2</i> takie, że: <br/>
+          <i>y</i><sub>i</sub> &lt; <i>x</i><sub>0</sub> dla każdego <i>i</i> &lt; <i>idx1</i> <br/>
+          <i>y</i><sub>i</sub> = <i>x</i><sub>0</sub> 
+          dla każdego <i>i</i> &ge; <i>idx1</i> oraz <i>i</i> &lt; <i>idx2</i><br/>
+          <i>y</i><sub>i</sub> &ge; <i>x</i><sub>0</sub> dla każdego <i>i</i> &ge; <i>idx2</i><br/>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="first">
+          Krok 1.
+        </td>
+        <td>
+          Przyjmij za <i>y<sub>0</sub></i> := <i>x<sub>0</sub></i>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="first">
+          Krok 2.
+        </td>
+        <td>
+          Przyjmij za <i>idx1</i> := 0, przyjmij za <i>idx2</i> := 1, przyjmij za <i>idx3</i> := n
+        </td>
+      </tr>
+
+      <tr>
+        <td class="first">
+          Krok 3.
+        </td>
+        <td>
+          Dla <i>i</i> = 1, 2,..., <i>n-1</i> wykonaj:
+          <div style="margin-left: 20px">
+            jeśli <i>x<sub>i</sub></i> &lt; <i>x</i><sub>0</sub> wykonaj:
+            <div style="margin-left: 20px">
+              przyjmij za <i>y<sub>idx2</sub></i> := <i>x<sub>i</sub></i>, 
+              zamień <i>y<sub>idx1</sub></i> z <i>y<sub>idx2</sub></i>,
+              zwiększ <i>idx1</i> oraz <i>idx2</i>
+            </div>
+
+            jeśli <i>x<sub>i</sub></i> = <i>x</i><sub>0</sub> wykonaj:
+            <div style="margin-left: 20px">
+              przyjmij za <i>y<sub>idx2</sub></i> := <i>x<sub>i</sub></i> 
+              oraz zwiększ <i>idx2</i>
+            </div>
+
+            jeśli <i>x<sub>i</sub></i> &gt; <i>x</i><sub>0</sub> wykonaj:
+            <div style="margin-left: 20px">
+              zmniejsz <i>idx3</i> oraz 
+              przyjmij za <i>y<sub>idx3</sub></i> := <i>x<sub>i</sub></i>.
+            </div>
+          </div>
+        </td>
+      </tr>
+
+    </table>
+  </div>
+
+</body>
+</html> 

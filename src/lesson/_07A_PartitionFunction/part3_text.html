@@ -1,29 +1,49 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <title>Funkcja dzieląca tablicę - część III</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+    img {
+      margin-right: 3px;
+      float: left;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+      clear: both;
+    }
+    
+    p {
+      padding-top: 20px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      clear: both;
+    }
+    p.first {
+      padding-top: 10px;
+    }
+    
+  </style>
+</head>
 
-  <body>
-    <h2>Podział tablicy III</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Funkcja dzieląca tablicę - część III</h2>
+  <p class="first">
+    W poprzednich częściach funkcja "podziel" działała na dodatkowych tablicach. 
+    W tej części spróbujemy tego uniknąć.
+  </p>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
+  <p>
+    <img src="part3_array.png" alt="Nie udało załadować się obrazka"/>
+    W oknie z tablicami liczb dalej są dwie tablice. Jednak górna tablica służy tylko do wprowadzania liczb 
+    i prezentuje stan tablicy przed uruchomieniem programu. Natomiast dolna tablica jest po starcie programu 
+    wypełniona liczbami z górnej tablicy. Funkcja „podziel” powinna porównywać i zamieniać elementy tylko w tej dolnej tablicy. 
+    W tej części do twojej dyspozycji są dwie funkcje specjalne: „zamien(idx1, idx2)” oraz „porownaj(idx1, idx2)”. 
+    Podobnie jak w poprzedniej części porównania elementów są ograniczone. Więcej informacji na temat funkcji specjalnych 
+    można uzyskać czytając treść zakładki "funkcje specjalne".
+  </p>
 
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
-
-  </body>
+</body>
 </html> 

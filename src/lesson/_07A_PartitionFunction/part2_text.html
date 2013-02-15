@@ -1,29 +1,52 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <title>Funkcja dzieląca tablicę - część II</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+    h2
+    {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    p
+    {
+      margin-top: 20px;
+      margin-bottom: 0px;
+    }
+    p.first
+    {
+      margin-top: 10px;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Podział tablicy II</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
+  <h2>Funkcja dzieląca tablicę - część II</h2>
+  <p class="first">
+    W poprzedniej części zaimplementowaliśmy funkcje "podziel". Funkcja działała w trzech przebiegach. 
+    W tej części spróbujemy wyeliminować te trze przebiegi i całą akcję wykonać w jednym podejściu.
+  </p>
 
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
+  <p>
+    W poprzedniej części do porównywania liczb z "wartością osiową" wykorzystywaliśmy funkcję specjalną "porownaj(idx)". 
+    W tej części ta funkcja jest nadal dostępna, jednak można ją wywołać tylko raz dla pojedynczego indeksu tabeli. 
+    Np. wywołanie tej funkcji dwa razy z parametrem równym dwa spowoduje wystąpienie błędu i zatrzymanie się programu.
+  </p>
 
-  </body>
+  <p>
+    "Sprytny" użytkownik mógłby najpierw wywołać porównania dla wszystkich elementów, zapamiętując je w lokalnej tablicy liczb. 
+    Następnie mógłby zmienić program z pierwszej części, tak aby zamiast porównania brał liczby zapamiętane w lokalnej tablicy. 
+    Dlatego w tej części zabronione jest używanie tablic.
+  </p>
+
+  <p>
+    Spróbuj zaimplementować funkcję "podziel", która będzie działał tak jak w pierwszej części. 
+    Jednak w tej części funkcja powinna działać w jednym przebiegu i spełniać ograniczenia, o których wspomnieliśmy powyżej. 
+    Aby zrekompensować ograniczenia występujące w tej części dostępna jest dodatkowa funkcja specjalna "zamien(idx1, idx2)". 
+    Funkcje "porownaj" oraz "zamien" są szczegółowo omówione w zakładce specjalne.
+  </p>
+</body>
 </html> 

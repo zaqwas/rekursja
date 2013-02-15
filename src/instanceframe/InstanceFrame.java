@@ -4,10 +4,12 @@ package instanceframe;
 import interpreter.Instance;
 import interpreter.accessvar.AccessArray;
 import interpreter.accessvar.AccessInteger;
+import interpreter.accessvar.AccessVar;
 import interpreter.accessvar.VariableScope;
 import interpreter.accessvar.VariableType;
 import interpreter.arguments.ArgInteger;
 import interpreter.arguments.ArgReference;
+import interpreter.arguments.ArgString;
 import interpreter.arguments.Argument;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,26 +18,39 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
+import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.filechooser.FileFilter;
 import mainclass.MainClass;
 import stringcreator.Extender;
 import stringcreator.IntegerExtender;
@@ -66,9 +81,21 @@ public class InstanceFrame {
     private JPanel arrayPanel;
     private JPanel arrayValuesPanel;
     private JScrollBar arrayScrollBar;
+    
+    private JMenuBar menuBar;
+    private JMenu observeMenu;
+    private JRadioButtonMenuItem observeTopStackInstanceMenuItem;
+    private JRadioButtonMenuItem observeSelectedInstanceMenuItem;
+    private JMenu optionsMenu;
+    private JMenuItem saveVariablesAsTextMenuItem;
+    private JMenuItem saveVariablesAsPictureMenuItem;
+    private JMenuItem saveArrayAsTextMenuItem;
+    private JMenuItem saveArrayAsPictureMenuItem;
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Variables">
+    private MainClass mainClass;
+    
     private Font labelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
     private Font labelBoldFont = new Font(Font.SANS_SERIF, Font.BOLD, 10);
     private FontMetrics labelFontMetrics;
@@ -82,7 +109,7 @@ public class InstanceFrame {
     private SyntaxTree syntaxTree;
     private Instance instance;
     private boolean onStack;
-    private boolean observeCurrent = true;
+    //private boolean observeCurrent = true;
     
     private AccessArray selectedArrayAccess;
     private String selectedArrayName;
@@ -97,28 +124,83 @@ public class InstanceFrame {
     
     
     private int arguemtnsHeaderPosition;
-    private ArrayList<String> argumentsString =  new ArrayList<String>();
-    private ArrayList<Integer> argumentsPosition =  new ArrayList<Integer>();
+    private ArrayList<String> argumentsString =  new ArrayList<>();
+    private ArrayList<Integer> argumentsPosition =  new ArrayList<>();
     
     private int localVarsHeaderPosition;
-    private ArrayList<String> localVarsString =  new ArrayList<String>();
-    private ArrayList<Integer> localVarsPosition =  new ArrayList<Integer>();
+    private ArrayList<String> localVarsString =  new ArrayList<>();
+    private ArrayList<Integer> localVarsPosition =  new ArrayList<>();
     
     private int globalVarsHeaderPosition;
-    private ArrayList<String> globalVarsString = new ArrayList<String>();
-    private ArrayList<Integer> globalVarsPosition = new ArrayList<Integer>();
+    private ArrayList<String> globalVarsString = new ArrayList<>();
+    private ArrayList<Integer> globalVarsPosition = new ArrayList<>();
     
     private String arrayHeaderString;
     private int arrayHeaderPosition;
-    private ArrayList<String> arrayValuesString =  new ArrayList<String>();
-    private ArrayList<Integer> arrayValuesPosition =  new ArrayList<Integer>();
+    private ArrayList<String> arrayValuesString =  new ArrayList<>();
+    private ArrayList<Integer> arrayValuesPosition =  new ArrayList<>();
     //</editor-fold>
     
     
     //<editor-fold defaultstate="collapsed" desc="Constructor">
     public InstanceFrame(MainClass mainClass) {
+        this.mainClass = mainClass;
         frame = new JInternalFrame(Lang.frameTitle);
         frame.setResizable(true);
+        
+        //<editor-fold defaultstate="collapsed" desc="Init menu">
+        menuBar = new JMenuBar();
+        frame.setJMenuBar(menuBar);
+        
+        observeMenu = new JMenu(Lang.observeMenu);
+        menuBar.add(observeMenu);
+        observeTopStackInstanceMenuItem = new JRadioButtonMenuItem(Lang.observeTopStackInstanceMenuItem);
+        observeMenu.add(observeTopStackInstanceMenuItem);
+        observeSelectedInstanceMenuItem = new JRadioButtonMenuItem(Lang.observeSelectedInstanceMenuItem);
+        observeMenu.add(observeSelectedInstanceMenuItem);
+        
+        ButtonGroup group = new ButtonGroup();
+        group.add(observeTopStackInstanceMenuItem);
+        group.add(observeSelectedInstanceMenuItem);
+        observeTopStackInstanceMenuItem.setSelected(true);
+        
+        optionsMenu = new JMenu(Lang.optionsMenu);
+        menuBar.add(optionsMenu);
+        saveVariablesAsTextMenuItem = new JMenuItem(Lang.saveVariablesAsTextMenuItem);
+        optionsMenu.add(saveVariablesAsTextMenuItem);
+        saveVariablesAsPictureMenuItem = new JMenuItem(Lang.saveVariablesAsPictureMenuItem);
+        optionsMenu.add(saveVariablesAsPictureMenuItem);
+        optionsMenu.add(new JSeparator());
+        saveArrayAsTextMenuItem = new JMenuItem(Lang.saveArrayAsTextMenuItem);
+        optionsMenu.add(saveArrayAsTextMenuItem);
+        saveArrayAsPictureMenuItem = new JMenuItem(Lang.saveArrayAsPictureMenuItem);
+        optionsMenu.add(saveArrayAsPictureMenuItem);
+        
+        saveVariablesAsTextMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveVariablesAsText();
+            }
+        });
+        saveVariablesAsPictureMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveVariablesAsPicture();
+            }
+        });
+        saveArrayAsTextMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveArrayAsText();
+            }
+        });
+        saveArrayAsPictureMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveArrayAsPicture();
+            }
+        });
+        //</editor-fold>
         
         //<editor-fold defaultstate="collapsed" desc="Init top labels">
         functionNameTextLabel = new JLabel(Lang.functionName);
@@ -342,7 +424,7 @@ public class InstanceFrame {
     }
 
     public void update(Instance currentInstance) {
-        if (observeCurrent && currentInstance != instance) {
+        if (observeTopStackInstanceMenuItem.isSelected() && currentInstance != instance) {
             updateAllPanels(syntaxTree, currentInstance, 1);
             return;
         }
@@ -895,6 +977,329 @@ public class InstanceFrame {
         g.drawLine(firstSeparatorPosition, h, firstSeparatorPosition, y);
         g.drawLine(w1, 0, w1, y);
     }
+    
+    //<editor-fold defaultstate="collapsed" desc="saveFunctions">
+    private void saveVariablesAsPicture() {
+        JFileChooser chooser = new JFileChooser(mainClass.getSaveReportDirectory());
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.addChoosableFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isDirectory() || file.getName().endsWith(".png");
+            }
+
+            @Override
+            public String getDescription() {
+                return "Obraz PNG (*.png)";
+            }
+        });
+        chooser.setApproveButtonText(Lang.save);
+        chooser.setDialogTitle(Lang.save);
+        int returnVal = chooser.showOpenDialog(frame);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        File file = chooser.getSelectedFile();
+        if (!file.getName().endsWith(".png")) {
+            file = new File(file.getPath() + ".png");
+        }
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    return;
+                }
+            } catch (IOException | SecurityException ex) {
+                return;
+            }
+        }
+        if (!file.canWrite()) {
+            return;
+        }
+        BufferedImage image;
+        synchronized (this) {
+            image = new BufferedImage(variablessPanel.getWidth(),
+                    variablessPanel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            variablessPanel.paint(image.getGraphics());
+        }
+        try {
+            ImageIO.write(image, "png", file);
+            mainClass.setSaveReportFile(file);
+        } catch (Exception ex) {
+        }
+    }
+    
+    private void saveArrayAsPicture() {
+        JFileChooser chooser = new JFileChooser(mainClass.getSaveReportDirectory());
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.addChoosableFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isDirectory() || file.getName().endsWith(".png");
+            }
+
+            @Override
+            public String getDescription() {
+                return "Obraz PNG (*.png)";
+            }
+        });
+        chooser.setApproveButtonText(Lang.save);
+        chooser.setDialogTitle(Lang.save);
+        int returnVal = chooser.showOpenDialog(frame);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        File file = chooser.getSelectedFile();
+        if (!file.getName().endsWith(".png")) {
+            file = new File(file.getPath() + ".png");
+        }
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    return;
+                }
+            } catch (IOException | SecurityException ex) {
+                return;
+            }
+        }
+        if (!file.canWrite()) {
+            return;
+        }
+        BufferedImage image;
+        synchronized (this) {
+            image = new BufferedImage(arrayPanel.getWidth(),
+                    arrayPanel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            arrayPanel.paint(image.getGraphics());
+        }
+        try {
+            ImageIO.write(image, "png", file);
+            mainClass.setSaveReportFile(file);
+        } catch (Exception ex) {
+        }
+    }
+    
+    private void saveVariablesAsText() {
+        JFileChooser chooser = new JFileChooser(mainClass.getSaveReportDirectory());
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.addChoosableFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isDirectory() || file.getName().endsWith(".txt");
+            }
+
+            @Override
+            public String getDescription() {
+                return "Plik tekstowy (*.txt)";
+            }
+        });
+        chooser.setApproveButtonText(Lang.save);
+        chooser.setDialogTitle(Lang.save);
+        int returnVal = chooser.showOpenDialog(frame);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        File file = chooser.getSelectedFile();
+        if (!file.getName().endsWith(".txt")) {
+            file = new File(file.getPath() + ".txt");
+        }
+        try {
+            FileWriter writer = new FileWriter(file);
+            Instance instance = this.instance;
+            boolean onStack =  this.onStack;
+            SyntaxTree syntaxTree = this.syntaxTree;
+            String seperator = System.getProperty("line.separator");
+            
+            if ( instance == null ) {
+                writer.write("Nie wybrano żadnej instancji.");
+                writer.write(seperator);
+            } else {
+                Function function = instance.getFunction();
+                writer.write(Lang.functionName);
+                writer.write(instance.getFunction().getName());
+                writer.write(seperator);
+                
+                BigInteger returnedValue = instance.getReturnedValue();
+                if (!onStack && returnedValue != null) {
+                    writer.write(Lang.returnedValue);
+                    writer.write(returnedValue.toString());
+                    writer.write(seperator);
+                }
+                
+                writer.write(onStack ? Lang.onStack : Lang.notOnStack);
+                writer.write(seperator);
+                
+                writer.write(seperator);
+                int argLength = instance.getArgumentsLength();
+                if (argLength == 0) {
+                    writer.write(Lang.noArguments);
+                    writer.write(seperator);
+                }
+                else {
+                    writer.write(Lang.arguments);
+                    writer.write(seperator);
+                    writer.write(Lang.name);
+                    writer.write(", ");
+                    writer.write(Lang.valueAtTheBegining);
+                    writer.write(", ");
+                    writer.write(onStack ? Lang.currentValue : Lang.valueAtTheEnd);
+                    writer.write(seperator);
+                    
+                    for (int i = 0; i < argLength; i++) {
+                        String name = function.getArgumentName(i);
+                        writer.write(name);
+                        writer.write(" : ");
+                        Argument arg = instance.getArgument(i);
+                        if (arg.isInteger()) {
+                            ArgInteger argInteger = (ArgInteger) arg;
+                            writer.write(argInteger.getValueAtTheBeginning().toString());
+                            if (onStack) {
+                                writer.write(", ");
+                                BigInteger value = argInteger.getValue();
+                                writer.write(value == null ? Lang.nullString : value.toString());
+                            }
+                        } else if (arg.isReference()) {
+                            ArgReference argRef = (ArgReference) arg;
+                            BigInteger value = argRef.getValueAtTheBeginning();
+                            writer.write(value == null ? Lang.nullString : value.toString());
+                            writer.write(", ");
+                            value = onStack ? argRef.getValue() : argRef.getValueAtTheEnd();
+                            writer.write(value == null ? Lang.nullString : value.toString());
+                        } else if (arg.isArray()) {
+                            writer.write(Lang.array);
+                        } else {
+                            ArgString argStr = (ArgString) arg;
+                            writer.write(argStr.getString());
+                        }
+                        writer.write(seperator);
+                    }
+                }
+                
+                writer.write(seperator);
+                int localVarsLength = instance.getFunction().getLocalVarsLength();
+                if (localVarsLength == 0 || !onStack) {
+                    writer.write(Lang.noLocalVars);
+                    writer.write(seperator);
+                }
+                else {
+                    writer.write(Lang.localVars);
+                    writer.write(seperator);
+                    writer.write(Lang.name);
+                    writer.write(", ");
+                    writer.write(Lang.currentValue);
+                    writer.write(seperator);
+                    
+                    for (int i = 0; i < localVarsLength; i++) {
+                        String name = function.getLocalVarName(i);
+                        writer.write(name);
+                        writer.write(" : ");
+                        AccessVar access = function.getLocalVarAccessVar(i);
+                        if (access.isArray()) {
+                            writer.write(Lang.array);
+                        } else {
+                            BigInteger value = ((AccessInteger) access).getValue(instance);
+                            writer.write(value == null ? Lang.nullString : value.toString());
+                        }
+                        writer.write(seperator);
+                    }
+                }
+                
+                writer.write(seperator);
+                int globalVarsLength = syntaxTree.getGlobalVarsSize();
+                if (globalVarsLength == 0) {
+                    writer.write(Lang.noGlobalVars);
+                    writer.write(seperator);
+                }
+                else {
+                    writer.write(Lang.globalVars);
+                    writer.write(seperator);
+                    writer.write(Lang.name);
+                    writer.write(", ");
+                    writer.write(Lang.currentValue);
+                    writer.write(seperator);
+                    
+                    for (int i = 0; i < globalVarsLength; i++) {
+                        String name = syntaxTree.getGlobalVarName(i);
+                        writer.write(name);
+                        writer.write(" : ");
+                        AccessVar access = syntaxTree.getGlobalVarAccessVar(i);
+                        if (access.isArray()) {
+                            writer.write(Lang.array);
+                        } else {
+                            BigInteger value = ((AccessInteger) access).getValue(instance);
+                            writer.write(value == null ? Lang.nullString : value.toString());
+                        }
+                        writer.write(seperator);
+                    }
+                }
+            }
+            writer.flush();
+            writer.close();
+            mainClass.setSaveReportFile(file);
+        } catch (IOException ex) {
+        }
+    } 
+    
+    private void saveArrayAsText() {
+        JFileChooser chooser = new JFileChooser(mainClass.getSaveReportDirectory());
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.addChoosableFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isDirectory() || file.getName().endsWith(".txt");
+            }
+
+            @Override
+            public String getDescription() {
+                return "Plik tekstowy (*.txt)";
+            }
+        });
+        chooser.setApproveButtonText(Lang.save);
+        chooser.setDialogTitle(Lang.save);
+        int returnVal = chooser.showOpenDialog(frame);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        File file = chooser.getSelectedFile();
+        if (!file.getName().endsWith(".txt")) {
+            file = new File(file.getPath() + ".txt");
+        }
+        try {
+            FileWriter writer = new FileWriter(file);
+            Instance instance = this.instance;
+            AccessArray access = this.selectedArrayAccess;
+            String name = this.selectedArrayName;
+            String seperator = System.getProperty("line.separator");
+            
+            if (access == null){
+                writer.write("Nie wybrano żadnej tablicy.");
+                writer.write(seperator);
+            } else {
+                int size = access.getSizeInteger(instance);
+                writer.write(name);
+                writer.write('[');
+                writer.write(Integer.toString(size));
+                writer.write(']');
+                writer.write(seperator);
+                
+                for (int i = 0; i < size; i++) {
+                    writer.write(Integer.toString(i));
+                    writer.write(" : ");
+                    BigInteger value = access.getValue(instance, i);
+                    if (value == null) {
+                        writer.write(Lang.nullString);
+                    } else {
+                        writer.write(value.toString());
+                    }
+                    writer.write(seperator);
+                }
+            }
+            writer.flush();
+            writer.close();
+            mainClass.setSaveReportFile(file);
+        } catch (IOException ex) {
+        }
+    } 
+    //</editor-fold>
+    
     //</editor-fold>
     
     
@@ -906,6 +1311,15 @@ public class InstanceFrame {
         public static final String returnedValue = "Zwrócona wartość: ";
         public static final String onStack = "Instancja znajduje się na stosie";
         public static final String notOnStack = "Instancja została zdjęta ze stosu";
+        
+        public static final String observeMenu = "Obserwuj";
+        public static final String observeTopStackInstanceMenuItem = "Instancję na szczycie stosu";
+        public static final String observeSelectedInstanceMenuItem = "Wybraną instancję";
+        public static final String optionsMenu = "Opcje";
+        public static final String saveVariablesAsTextMenuItem = "Zapisz zmienne jako tekst...";
+        public static final String saveVariablesAsPictureMenuItem = "Zapisz zmienne jako obraz...";
+        public static final String saveArrayAsTextMenuItem = "Zapisz tablicę jako tekst...";
+        public static final String saveArrayAsPictureMenuItem = "Zapisz tablicę jako obraz...";
         
         public static final String arrayName = "Nazwa tablicy: ";
         public static final String arraySize = "Rozmiar tablicy: ";
@@ -928,6 +1342,8 @@ public class InstanceFrame {
         public static final String string = "<< Napis >>";
         public static final String array = "<< Tablica >>";
         public static final String nullString = "?????";
+        
+        public static final String save = "Zapisz";
     }
     //</editor-fold>
     

@@ -285,7 +285,7 @@ public class StackOfInstances {
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                mouseClickedOnPanel(e.getX(), e.getY());
+                mouseClickedOnPanel(e.getX(), e.getY(), e.getButton() != MouseEvent.BUTTON1);
             }
         });
         nodeLabelFontMetrics = panel.getFontMetrics(nodeLabelFont);
@@ -316,10 +316,14 @@ public class StackOfInstances {
                         break;
                     case KeyEvent.VK_DOWN:
                     case KeyEvent.VK_S:
-                        jump(mode, true);
+                        jump(mode, false);
                         break;
                     case KeyEvent.VK_DELETE:
                         showButtonsMenuItem.doClick();
+                        break;
+                    case KeyEvent.VK_ENTER:
+                    case KeyEvent.VK_SPACE:
+                        updateInstanceFrame();
                 }
             }
         });
@@ -431,16 +435,16 @@ public class StackOfInstances {
     }
     
     private void saveAsPicture() {
-        JFileChooser chooser = new JFileChooser(mainClass.getCurrentDir());
+        JFileChooser chooser = new JFileChooser(mainClass.getSaveReportDirectory());
         chooser.setAcceptAllFileFilterUsed(false);
-        chooser.addChoosableFileFilter( new FileFilter() {
+        chooser.addChoosableFileFilter(new FileFilter() {
             @Override
             public boolean accept(File file) {
                 return file.isDirectory() || file.getName().endsWith(".png");
             }
             @Override
             public String getDescription() {
-                return "PNG (*.png)";
+                return "Obraz PNG (*.png)";
             }
         });
         chooser.setApproveButtonText(Lang.save);
@@ -453,6 +457,18 @@ public class StackOfInstances {
         if ( !file.getName().endsWith(".png") ) {
             file = new File(file.getPath()+".png");
         }
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    return;
+                }
+            } catch (IOException | SecurityException ex) {
+                return;
+            }
+        }
+        if (!file.canWrite()) {
+            return;
+        }
         BufferedImage image;
         synchronized (this) {
             image = new BufferedImage(panel.getWidth(),
@@ -461,22 +477,22 @@ public class StackOfInstances {
         }
         try {
             ImageIO.write(image, "png", file);
-        } catch (IOException ex) {
+            mainClass.setSaveReportFile(file);
+        } catch (Exception ex) {
         }
     }
     
     private void saveAsText() {
-        //TODO text
-        JFileChooser chooser = new JFileChooser(mainClass.getCurrentDir());
+        JFileChooser chooser = new JFileChooser(mainClass.getSaveReportDirectory());
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.addChoosableFileFilter( new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return file.isDirectory() || file.getName().endsWith(".png");
+                return file.isDirectory() || file.getName().endsWith(".txt");
             }
             @Override
             public String getDescription() {
-                return "TXT (*.txt)";
+                return "Plik tekstowy (*.txt)";
             }
         });
         chooser.setApproveButtonText(Lang.save);
@@ -500,6 +516,7 @@ public class StackOfInstances {
             }
             writer.flush();
             writer.close();
+            mainClass.setSaveReportFile(file);
         } catch (IOException ex) {
         }
     }
@@ -532,7 +549,7 @@ public class StackOfInstances {
     }
     
     
-    private synchronized void mouseClickedOnPanel(int xDisplay, int yDisplay) {
+    private synchronized void mouseClickedOnPanel(int xDisplay, int yDisplay, boolean updateInstanceFrame) {
         int ySize = yRectSize + yGap;
         int yFirst = yPositionBottom - (topIndex - bottomIndex) * ySize;
         int yDiff = yDisplay - yFirst;
@@ -547,6 +564,9 @@ public class StackOfInstances {
         selectedInstance = nodes.get(index).getInstance();
         selectedIndex = index;
         updatePanelView();
+        if (updateInstanceFrame) {
+            mainClass.getInstanceFrame().select(selectedInstance);
+        }
     }
     
     private synchronized void jump(int mode, boolean up) {
@@ -606,6 +626,14 @@ public class StackOfInstances {
         
         for (int y=0, index=bottomIndex; index<=topIndex; y++, index++) {
             nodes.get(index).paint(g, y);
+        }
+    }
+    
+    private void updateInstanceFrame()
+    {
+        Instance instance = selectedInstance;
+        if (instance != null) {
+            mainClass.getInstanceFrame().select(instance);
         }
     }
     //</editor-fold>
@@ -669,13 +697,13 @@ public class StackOfInstances {
         public static final String jumpLength = "Długość skoku";
         
         public static final String observe = "Obserwuj";
-        public static final String observeTopStack = "Szczyt stosu";
+        public static final String observeTopStack = "Instancję na szczycie stosu";
         public static final String observeSelected = "Wybraną instację";
         
         public static final String showButtons = "Pokaż przyciski";
         public static final String save = "Zapisz";
         public static final String saveAsPictureDots = "Zapisz jako obrazek...";
-        public static final String saveAsTextDots = "Zapisz jako text...";
+        public static final String saveAsTextDots = "Zapisz jako tekst...";
         
         public static final String up1ToolTip = "Skocz w górę o jedną pozycję (W, ↑)";
         public static final String up2ToolTip = "Skocz w górę o wybraną długość (Ctrl+W, Ctrl+↑)";

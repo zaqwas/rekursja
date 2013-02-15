@@ -1,7 +1,9 @@
 package statistics;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
+import instanceframe.InstanceFrame;
 import interpreter.accessvar.VariableType;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -11,18 +13,30 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileFilter;
+import mainclass.MainClass;
 import syntax.SyntaxNode;
 import syntax.expression.operators.Operation;
 import syntax.expression.operators.OperationType;
@@ -37,12 +51,18 @@ public class Statistics {
     private final static String iconDir = "/instanceframe/icons/";
     
     //<editor-fold defaultstate="collapsed" desc="Variables">
+    private MainClass mainClass;
+    
     private ImageIcon rememberIcon = new ImageIcon(getClass().getResource(iconDir + "save.png"));
     private ImageIcon deleteIcon = new ImageIcon(getClass().getResource(iconDir + "delete.png"));
     
     private JInternalFrame frame;
     private JScrollPane scrollPane;
     private JPanel panel;
+    
+    private JMenu optionsMenu;
+    private JMenuItem saveAsTextMenuItem;
+    private JMenuItem saveAsPictureMenuItem;
     
     private JButton extendGroupButton[] = new JButton[6];
     private boolean extendGroup[] = new boolean[6];
@@ -68,20 +88,48 @@ public class Statistics {
         Lang.callGroup
     };
     private int operationsPosition[] = new int[24];
-    private TreeSet<FunctionDeclaration> functionsSet = 
-            new TreeSet<FunctionDeclaration>(functionComparator);
+    private TreeSet<FunctionDeclaration> functionsSet = new TreeSet<>(functionComparator);
     private String functionsString[];
     private int functionsPosition[];
     //</editor-fold>
     
     
     //<editor-fold defaultstate="collapsed" desc="Constructor">
-    public Statistics() {
+    public Statistics(MainClass mainClass) {
+        this.mainClass = mainClass;
+        
         frame = new JInternalFrame(Lang.frameTitle);
         frame.setResizable(true);
+        frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+        frame.setComponentPopupMenu(null);
 
         labelFontMetrics = frame.getFontMetrics(labelFont);
         textAntiAliasingHint = labelFontMetrics.getFontRenderContext().getAntiAliasingHint();
+        
+        //<editor-fold defaultstate="collapsed" desc="Init menu">
+        JMenuBar menuBar = new JMenuBar();
+        frame.setJMenuBar(menuBar);
+        
+        optionsMenu = new JMenu(Lang.optionsMenu);
+        menuBar.add(optionsMenu);
+        saveAsTextMenuItem = new JMenuItem(Lang.saveAsTextMenuItem);
+        optionsMenu.add(saveAsTextMenuItem);
+        saveAsPictureMenuItem = new JMenuItem(Lang.saveAsPictureMenuItem);
+        optionsMenu.add(saveAsPictureMenuItem);
+        
+        saveAsTextMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveAsText();
+            }
+        });
+        saveAsPictureMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveAsPicture();
+            }
+        });
+        //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Init scrollPane and panel">
         scrollPane = new JScrollPane();
@@ -394,14 +442,126 @@ public class Statistics {
             x += node.getWidth() + 2;
         }
     }
+    
+    //<editor-fold defaultstate="collapsed" desc="save functions">
+    private void saveAsPicture() {
+        JFileChooser chooser = new JFileChooser(mainClass.getSaveReportDirectory());
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.addChoosableFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isDirectory() || file.getName().endsWith(".png");
+            }
+            @Override
+            public String getDescription() {
+                return "Obraz PNG (*.png)";
+            }
+        });
+        chooser.setApproveButtonText(Lang.save);
+        chooser.setDialogTitle(Lang.save);
+        int returnVal = chooser.showOpenDialog(frame);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        File file = chooser.getSelectedFile();
+        if ( !file.getName().endsWith(".png") ) {
+            file = new File(file.getPath()+".png");
+        }
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    return;
+                }
+            } catch (IOException | SecurityException ex) {
+                return;
+            }
+        }
+        if (!file.canWrite()) {
+            return;
+        }
+        BufferedImage image;
+        synchronized (this) {
+            image = new BufferedImage(panel.getWidth(),
+                    panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            panel.paint(image.getGraphics());
+        }
+        try {
+            ImageIO.write(image, "png", file);
+            mainClass.setSaveReportFile(file);
+        } catch (Exception ex) {
+        }
+    }
+    
+    private void saveAsText() {
+        JFileChooser chooser = new JFileChooser(mainClass.getSaveReportDirectory());
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.addChoosableFileFilter( new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isDirectory() || file.getName().endsWith(".txt");
+            }
+            @Override
+            public String getDescription() {
+                return "Plik tekstowy (*.txt)";
+            }
+        });
+        chooser.setApproveButtonText(Lang.save);
+        chooser.setDialogTitle(Lang.save);
+        int returnVal = chooser.showOpenDialog(frame);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        File file = chooser.getSelectedFile();
+        if ( !file.getName().endsWith(".txt") ) {
+            file = new File(file.getPath()+".txt");
+        }
+        try {
+            FileWriter writer = new FileWriter(file);
+            String separator = System.getProperty("line.separator");
+            int operationsStringLength = operationsString.length;
+            for (int idx = 0; idx < operationsStringLength; idx++) {
+                if ((4 <= idx && idx <= 16 && idx % 4 == 0) || idx + 1 == operationsStringLength) {
+                    writer.write(separator);
+                }
+                writer.write(operationsString[idx]);
+                writer.write(" : ");
+                for (int i = -1, size = rememberedStatNodes.size(); i < size; i++) {
+                    StatNode node = i == -1 ? displayedStatNode : rememberedStatNodes.get(i);
+                    if (i != -1) {
+                        writer.write(", ");
+                    }
+                    writer.write(Long.toString(node.getOperationsCounter(idx)));
+                }
+                writer.write(separator);
+            }
+            int funcIdx = 0;
+            for (FunctionDeclaration f : functionsSet) {
+                writer.write(functionsString[funcIdx++]);
+                writer.write(" : ");
+                for (int i = -1, size = rememberedStatNodes.size(); i < size; i++) {
+                    StatNode node = i == -1 ? displayedStatNode : rememberedStatNodes.get(i);
+                    if (i != -1) {
+                        writer.write(", ");
+                    }
+                    writer.write(Long.toString(node.getFunctionCounter(f)));
+                }
+                writer.write(separator);
+            }
+            writer.flush();
+            writer.close();
+            mainClass.setSaveReportFile(file);
+        } catch (IOException ex) {
+        }
+    }
+    //</editor-fold>
+    
     //</editor-fold>
     
     
     //<editor-fold defaultstate="collapsed" desc="Class StatNode">
     private class StatNode {
         private long operationsCounter[] = new long[24];
-        private TreeMap<FunctionDeclaration, Long> functionsCounter =
-                new TreeMap<FunctionDeclaration, Long>(functionComparator);
+        private TreeMap<FunctionDeclaration, Long> functionsCounter = new TreeMap<>(functionComparator);
         private long maxValue;
         private int width;
         private JButton button;
@@ -527,6 +687,10 @@ public class Statistics {
     private static class Lang {
         public static final String frameTitle = "Statystyka";
         
+        public static final String optionsMenu = "Opcje";
+        public static final String saveAsTextMenuItem = "Zapisz jako tekst...";
+        public static final String saveAsPictureMenuItem = "Zapisz jako obraz...";
+        
         public static final String assigmentGroup = "Przypisania...";
         public static final String assigment = "Przypisanie";
         public static final String inc = "Inkrementacja (++)";
@@ -561,7 +725,9 @@ public class Statistics {
         public static final String delete = "Usuń";
         
         public static final String extend = "Rozwiń";
-        public static final String narrow = "Zwiń";        
+        public static final String narrow = "Zwiń";
+        
+        public static final String save = "Zapisz";
     }
     //</editor-fold>
     

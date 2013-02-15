@@ -114,8 +114,7 @@ public class Console {
         textFileFilter = new FileFilter() {
             @Override
             public boolean accept(File f) {
-                String name = f.getName();
-                return name.endsWith(".txt");
+                return f.isDirectory() || f.getName().endsWith(".txt");
             }
 
             @Override
@@ -194,7 +193,7 @@ public class Console {
         public static final String clear = "Wyczyść";
         
         public static final String clearingMenu = "Kasowanie";
-        public static final String clearMenuItem = "Wyczyść konsolę przed urochomieniem";
+        public static final String clearMenuItem = "Wyczyść konsolę przed uruchomieniem";
         public static final String keepMenuItem = "Zostaw nieskasowany tekst";
         
         public static final String optionsMenu = "Opcje";

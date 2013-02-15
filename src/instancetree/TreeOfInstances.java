@@ -662,7 +662,7 @@ public class TreeOfInstances {
     }
     
     private void saveAsPicture() {
-        JFileChooser chooser = new JFileChooser(mainClass.getCurrentDir());
+        JFileChooser chooser = new JFileChooser(mainClass.getSaveReportDirectory());
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.addChoosableFileFilter( new FileFilter() {
             @Override
@@ -671,7 +671,7 @@ public class TreeOfInstances {
             }
             @Override
             public String getDescription() {
-                return "PNG (*.png)";
+                return "Obraz PNG (*.png)";
             }
         });
         chooser.setApproveButtonText(Lang.save);
@@ -684,6 +684,18 @@ public class TreeOfInstances {
         if ( !file.getName().endsWith(".png") ) {
             file = new File(file.getPath()+".png");
         }
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    return;
+                }
+            } catch (IOException | SecurityException ex) {
+                return;
+            }
+        }
+        if (!file.canWrite()) {
+            return;
+        }
         BufferedImage image;
         synchronized (this) {
             image = new BufferedImage(panel.getWidth(),
@@ -692,7 +704,8 @@ public class TreeOfInstances {
         }
         try {
             ImageIO.write(image, "png", file);
-        } catch (IOException ex) {
+            mainClass.setSaveReportFile(file);
+        } catch (Exception ex) {
         }
     }
 

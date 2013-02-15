@@ -731,54 +731,16 @@ public class MainClass {
         mainFrame.getContentPane().setLayout(layout);
         //</editor-fold>
         
-        
-        
         mainFrame.setSize(800, 600);
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         mainFrame.setVisible(true);
-        
-        //lesson = new SortLesson(this);
-        //lesson = new IntroductionLesson(this);
-        //lesson = new QuickSortPartitionLesson(this);
-        //lesson = new SortLesson(this);
-//        lesson = new SortTaskLesson(this);
-//        lesson.start();
-//        lesson = new BubbleSortLesson(this);
-//        lesson.start();
-        
-        //<editor-fold defaultstate="collapsed" desc="Init Frames">
-//        editor = new CodeEditor(this);
-//        desktop.add(editor.getFrame());
-//        editor.getFrame().show();
-//
-//        console = new Console();
-//        desktop.add(console.getFrame());
-//        console.getFrame().show();
-//        
-//        tree = new TreeOfInstances(this);
-//        desktop.add(tree.getFrame());
-//        tree.getFrame().show();
-//        
-//        instanceFrame = new InstanceFrame(this);
-//        desktop.add(instanceFrame.getFrame());
-//        instanceFrame.getFrame().show();
-//
-//        stack = new StackOfInstances(this, instanceFrame);
-//        desktop.add(stack.getFrame());
-//        stack.getFrame().show();
-//        
-//        statistics = new Statistics();
-//        desktop.add(statistics.getFrame());
-//        statistics.getFrame().show();
-        //</editor-fold>
-
         
         editor = new CodeEditor(this);
         console = new Console(this);
         tree = new TreeOfInstances(this);
         instanceFrame = new InstanceFrame(this);
         stack = new StackOfInstances(this, instanceFrame);
-        statistics = new Statistics();
+        statistics = new Statistics(this);
         
         addFrame(Lang.codeEditorMenu, editor.getFrame(), false);
         addFrame(Lang.callStackMenu, stack.getFrame(), false);
@@ -1496,29 +1458,61 @@ public class MainClass {
         Platform.setImplicitExit(false);
         try {
             //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-            //UIManager.setLookAndFeel("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
-            //UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
-            
-//            Properties props = new Properties();
-//            props.put("desktopColor", "223 223 255"); 
-//            AcrylLookAndFeel.setCurrentTheme(props);
-//            UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
             
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
             UIDefaults def = UIManager.getLookAndFeel().getDefaults();
+            def.put("InternalFrame:InternalFrameTitlePane:\"InternalFrameTitlePane.menuButton\".icon", null);
             def.put("TextPane.contentMargins", new Insets(0,0,0,0));
-            
-            final Painter pBtn = (Painter)def.get("Button[Enabled].backgroundPainter");
-            Painter<Component> p3 = new Painter<Component>() {
-                @Override
-                public void paint(Graphics2D g, Component c, int width, int height) {
-                    g.translate(-2, -2);
-                    pBtn.paint(g, c, width+4, height+4);
-                    g.translate(2, 2);
-                }
-            };
-            def.put("Button[Enabled].backgroundPainter", p3);
             def.put("Button.contentMargins", new Insets(2,4,2,4));
+            def.put("ToggleButton.contentMargins", new Insets(2,4,2,4));
+            
+            def.put("ToolBar[North].borderPainter", null);
+            def.put("ToolBar[South].borderPainter", null);
+            
+            String painters[] = {
+                "Button[Default+Focused+MouseOver].backgroundPainter",
+                "Button[Default+Focused+Pressed].backgroundPainter",
+                "Button[Default+Focused].backgroundPainter",
+                "Button[Default+MouseOver].backgroundPainter",
+                "Button[Default+Pressed].backgroundPainter",
+                "Button[Default].backgroundPainter",
+                "Button[Disabled].backgroundPainter",
+                "Button[Enabled].backgroundPainter",
+                "Button[Focused+MouseOver].backgroundPainter",
+                "Button[Focused+Pressed].backgroundPainter",
+                "Button[Focused].backgroundPainter",
+                "Button[MouseOver].backgroundPainter",
+                "Button[Pressed].backgroundPainter",
+                    
+                "ToggleButton[Disabled+Selected].backgroundPainter",
+                "ToggleButton[Disabled].backgroundPainter",
+                "ToggleButton[Enabled].backgroundPainter",
+                "ToggleButton[Focused+MouseOver+Selected].backgroundPainter",
+                "ToggleButton[Focused+MouseOver].backgroundPainter",
+                "ToggleButton[Focused+Pressed+Selected].backgroundPainter",
+                "ToggleButton[Focused+Pressed].backgroundPainter",
+                "ToggleButton[Focused+Selected].backgroundPainter",
+                "ToggleButton[Focused].backgroundPainter",
+                "ToggleButton[MouseOver+Selected].backgroundPainter",
+                "ToggleButton[MouseOver].backgroundPainter",
+                "ToggleButton[Pressed+Selected].backgroundPainter",
+                "ToggleButton[Pressed].backgroundPainter",
+                "ToggleButton[Selected].backgroundPainter"
+            };
+            
+            for (String painter : painters) 
+            {
+                final Painter oldPainter = (Painter) def.get(painter);
+                Painter<Component> newPainter = new Painter<Component>() {
+                    @Override
+                    public void paint(Graphics2D g, Component c, int width, int height) {
+                        g.translate(-2, -2);
+                        oldPainter.paint(g, c, width + 4, height + 4);
+                        g.translate(2, 2);
+                    }
+                };
+                def.put(painter, newPainter); 
+            }
         } catch (Exception ex) {
             System.exit(1);
         }

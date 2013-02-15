@@ -1,29 +1,78 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <title>Funkcja dzieląca tablicę - część I</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+    img
+    {
+      margin-right: 3px;
+      float: left;
+    }
+    h2
+    {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    p
+    {
+      padding-top: 20px;
+      margin-bottom: 0px;
+      margin-top: 0px;
+      clear: both;
+    }
+    p.first
+    {
+      padding-top: 10px;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Podział tablicy I</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Funkcja dzieląca tablicę - część I</h2>
+  <p class="first">
+    W poprzedniej lekcjach omawialiśmy algorytm sortowania przez z scalanie. 
+    Pierwszą lekcję zaczęliśmy od omówienia funkcji „scal”, a następnie zajęliśmy się wykorzystaniem 
+    tej funkcji w algorytmie sortowania. Obecna i następna lekcja będzie miała podobną strukturę. 
+    Skupimy się w nich na „szybkim algorytmie sortowania” (ang. QuickSort). 
+    Jednak zanim przejdziemy do omawiania tego algorytmu musimy poznać jedną bardzo ważną 
+    funkcję wykorzystywaną przez ten algorytm. Owa funkcja nosi nazwę „podziel”.
+  </p>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
+  <p>
+    <img src="part1_partition.png" alt="Nie udało załadować się obrazka"/>
+    Funkcja „podziel(n, &amp;idx1, &amp;idx2)” dzieli tablicę na trzy części. 
+    Funkcja powinna działać tak, iż weźmie wartość pierwszego elementu - nazwijmy ją „wartością osiową”,
+    a następnie poprzestawia elementy tak, że na początku znajdą się elementy mniejsze od „wartości osiowej”, 
+    następnie równe, a za nimi większe od tej wartości. Dodatkowo twoja funkcja (za pomocą referencji) 
+    powinna zwrócić dwie liczby: idx1, idx2, które oznaczają odpowiednio początek 
+    i koniec fragmentu tablicy, w której znajdują się elementy równe „wartości osiowej”. 
+    Zasadę działania funkcji podziel dobrze obrazuje poniższy rysunek:
+  </p>
 
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
+  
+  <p>
+    <img src="part1_array.png" alt="Nie udało załadować się obrazka"/>
+    Docelowo będziemy chcieli zaimplementować funkcję „podziel”, aby działała bezpośrednio na tablicy, 
+    którą funkcja dostaje jako parametr. Jednak w tej części zajmiemy się przypadkiem prostszym,
+    w którym dysponujemy dodatkową tablicą. W osobnym oknie pojawiły się dwie tablice liczb:
+    Na górze znajduje się początkowa tablica, a na dole docelowa. 
+    Funkcja „podziel” powinna przenieść elementy tak, aby na dole utworzyć tablicę podzieloną na trzy części 
+    zgodnie z założeniami omówionymi w drugim akapicie. 
+    Do posługiwania się tablicami wyświetlonymi w osobnym oknie funkcja „podziel” powinna skorzystać 
+    z dwóch funkcji specjalnych: „porownaj(idx)” i „przenies(idxSkad, idxDokad)”. 
+    Wspomnienie funkcje są szerzej omówione w zakładce „funkcje specjalne”.
+  </p>
 
-  </body>
+  <p>
+    <img src="part1_algorithm.png" alt="Nie udało załadować się obrazka"/>
+    Na początku zaimplementujmy funkcję „podziel” w najprostszej postaci, tzn. wykonajmy trzy przebiegi. 
+    W pierwszym przebiegu przenieśmy liczby, które są mniejsze od „wartości osiowej” (pierwszy element tablicy). 
+    W drugim przebiegu przenieśmy liczby, które są równe „wartości osiowej”, 
+    a następnie w trzecim przenieśmy liczby większe od tej wartości. 
+    Wizualizacja wspomnianego algorytmu jest pokazana na poniższym rysunku:
+  </p>
+
+</body>
 </html> 

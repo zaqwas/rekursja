@@ -1,11 +1,76 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <title>Funkcja specjalne</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+    img
+    {
+      margin-right: 3px;
+      float: left;
+    }
+    h2
+    {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h3
+    {
+      padding-top: 15px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+      clear: both;
+    }
+    p
+    {
+      margin-top: 5px;
+      margin-bottom: 0px;
+      clear: left;
+    }
+    p.first
+    {
+      margin-top: 10px;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Funkcje I</h2>
-  </body>
+<body>
+  <h2>Funkcja specjalne</h2>
+  
+  <p class="first">
+    <img src="part1_array.png" alt="Nie udało załadować się obrazka"/>
+    W osobnym oknie pojawiły się dwie tablice liczb.
+    Na górze znajduje się początkowa tablica, a na dole wynikowa. 
+    Twoja funkcja „podziel” powinna operować na wartościach w tej tablicy.
+    Wyświetlona tablica zawiera liczby, które znajdują się w polach wypełnionym jednym z trzech kolorów.
+    Kolor zielony został użyty do liczb równych „wartości osiowej”, kolorem jasnoniebieskim oznaczono 
+    liczby mniejsze, a ciemnoniebieskim liczby większe od „wartości osiowej”
+  </p>
+  
+  <h3>Funkcja „int porownaj(idx)”</h3>
+  <p>
+    Funkcja „int porownaj(idx)” służy do porównywania liczb z „wartością osiową” (pierwszym elementem).
+    Funkcja jako parametr przyjmuje indeks liczby z tablicy początkowej. Oczywiście indeks musi być
+    liczbą nieujemną i mniejszy od rozmiaru tablicy. Jeśli parametr nie będzie spełniał tych warunków
+    zostanie zgłoszony błąd i program przerwie swoje działanie. Wynikiem funkcji porównaj jest jedna 
+    z trzech liczb: -1, 0, 1. Funkcja zwraca daną liczbą jeśli liczba na podanym indeksie jest odpowiednio
+    mniejsza, równa lub większa od „wartości osiowej”
+    
+  <h3>Funkcja „void przenies(idxSkad, idxDokad)”</h3>
+  <p>
+    Funkcja „void przenies(idxSkad, idxDokad)” służy do przenoszenia liczb z tablicy pierwotnej do tablicy wynikowej.
+    Funkcja jako parametr przyjmuje dwa indeksy liczby. Pierwszy parametr to indeks elementu 
+    z tablicy początkowej, a drugi z tablicy wynikowej. Oczywiście podane indeksy muszą być
+    liczbami nieujemnymi i muszą być mniejsze od rozmiaru tablicy. Jeśli jakiś parametr nie będzie spełniał tych warunków
+    zostanie zgłoszony błąd i program przerwie swoje działanie. Po przeniesieniu elementu pole w tablicy pierwotnej
+    staje się białe. Nie można wywołać funkcji, na elemencie którym się już wcześniej przeniosło. Np. wywołanie funkcji
+    przenies(3, 0) lub przenies(6, 0) spowodowało by błąd (zakładamy że stan tablicy wyraża powyższy rysunek). 
+    Podobnie nie można przenośić elementów do tablicy wynikowej na miejse, w którym już znajduje się element.
+    Np. wywołanie funkcji przenies(0, 2) lub przenies(0, 7) spowodowało by błąd 
+    (zakładamy że stan tablicy wyraża powyższy rysunek). 
+  </p>
+  
+</body>
 </html> 

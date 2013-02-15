@@ -1,94 +1,215 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Treść zadania</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script>
-      function gotoHint1()
-      {
-        window.location.href = "#hint1";
-      }
-      function gotoHint2()
-      {
-        window.location.href = "#hint2";
-      }
-      function gotoHint3()
-      {
-        window.location.href = "#hint3";
-      }
-      
-      function showHint2()
-      {
-        hint2.style.display = "inherit";
-      }
-      function showHint3()
-      {
-        hint2.style.display = "inherit";
-        hint3.style.display = "inherit";
-      }
-    </script>
-  </head>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <script>
+    function gotoHint1()
+    {
+      window.location.href = "#hint1";
+    }
+    function gotoHint2()
+    {
+      window.location.href = "#hint2";
+    }
+    function gotoHint3()
+    {
+      window.location.href = "#hint3";
+    }
 
-  <body>
+    function showHint2()
+    {
+      hint2.style.display = "inherit";
+    }
+    function showHint3()
+    {
+      hint2.style.display = "inherit";
+      hint3.style.display = "inherit";
+    }
+  </script>
     
-    <div id="hint1">
-      <h2 style="text-align: center">Wskazówka I</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+  <style type="text/css">
+    img {
+      margin-right: 3px;
+      float: left;
+    }
+    h2 {
+      padding-top: 20px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+      clear: both;
+    }
+    h2.firstHeader {
+      padding-top: 0px;
+    }
+      
+    p {
+      padding-top: 20px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      clear: left;
+    }
+    p.first {
+      padding-top: 10px;
+    }
+    p.underHr {
+      padding-top: 10px;
+    }
+      
+    div.hr {
+      padding-top: 10px;
+      clear: both;
+    }
+    hr {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+      
+    table {
+      margin-top: 10px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+      
+    div.hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h2 id="hint1" class="firstHeader">Wskazówka I</h2>
+
+  <p>
+    <img src="part3_hint1.png" alt="Nie udało załadować się obrazka"/>
+    W trakcie działania programu twoja funkcja powinna utrzymywać tablicę podzieloną na cztery części:
+    1. Na początku powinny znajdować się elementy mniejsze od „wartości osiowej” - nazwijmy ten fragment „A”.
+    2. Następnie powinny znajdować się elementy równe „wartości osiowej” - fragment „B”
+    3. Trzeci fragment tablicy powinny wypełniać liczb dotychczas nieporównane – fragment „C”
+    4. Na końcu powinny znajdować się liczby większe od „wartości osiowej” - fragment „D”.
+  </p>
+
+  <p>
+    Dodatkowo twoja funkcja powinna pamiętać trzy znaczniki:
+    „idxB” – początek fragmentu „B” i jednocześnie koniec fragmentu „A”.
+    „idxC” - początek fragmentu „C” i jednocześnie koniec fragmentu „B”.
+    „idxD” - początek fragmentu „D” i jednocześnie koniec fragmentu „C”.
+  </p>
+
+  
+
+  <div id="hint2" class="hidden">
+    <h2>Wskazówka II</h2>
+    <p>
+      Twoja funkcja powinna działać w pętli. Dla każdego wywołania pętli funkcja powinna brać 
+      pierwszy nieporównany element (pierwszy element fragmentu „C”) i porównywać go z „wartością osiową” 
+      (pierwszym elementem fragmentu „B”).
+    </p>
+
+    <p>
+      <img src="part3_hint2_1.png" alt="Nie udało załadować się obrazka"/>
+      Jeśli element jest większy od „wartości osiowej”. 
+      Funkcja powinna przesunąć wstecz znacznik „idxD”, 
+      a następnie zamienić element porównany z elementem 
+      znajdującym się na miejscu określonym znacznikiem „idxD”.
+    </p>
+    
+    <div class="hr">
+      <hr>
     </div>
     
-    <div id="hint2" style="display: none;">
-      <h2 style="text-align: center">Wskazówka II</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+    <p>
+      <img src="part3_hint2_2.png" alt="Nie udało załadować się obrazka"/>
+      Jeśli element jest mniejszy od „wartości osiowej”. 
+      Funkcja powinna zamienić ten element z pierwszym elementem fragmentu „B”, 
+      a następnie zaktualizować znaczniki: „idxB”, „idxC”.
+    </p>
+
+    <div class="hr">
+      <hr>
     </div>
     
-    <div id="hint3" style="display: none">
-      <h2 style="text-align: center">Wskazówka III</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-    </div>
-  </body>
+    <p>
+      <img src="part3_hint2_3.png" alt="Nie udało załadować się obrazka"/>
+      Jeśli element jest równy „wartości osiowej”. 
+      Funkcja powinna jedynie przesunąć znacznik „idxC”.
+    </p>
+
+    <p>
+      Pętla w funkcji „podziel” powinna skończyć swoje działanie, 
+      jeśli nie będzie żadnego elementu nieporównanego (jeśli fragment „C” będzie pusty).
+    </p>
+  </div>
+
+  <div id="hint3"  class="hidden">
+    <h2>Wskazówka III - pseudokod algorytmu</h2>
+      <table>
+      <tr>
+        <td class="first">
+          Dane:
+        </td>
+        <td>
+          Liczba naturalna <i>n</i> i ciąg liczb 
+          <i>x</i><sub>0</sub>, <i>x</i><sub>1</sub>,..., <i>x</i><sub><i>n</i>-1</sub>
+        </td>
+      </tr>
+      <tr>
+        <td class="first">
+          Wynik:
+        </td>
+        <td>
+          Ciąg <i>x'</i><sub>0</sub>, <i>x'</i><sub>1</sub>,..., <i>x'</i><sub><i>n</i>-1</sub>,
+          który powstał z przestawienia elementów ogrinalnego ciągu. 
+          Ciąg jest podzielony na trzy części zgodnie zgodnie z treścią zadania.<br/>
+          Ponadto funkcja powinna zwrócić dwa indeksy <i>idx1</i> oraz <i>idx2</i> takie, że: <br/>
+          <i>x'</i><sub>i</sub> &lt; <i>x</i><sub>0</sub> dla każdego <i>i</i> &lt; <i>idx1</i> <br/>
+          <i>x'</i><sub>i</sub> = <i>x</i><sub>0</sub> 
+          dla każdego <i>i</i> &ge; <i>idx1</i> oraz <i>i</i> &lt; <i>idx2</i><br/>
+          <i>x'</i><sub>i</sub> &ge; <i>x</i><sub>0</sub> dla każdego <i>i</i> &ge; <i>idx2</i><br/>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="first">
+          Krok 1.
+        </td>
+        <td>
+          Przyjmij za <i>idx1</i> := 0, przyjmij za <i>idx2</i> := 1, przyjmij za <i>idx3</i> := n
+        </td>
+      </tr>
+
+      <tr>
+        <td class="first">
+          Krok 2.
+        </td>
+        <td>
+          Dopóki <i>idx2</i> &lt; <i>idx3</i> wykonuj:
+          <div style="margin-left: 20px">
+            jeśli <i>x<sub>idx2</sub></i> &lt; <i>x<sub>idx1</sub></i> wykonaj:
+            <div style="margin-left: 20px">
+              zamień <i>x<sub>idx1</sub></i> oraz <i>x<sub>idx2</sub></i>,
+              zwiększ <i>idx1</i> oraz <i>idx2</i>, kontunuuj działanie pętli.
+            </div>
+
+            jeśli <i>x<sub>i</sub></i> = <i>x</i><sub>0</sub> wykonaj:
+            <div style="margin-left: 20px">
+              zwiększ <i>idx2</i> oraz kontunuuj działanie pętli.
+            </div>
+
+            jeśli <i>x<sub>i</sub></i> &gt; <i>x</i><sub>0</sub> wykonaj:
+            <div style="margin-left: 20px">
+              zmniejsz <i>idx3</i>, 
+              zamień <i>x<sub>idx2</sub></i> oraz <i>x<sub>idx3</sub></i>.
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
 </html>
