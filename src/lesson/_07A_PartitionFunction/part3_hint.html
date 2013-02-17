@@ -4,25 +4,20 @@
   <title>Treść zadania</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <script>
-    function gotoHint1()
-    {
+    function gotoHint1() {
       window.location.href = "#hint1";
     }
-    function gotoHint2()
-    {
+    function gotoHint2() {
       window.location.href = "#hint2";
     }
-    function gotoHint3()
-    {
+    function gotoHint3() {
       window.location.href = "#hint3";
     }
-
-    function showHint2()
-    {
+    
+    function showHint2() {
       hint2.style.display = "inherit";
     }
-    function showHint3()
-    {
+    function showHint3() {
       hint2.style.display = "inherit";
       hint3.style.display = "inherit";
     }
@@ -40,7 +35,7 @@
       text-align: center;
       clear: both;
     }
-    h2.firstHeader {
+    h2.first {
       padding-top: 0px;
     }
       
@@ -51,14 +46,14 @@
       clear: left;
     }
     p.first {
-      padding-top: 10px;
+      padding-top: 5px;
     }
     p.underHr {
-      padding-top: 10px;
+      padding-top: 8px;
     }
       
     div.hr {
-      padding-top: 10px;
+      padding-top: 8px;
       clear: both;
     }
     hr {
@@ -67,7 +62,7 @@
     }
       
     table {
-      margin-top: 10px;
+      margin-top: 5px;
       margin-bottom: 0px;
     }
     td.first {
@@ -83,9 +78,9 @@
 </head>
 
 <body>
-  <h2 id="hint1" class="firstHeader">Wskazówka I</h2>
+  <h2 id="hint1" class="first">Wskazówka I</h2>
 
-  <p>
+  <p class="first">
     <img src="part3_hint1.png" alt="Nie udało załadować się obrazka"/>
     W trakcie działania programu twoja funkcja powinna utrzymywać tablicę podzieloną na cztery części:
     1. Na początku powinny znajdować się elementy mniejsze od „wartości osiowej” - nazwijmy ten fragment „A”.
@@ -105,7 +100,7 @@
 
   <div id="hint2" class="hidden">
     <h2>Wskazówka II</h2>
-    <p>
+    <p class="first">
       Twoja funkcja powinna działać w pętli. Dla każdego wywołania pętli funkcja powinna brać 
       pierwszy nieporównany element (pierwszy element fragmentu „C”) i porównywać go z „wartością osiową” 
       (pierwszym elementem fragmentu „B”).
@@ -123,7 +118,7 @@
       <hr>
     </div>
     
-    <p>
+    <p class="underHr">
       <img src="part3_hint2_2.png" alt="Nie udało załadować się obrazka"/>
       Jeśli element jest mniejszy od „wartości osiowej”. 
       Funkcja powinna zamienić ten element z pierwszym elementem fragmentu „B”, 
@@ -134,7 +129,7 @@
       <hr>
     </div>
     
-    <p>
+    <p class="underHr">
       <img src="part3_hint2_3.png" alt="Nie udało załadować się obrazka"/>
       Jeśli element jest równy „wartości osiowej”. 
       Funkcja powinna jedynie przesunąć znacznik „idxC”.

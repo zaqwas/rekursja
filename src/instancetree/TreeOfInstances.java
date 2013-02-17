@@ -593,6 +593,63 @@ public class TreeOfInstances {
         frame.setBounds(x, y, w, h);
     }
     
+    public void saveSettnings(DataOutputStream stream) throws IOException {
+        stream.writeBoolean(observeCurrent);
+        
+        int idxSelected = 0, idx = 0;
+        for (JRadioButtonMenuItem button : jumpLengthHorizontalMenuItems) {
+            if (button.isSelected()) {
+                idxSelected = idx;
+                break;
+            }
+            idx++;
+        }
+        stream.writeByte(idxSelected);
+
+        idxSelected = 0;
+        idx = 0;
+        for (JRadioButtonMenuItem button : jumpLengthVectricalMenuItems) {
+            if (button.isSelected()) {
+                idxSelected = idx;
+                break;
+            }
+            idx++;
+        }
+        stream.writeByte(idxSelected);
+
+        stream.writeBoolean(showButtonsMenuItem.isSelected());
+        
+        stream.writeBoolean(jumpHorizontalModeOnlyChildren);
+        
+        stream.writeBoolean(jumpDownModeLeftChild);
+    }
+    
+    public void loadSettnings(DataInputStream stream) throws IOException {
+        observeCurrent = stream.readBoolean();
+        if (observeCurrent) {
+            observeCurrentMenuItem.setSelected(true);
+        } else {
+            observeSelectedMenuItem.setSelected(true);
+        }
+        
+        int idx = stream.readByte();
+        jumpLengthHorizontalMenuItems[idx].doClick();
+        idx = stream.readByte();
+        jumpLengthVectricalMenuItems[idx].doClick();
+        
+        boolean showButtons = stream.readBoolean();
+        if (showButtons != showButtonsMenuItem.isSelected()) {
+            showButtonsMenuItem.doClick();
+        }
+        
+        jumpHorizontalModeOnlyChildren = stream.readBoolean();
+        leftJumpModeButton.setSelected(jumpHorizontalModeOnlyChildren);
+        rightJumpModeButton.setSelected(jumpHorizontalModeOnlyChildren);
+        
+        jumpDownModeLeftChild = stream.readBoolean();
+        downJumpModeButton.setSelected(jumpDownModeLeftChild);
+    }
+    
     public synchronized void start(Instance mainInstance) {
         functionNumberMap.clear();
         this.mainInstance = mainInstance;

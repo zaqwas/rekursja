@@ -381,6 +381,40 @@ public class StackOfInstances {
         int h = dataInputStream.readInt();
         frame.setBounds(x, y, w, h);
     }
+    
+    
+    public void saveSettnings(DataOutputStream stream) throws IOException {
+        stream.writeBoolean(observeTop);
+        
+        int idxSelected = 0, idx = 0;
+        for (JRadioButtonMenuItem button : jumpLengthMenuItems) {
+            if (button.isSelected()) {
+                idxSelected = idx;
+                break;
+            }
+            idx++;
+        }
+        stream.writeByte(idxSelected);
+
+        stream.writeBoolean(showButtonsMenuItem.isSelected());
+    }
+    
+    public void loadSettnings(DataInputStream stream) throws IOException {
+        observeTop = stream.readBoolean();
+        if (observeTop) {
+            observeTopMenuItem.setSelected(true);
+        } else {
+            observeSelectedMenuItem.setSelected(true);
+        }
+        
+        int idx = stream.readByte();
+        jumpLengthMenuItems[idx].doClick();
+        
+        boolean showButtons = stream.readBoolean();
+        if (showButtons != showButtonsMenuItem.isSelected()) {
+            showButtonsMenuItem.doClick();
+        }
+    }
 
     public synchronized void start(Instance mainInstance) {
         emptyLabel.setVisible(false);

@@ -693,6 +693,7 @@ public class ArrayFrame {
                 .prefColumnCount(2)
                 .visible(false)
                 .editable(false)
+                .contextMenu(null)
                 .build();
         flyingTextField2 = TextFieldBuilder.create()
                 .alignment(Pos.CENTER)
@@ -700,6 +701,7 @@ public class ArrayFrame {
                 .prefColumnCount(2)
                 .visible(false)
                 .editable(false)
+                .contextMenu(null)
                 .build();
         
         anchorPane.getChildren().addAll(vbox, flyingTextField1, flyingTextField2);
@@ -825,6 +827,7 @@ public class ArrayFrame {
                     .alignment(Pos.CENTER)
                     .style("-fx-font: 12 Monospaced;")
                     .prefColumnCount(2)
+                    .contextMenu(null)
                     .build();            
             arrayTextField[i] = text;
             text.textProperty().addListener(new TextFieldStringChangeListener(i));
@@ -848,7 +851,8 @@ public class ArrayFrame {
                     .prefColumnCount(2)
                     .editable(false)
                     .focusTraversable(false)
-                    .build();  
+                    .contextMenu(null)
+                    .build();
             arrayResultTextField[i] = text;
             text.disableProperty().bind(arraySize.lessThanOrEqualTo(i));
             grid.add(text, i % 8, i / 8);

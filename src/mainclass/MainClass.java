@@ -891,6 +891,7 @@ public class MainClass {
     }
     
     private void addFrame(String title, final JInternalFrame frame, boolean lessonFrame) {
+        frame.setComponentPopupMenu(null);
         JMenu menu = new JMenu(title);
 
         final JCheckBoxMenuItem show = new JCheckBoxMenuItem(Lang.showHideMenu);
@@ -974,7 +975,10 @@ public class MainClass {
             byte idx = stream.readByte();
             internalFrames.get(idx).toBack();
         }
-        console.loadAdditionalFrameOptions(stream);
+        stack.loadSettnings(stream);
+        tree.loadSettnings(stream);
+        instanceFrame.loadSettnings(stream);
+        console.loadSettnings(stream);
     }
 
     public void saveFramesPositionAndSettnings(DataOutputStream stream) throws IOException {
@@ -993,7 +997,10 @@ public class MainClass {
         for(byte b : zOrder) {
             stream.writeByte(b);
         }
-        console.saveAdditionalFrameOptions(stream);
+        stack.saveSettnings(stream);
+        tree.saveSettnings(stream);
+        instanceFrame.saveSettnings(stream);
+        console.saveSettnings(stream);
     }
     //</editor-fold>
     

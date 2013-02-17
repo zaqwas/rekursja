@@ -139,6 +139,9 @@ public class InterpreterThread extends Thread {
 
     @Override
     public void run() {
+        int stackSize = 1;
+        int treeSize = 1;
+        
         SyntaxNode nextNode = mainInstance.function;
         SyntaxNode prevNode = null;
         ProgramError programError = null;
@@ -160,9 +163,6 @@ public class InterpreterThread extends Thread {
 
         runStatus = RunStatus.RUNNING;
         while (currentInstance != null) {
-            if (programError != null) {
-                break;
-            }
             if (reqStatus == RequestStatus.STOP) {
                 currentInstance = null;
                 break;
@@ -247,6 +247,9 @@ public class InterpreterThread extends Thread {
                 if (realInstance == null) {
                     break;
                 }
+                if (function.isAddedToHistory()) {
+                    stackSize--;
+                }
                 if ( !function.isVoid() ) {
                     if ( returnedValue==null ) {
                         //TODO error
@@ -269,6 +272,7 @@ public class InterpreterThread extends Thread {
                     nextNode = prevNode.commit(realInstance);
                 } catch (ProgramError ex) {
                     programError = ex;
+                    break;
                 }
                 //</editor-fold>
                 
@@ -283,6 +287,21 @@ public class InterpreterThread extends Thread {
                 if ( historyFunction ) {
                     topStackInstance = realInstance;
                     newInstance = true;
+                    
+                    stackSize++;
+                    if ( stackSize > 100 ) {
+                        markTopStackInstance = true;
+                        programError = new ProgramError(Lang.stackSizeExceeded, 
+                                call.getLeftIndex(), call.getRightIndex());
+                        break;
+                    }
+                    treeSize++;
+                    if ( treeSize > 2000 ) {
+                        markTopStackInstance = true;
+                        programError = new ProgramError(Lang.treeSizeExceeded, 
+                                call.getLeftIndex(), call.getRightIndex());
+                        break;
+                    }
                 }
                 if ( function.isStopedBeforeCall() ) {
                     if ( checkPauseStatus() ) {
@@ -313,6 +332,7 @@ public class InterpreterThread extends Thread {
                     nextNode = nextNode.commit(realInstance);
                 } catch (ProgramError ex) {
                     programError = ex;
+                    break;
                 }
             }
         }
@@ -330,6 +350,10 @@ public class InterpreterThread extends Thread {
             instanceFrame.update(topStackInstance);
             tree.update(topStackInstance);
             stack.update(topStackInstance);
+            if (markTopStackInstance) {
+                tree.mark();
+                stack.mark();
+            }
         }
         
         statistics.update();
@@ -337,4 +361,13 @@ public class InterpreterThread extends Thread {
         mainClass.clearThread();
     }
 
+    
+    //<editor-fold defaultstate="collapsed" desc="Language">
+    private static class Lang {
+        public static final String stackSizeExceeded = "Przekroczono rozmiar stosu (maksymalny rozmiar = 100)";
+        public static final String treeSizeExceeded = "Przekroczono liczbę wywołań funkcji (maksymalna liczba = 2000)";
+        
+    }
+    //</editor-fold>
+    
 }

@@ -33,8 +33,8 @@ public class Console {
     private MainClass mainClass;
     
     private JTextArea textArea;
-    private JRadioButtonMenuItem clearMenuItem;
-    private JRadioButtonMenuItem keepMenuItem;
+    private JRadioButtonMenuItem clearTextMenuItem;
+    private JRadioButtonMenuItem keepTextMenuItem;
     
     private FileFilter textFileFilter;
     
@@ -57,15 +57,15 @@ public class Console {
         
         JMenu clearingMenu = new JMenu(Lang.clearingMenu);
         menuBar.add(clearingMenu);
-        clearMenuItem = new JRadioButtonMenuItem(Lang.clearMenuItem);
-        clearingMenu.add(clearMenuItem);
-        keepMenuItem = new JRadioButtonMenuItem(Lang.keepMenuItem);
-        clearingMenu.add(keepMenuItem);
+        clearTextMenuItem = new JRadioButtonMenuItem(Lang.clearMenuItem);
+        clearingMenu.add(clearTextMenuItem);
+        keepTextMenuItem = new JRadioButtonMenuItem(Lang.keepMenuItem);
+        clearingMenu.add(keepTextMenuItem);
         
         ButtonGroup group = new ButtonGroup();
-        group.add(clearMenuItem);
-        group.add(keepMenuItem);
-        clearMenuItem.setSelected(true);
+        group.add(clearTextMenuItem);
+        group.add(keepTextMenuItem);
+        clearTextMenuItem.setSelected(true);
         
         JMenu optionsMenu = new JMenu(Lang.optionsMenu);
         menuBar.add(optionsMenu);
@@ -154,21 +154,21 @@ public class Console {
         return frame;
     }
 
-    public void saveAdditionalFrameOptions(DataOutputStream stream) throws IOException {
-        stream.writeBoolean(clearMenuItem.isSelected());
+    public void saveSettnings(DataOutputStream stream) throws IOException {
+        stream.writeBoolean(clearTextMenuItem.isSelected());
     }
 
-    public void loadAdditionalFrameOptions(DataInputStream stream) throws IOException {
+    public void loadSettnings(DataInputStream stream) throws IOException {
         boolean selected = stream.readBoolean();
         if (selected) {
-            clearMenuItem.setSelected(true);
+            clearTextMenuItem.setSelected(true);
         } else {
-            keepMenuItem.setSelected(true);
+            keepTextMenuItem.setSelected(true);
         }
     }
 
     public void start() {
-        if (clearMenuItem.isSelected()) {
+        if (clearTextMenuItem.isSelected()) {
             textArea.setText("");
         }
     }

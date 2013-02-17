@@ -418,6 +418,19 @@ public class InstanceFrame {
         int h = dataInputStream.readInt();
         frame.setBounds(x, y, w, h);
     }
+    
+    public void saveSettnings(DataOutputStream stream) throws IOException {
+        stream.writeBoolean(observeTopStackInstanceMenuItem.isSelected());
+    }
+    
+    public void loadSettnings(DataInputStream stream) throws IOException {
+        boolean observeTopStackInstance = stream.readBoolean();
+        if (observeTopStackInstance) {
+            observeTopStackInstanceMenuItem.setSelected(true);
+        } else {
+            observeSelectedInstanceMenuItem.setSelected(true);
+        }
+    }
 
     public void start(SyntaxTree syntaxTree, Instance mainInstance) {
         updateAllPanels(syntaxTree, mainInstance, 2);
