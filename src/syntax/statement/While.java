@@ -24,4 +24,9 @@ public class While extends SyntaxNodeCond {
             SyntaxNode.printDebugList(statements);
         }
     }
+    
+    @Override
+    protected String getNameOfInstruction() {
+        return doWhile ? "Pętla do...while: " : "Pętla while: ";
+    }
 }

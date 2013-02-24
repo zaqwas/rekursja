@@ -1,5 +1,6 @@
 package lesson._07A_PartitionFunction;
 
+import helpers.LessonHelper;
 import java.awt.Dimension;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -251,8 +252,7 @@ class TextFrame {
                 }
                 if (shown == 3) {
                     part2HintTabDisabledProperty.set(false);
-                    //part2HintTabWebEngine.executeScript("showHint3()");
-                    showHintFunction(part2HintTabWebEngine, 3);
+                    LessonHelper.initializeHintTab(part2HintTabWebEngine, 3);
                 }
                 
                 WebEngine webEngine;
@@ -278,8 +278,7 @@ class TextFrame {
                     hintTabDisabledProperty.set(false);
                 }
                 if ( hint >= 2 ) {
-                    //webEngine.executeScript("showHint3()");//hint
-                    showHintFunction(webEngine, hint);
+                    LessonHelper.initializeHintTab(webEngine, hint);
                 }
                 if (state == State.Summary) {
                     part3SummaryTabDisabledProperty.set(false);
@@ -316,38 +315,6 @@ class TextFrame {
     
     
     //private functions:
-    
-    //<editor-fold defaultstate="collapsed" desc="showHintFunction">
-    private void showHintFunction(final WebEngine webEngine, final int hint) {
-        assert hint == 2 || hint == 3;
-        assert webEngine != null;
-        assert Platform.isFxApplicationThread();
-
-        final ReadOnlyBooleanProperty runningProperty = 
-                webEngine.getLoadWorker().runningProperty();
-        
-        if ( runningProperty.get() ) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (runningProperty.get()) {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ex) {}
-                    }
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            webEngine.executeScript("showHint" + hint + "()");
-                        }
-                    });
-                }
-            }).start();
-        } else {
-            webEngine.executeScript("showHint" + hint + "()");
-        }
-    }
-    //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="initPart1TabPane">    
     private void initPart1TabPane(AnchorPane anchorPane) {

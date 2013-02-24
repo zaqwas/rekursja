@@ -1,7 +1,7 @@
 package lesson._07A_PartitionFunction;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
-import helpers.ReadFileHelper;
+import helpers.LessonHelper;
 import interpreter.InterpreterThread;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,11 +20,9 @@ import lesson.LessonLoader;
 import mainclass.MainClass;
 import parser.SpecialFunctions;
 import syntax.SyntaxNode;
-import syntax.expression.Call;
-import syntax.function.FunctionBehavior;
 //</editor-fold>
 
-public class PartitionFunctionLesson implements Lesson {
+class PartitionFunctionLesson implements Lesson {
     
     //<editor-fold defaultstate="collapsed" desc="Enums">
     private static enum State {
@@ -123,6 +121,7 @@ public class PartitionFunctionLesson implements Lesson {
     private String part3SolutionCode;
     
     private StartSpecialFunction startSpecialFunction;
+    private CheckSpecialFunction checkSpecialFunction;
     private CompareOneSpecialFunction compareOneSpecialFunction;
     private CompareTwoSpecialFunction compareTwoSpecialFunction;
     private MoveSpecialFunction moveSpecialFunction;
@@ -249,9 +248,9 @@ public class PartitionFunctionLesson implements Lesson {
         int option = JOptionPane.showOptionDialog(
                 null, Lang.showSolutionConifrm, Lang.question,
                 JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                new Object[]{Lang.cancel, Lang.showHint, Lang.showSolution},
+                new Object[]{Lang.showSolution, Lang.showHint, Lang.cancel},
                 Lang.showHint);
-        if (option != 2) {
+        if (option != 0) {
             menuItem.setSelected(true);
             if ( option == 1 ) {
                 showNextHint();
@@ -271,8 +270,8 @@ public class PartitionFunctionLesson implements Lesson {
         int option = JOptionPane.showOptionDialog(
                 null, message, Lang.question,
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                new Object[]{Lang.no, Lang.yes}, Lang.no);
-        return option == 1;
+                new Object[]{Lang.yes, Lang.no}, Lang.no);
+        return option == 0;
     }
     //</editor-fold>
 
@@ -281,23 +280,23 @@ public class PartitionFunctionLesson implements Lesson {
     private void initCodes(boolean initUserCodes) {
         InputStream stream;
         stream = getClass().getResourceAsStream("part1_solution_code.txt");
-        part1SolutionCode = ReadFileHelper.readFile(stream);
+        part1SolutionCode = LessonHelper.readFile(stream);
 
         stream = getClass().getResourceAsStream("part2_solution_code.txt");
-        part2SolutionCode = ReadFileHelper.readFile(stream);
+        part2SolutionCode = LessonHelper.readFile(stream);
 
         stream = getClass().getResourceAsStream("part3_solution_code.txt");
-        part3SolutionCode = ReadFileHelper.readFile(stream);
+        part3SolutionCode = LessonHelper.readFile(stream);
 
         if (initUserCodes) {
             stream = getClass().getResourceAsStream("part1_user_code.txt");
-            part1UserCode = ReadFileHelper.readFile(stream);
+            part1UserCode = LessonHelper.readFile(stream);
 
             stream = getClass().getResourceAsStream("part2_user_code.txt");
-            part2UserCode = ReadFileHelper.readFile(stream);
+            part2UserCode = LessonHelper.readFile(stream);
 
             stream = getClass().getResourceAsStream("part3_user_code.txt");
-            part3UserCode = ReadFileHelper.readFile(stream);
+            part3UserCode = LessonHelper.readFile(stream);
         }
         oldCode = mainClass.getEditor().getCode();
     }
@@ -306,6 +305,7 @@ public class PartitionFunctionLesson implements Lesson {
     //<editor-fold defaultstate="collapsed" desc="initSpecialFunctions">
     private void initSpecialFunctions() {
         startSpecialFunction = new StartSpecialFunction(arrayFrame);
+        checkSpecialFunction = new CheckSpecialFunction(mainClass, arrayFrame);
         compareOneSpecialFunction = new CompareOneSpecialFunction(arrayFrame);
         compareTwoSpecialFunction = new CompareTwoSpecialFunction(arrayFrame);
         moveSpecialFunction = new MoveSpecialFunction(arrayFrame);
@@ -683,6 +683,7 @@ public class PartitionFunctionLesson implements Lesson {
         SpecialFunctions.clear();
         compareOneSpecialFunction.setSelectedPart(1);
         SpecialFunctions.addSpecialFunction(startSpecialFunction);
+        SpecialFunctions.addSpecialFunction(checkSpecialFunction);
         SpecialFunctions.addSpecialFunction(compareOneSpecialFunction);
         SpecialFunctions.addSpecialFunction(moveSpecialFunction);
     }
@@ -723,6 +724,7 @@ public class PartitionFunctionLesson implements Lesson {
         SpecialFunctions.clear();
         compareOneSpecialFunction.setSelectedPart(2);
         SpecialFunctions.addSpecialFunction(startSpecialFunction);
+        SpecialFunctions.addSpecialFunction(checkSpecialFunction);
         SpecialFunctions.addSpecialFunction(compareOneSpecialFunction);
         SpecialFunctions.addSpecialFunction(moveSpecialFunction);
         SpecialFunctions.addSpecialFunction(swapSpecialFunction);
@@ -764,6 +766,7 @@ public class PartitionFunctionLesson implements Lesson {
         
         SpecialFunctions.clear();
         SpecialFunctions.addSpecialFunction(startSpecialFunction);
+        SpecialFunctions.addSpecialFunction(checkSpecialFunction);
         SpecialFunctions.addSpecialFunction(compareTwoSpecialFunction);
         SpecialFunctions.addSpecialFunction(swapSpecialFunction);
     }
@@ -788,6 +791,20 @@ public class PartitionFunctionLesson implements Lesson {
         stream.writeByte(part2ChosenCode.Id);
         stream.writeByte(part3ChosenCode.Id);
         
+        if (selectedPart == 1) {
+            if (part1ChosenCode == ChosenCode.User) {
+                part1UserCode = mainClass.getEditor().getCode();
+            }
+        } else if (selectedPart == 2) {
+            if (part2ChosenCode == ChosenCode.User) {
+                part2UserCode = mainClass.getEditor().getCode();
+            }
+        } else {
+            if (part3ChosenCode == ChosenCode.User) {
+                part3UserCode = mainClass.getEditor().getCode();
+            }
+        }
+        
         stream.writeUTF(part1UserCode);
         stream.writeUTF(part2UserCode);
         stream.writeUTF(part3UserCode);
@@ -809,11 +826,41 @@ public class PartitionFunctionLesson implements Lesson {
     @Override
     public void threadStart(InterpreterThread thread) {
         arrayFrame.threadStart();
+        
+        if ( selectedPart == 1) {
+            part1GotoPart2MenuItem.setEnabled(false);
+            part1UserCodeMenuItem.setEnabled(false);
+            part1SolutionCodeMenuItem.setEnabled(false);
+        } else if (selectedPart == 2) {
+            part2GotoPart1MenuItem.setEnabled(false);
+            part2GotoPart3MenuItem.setEnabled(false);
+            part2UserCodeMenuItem.setEnabled(false);
+            part2SolutionCodeMenuItem.setEnabled(false);
+        } else {
+            part3GotoPart2MenuItem.setEnabled(false);
+            part3UserCodeMenuItem.setEnabled(false);
+            part3SolutionCodeMenuItem.setEnabled(false);
+        }
     }
     
     @Override
     public void threadStop() {
         arrayFrame.threadStop();
+        
+        if (selectedPart == 1) {
+            part1GotoPart2MenuItem.setEnabled(true);
+            part1UserCodeMenuItem.setEnabled(true);
+            part1SolutionCodeMenuItem.setEnabled(true);
+        } else if (selectedPart == 2) {
+            part2GotoPart1MenuItem.setEnabled(true);
+            part2GotoPart3MenuItem.setEnabled(true);
+            part2UserCodeMenuItem.setEnabled(true);
+            part2SolutionCodeMenuItem.setEnabled(true);
+        } else {
+            part3GotoPart2MenuItem.setEnabled(true);
+            part3UserCodeMenuItem.setEnabled(true);
+            part3SolutionCodeMenuItem.setEnabled(true);
+        }
     }
     
     @Override

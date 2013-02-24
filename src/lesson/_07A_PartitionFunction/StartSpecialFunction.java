@@ -1,6 +1,5 @@
 package lesson._07A_PartitionFunction;
 
-import lesson._06A_MergeFunction.*;
 import interpreter.Instance;
 import interpreter.accessvar.VariableType;
 import interpreter.arguments.ArgReference;

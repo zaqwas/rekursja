@@ -39,7 +39,7 @@ public final class Parser {
                 || s.equals("do") || s.equals("if") || s.equals("else")
                 || s.equals("for") || s.equals("int") || s.equals("return")
                 || s.equals("void") || s.equals("while") || s.equals("var")
-                || s.equals("read") || s.equals("write");
+                || s.equals("write") || s.equals("writeln");
     }
 
     private static void skipBlank() throws ParseError {
@@ -211,9 +211,15 @@ public final class Parser {
             while (true) {
                 skipBlank();
                 indexBegin = index;
+                VariableType type = VariableType.INTEGER;
+                char c = str.charAt(index);
+                if (c == '&') {
+                    type = VariableType.REFERENCE;
+                    index++;
+                }
                 name = getStr();
                 if (name.equals("")) {
-                    throw new ParseError(15, index);
+                    throw new ParseError(type == VariableType.INTEGER ? 15 : 50, index);
                 }
                 if (keyWord(name)) {
                     throw new ParseError(16, indexBegin);
@@ -221,19 +227,15 @@ public final class Parser {
                 if (f.checkDeclaration(name)) {
                     throw new ParseError(17, indexBegin);
                 }
-                VariableType type = VariableType.INTEGER;
+                
                 skipBlank();
-                char c = str.charAt(index++);
-                if (c == '&' || c == '[') {
-                    if (c == '&') {
-                        type = VariableType.REFERENCE;
-                    } else {
-                        skipBlank();
-                        if (str.charAt(index++) != ']') {
-                            throw new ParseError(10, index-1);
-                        }
-                        type = VariableType.ARRAY;
+                c = str.charAt(index++);
+                if (c == '[' && type == VariableType.INTEGER) {
+                    skipBlank();
+                    if (str.charAt(index++) != ']') {
+                        throw new ParseError(10, index-1);
                     }
+                    type = VariableType.ARRAY;
                     skipBlank();
                     c = str.charAt(index++);
                 }
@@ -296,17 +298,14 @@ public final class Parser {
                     throw new ParseError(25, idx);
                 }
             }
+            int rightIdx = index;
             skipBlank();
             if (str.charAt(index) != ';') {
                 throw new ParseError(23, index);
             }
             index++;
             skipBlank();
-            if (s.equals("break")) {
-                return new BreakContinue(true, idx);
-            } else {
-                return new BreakContinue(false, idx);
-            }
+            return new BreakContinue(s.equals("break"), idx, rightIdx);
         } else if (s.equals("return")) {
             Return ret = new Return(idx);
             if (integer) {
@@ -460,8 +459,8 @@ public final class Parser {
     }
 
     private static SyntaxNodeExpr parseExpr() throws ParseError {
-        Stack<Operation> sOper = new Stack<Operation>();
-        Stack<SyntaxNodeExpr> sVar = new Stack<SyntaxNodeExpr>();
+        Stack<Operation> sOper = new Stack<>();
+        Stack<SyntaxNodeExpr> sVar = new Stack<>();
         boolean nextOper = false;
 
         while (true) {
@@ -616,8 +615,6 @@ public final class Parser {
             if (slash) {
                 if (c == 'n') {
                     sb.append('\n');
-                } else if (c == 't') {
-                    sb.append("   ");
                 } else if (c == '"' || c == '\\') {
                     sb.append(c);
                 } else {
@@ -650,13 +647,13 @@ public final class Parser {
             }
         }
 
-        boolean writeOrRead = false, isCall = false, write = false;
+        boolean writeFunc = false, isCall = false, write = false;
         int indexTemp = index;
         skipBlank();
         char c = str.charAt(index);
         index++;
 
-        if (s.equals("write") || s.equals("read")) {
+        if (s.equals("write") || s.equals("writeln")) {
             if (callInExpr) {
                 throw new ParseError(34, index);
             }
@@ -665,7 +662,7 @@ public final class Parser {
                 throw new ParseError(14, index);
             }
             write = s.equals("write");
-            writeOrRead = true;
+            writeFunc = true;
         } else {
             if (keyWord(s)) {
                 throw new ParseError(35, idx);
@@ -675,12 +672,12 @@ public final class Parser {
             }
         }
 
-        if (isCall || writeOrRead) {
+        if (isCall || writeFunc) {
             Call cl = new Call(s, idx, callInExpr);
             skipBlank();
             if (str.charAt(index) != ')') {
                 while (true) {
-                    if (write && str.charAt(index) == '"') {
+                    if (writeFunc && str.charAt(index) == '"') {
                         int indexBegin = index;
                         index++;
                         String strParam = parseStrParam();
@@ -701,7 +698,7 @@ public final class Parser {
                     skipBlank();
                 }
             } else {
-                if (writeOrRead) {
+                if (write) {
                     throw new ParseError(39, index - 1);
                 }
                 index++;
@@ -775,49 +772,36 @@ public final class Parser {
 
     public static SyntaxTree parse(String str) throws ParseError {
         try {
-            boolean nothingDeclared = true;
+            SyntaxTree syntaxTree = new SyntaxTree();
+            
             int indexBegin;
-
             Parser.str = str + ((char) 0);
             index = 0;
-
-            SyntaxTree syntaxTree = new SyntaxTree();
-
-            brackets = new ArrayList<Bracket>();
-
-            skipBlank();
-            indexBegin = index;
-            String s = getStr();
-            if (s.equals("var")) {
-                parseVar(null, syntaxTree);
-                nothingDeclared = false;
+            brackets = new ArrayList<>();
+            
+            while (true) {
                 skipBlank();
                 indexBegin = index;
-                s = getStr();
-            }
+                String s = getStr();
 
-            while (true) {
-                if (s.equals("") || (!s.equals("int") && !s.equals("void"))) {
-                    if (s.equals("") && index >= str.length() - 1) {
-                        break;
-                    }
-                    if (nothingDeclared) {
-                        throw new ParseError(19, indexBegin);
-                    } else {
-                        throw new ParseError(20, indexBegin);
-                    }
-                } else {
+                if (s.equals("var")) {
+                    parseVar(null, syntaxTree);
+                    skipBlank();
+                } else if (s.equals("int") || s.equals("void")) {
                     Function f = parseFunction(s.equals("int"));
                     syntaxTree.addFunction(f);
-                    nothingDeclared = false;
-                    indexBegin = index;
-                    s = getStr();
+                } else if (s.equals("") && index >= str.length() - 1) {
+                    break;
+                } else {
+                    throw new ParseError(20, indexBegin);
                 }
             }
-            SpecialFunctions.checkSyntaxTree(syntaxTree);
             
             CheckConstraints.check(syntaxTree);
             JumpLinker.doJumpLinks(syntaxTree);
+            
+            SpecialFunctions.checkSyntaxTree(syntaxTree);
+            
             return syntaxTree;
         } finally {
             Parser.str = null;

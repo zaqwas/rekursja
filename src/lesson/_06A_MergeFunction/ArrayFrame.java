@@ -1,11 +1,12 @@
 package lesson._06A_MergeFunction;
 
+//<editor-fold defaultstate="collapsed" desc="Import classes">
+import interpreter.InterpreterThread;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
-import javafx.animation.TranslateTransition;
 import javafx.animation.TranslateTransitionBuilder;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -21,6 +22,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.CheckMenuItemBuilder;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.LabelBuilder;
@@ -40,51 +43,109 @@ import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import mainclass.MainClass;
+//</editor-fold>
 
 public class ArrayFrame {
 
+    //<editor-fold defaultstate="collapsed" desc="Components and variables">
     private MainClass mainClass;
     private JInternalFrame frame;
     
+    private int semaphore;
     private boolean notCheckStringProperty = false;
+    
     private SimpleIntegerProperty randMaxValue = new SimpleIntegerProperty();
     private SimpleIntegerProperty array1Size = new SimpleIntegerProperty();
     private SimpleIntegerProperty array2Size = new SimpleIntegerProperty();
+    private SimpleIntegerProperty animationTime = new SimpleIntegerProperty();
+    private DoubleProperty array1LayoutYProperty;
     private DoubleProperty array2LayoutYProperty;
     private DoubleProperty arrayResultLayoutYProperty;
     private BooleanProperty array1SizeSliderDisableProperty;
     private BooleanProperty array2SizeSliderDisableProperty;
     private BooleanProperty randomValuesButtonDisableProperty;
+    private BooleanProperty animationSynchronizedProperty;
+    
     private TextField array1TextField[] = new TextField[16];
     private TextField array2TextField[] = new TextField[16];
     private TextField arrayResultTextField[] = new TextField[32];
     private TextField flyingTextField;
     private Menu arraysSizeMenu;
     private Menu randomValuesMenu;
+    private Menu animationMenu;
     
     private BigInteger array1SizeBigInt;
     private BigInteger array2SizeBigInt;
-    private int array1Values[] = new int[16];
-    private int array2Values[] = new int[16];
-    private String arrayResultTextValues[] = new String[32];
+    private BigInteger arrayReslutSizeBigInt;
+    private int array1Value[] = new int[16];
+    private int array2Value[] = new int[16];
+    private boolean array1Removed[] = new boolean[16];
+    private boolean array2Removed[] = new boolean[16];
+    private String arrayResultText[] = new String[32];
+    private int arrayResultValue[] = new int[32];
+    //</editor-fold>
 
     
-    //<editor-fold defaultstate="collapsed" desc="showFrame">
-    public void showFrame() {
+    public ArrayFrame(MainClass mainClass) {
+        this.mainClass = mainClass;
+        initFrame();
+    }
+    
+    
+    //<editor-fold defaultstate="collapsed" desc="getFrame">
+    public JInternalFrame getFrame() {
+        return frame;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="frameToFront">
+    public void frameToFront() {
         frame.setVisible(true);
+        frame.toFront();
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="arrays size and values fuctions">
+    
+    public int getArraySize(boolean firstTab) {
+        return firstTab ? array1Size.get() : array2Size.get();
+    }
+    public BigInteger getArraySizeBigInt(boolean firstTab) {
+        return firstTab ? array1SizeBigInt : array2SizeBigInt;
+    }
+    
+    public int getArrayResultSize() {
+        return array1Size.get() + array2Size.get();
+    }
+    public BigInteger getArrayReslutSizeBigInt(){
+        return arrayReslutSizeBigInt;
+    }
+    
+    
+    public int getArrayValue(int index, boolean firstTab) {
+        return firstTab ? array1Value[index] : array2Value[index];
+    }
+    public int getArrayReslutValue(int index) {
+        return arrayResultValue[index];
     }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="startThread">
     public void threadStart() {
+        semaphore = 1;
+        
+        Arrays.fill(array1Removed, false);
+        Arrays.fill(array2Removed, false);
+        Arrays.fill(arrayResultText, null);
+        Arrays.fill(arrayResultValue, -1);
         for (int i = 0; i < 16; i++) {
-            arrayResultTextValues[i] = null;
-            arrayResultTextValues[i+16] = null;
-            array1Values[i] = Integer.parseInt(array1TextField[i].getText());
-            array2Values[i] = Integer.parseInt(array2TextField[i].getText());
+            array1Value[i] = Integer.parseInt(array1TextField[i].getText());
+            array2Value[i] = Integer.parseInt(array2TextField[i].getText());
         }
+        
         array1SizeBigInt = BigInteger.valueOf(array1Size.get());
         array2SizeBigInt = BigInteger.valueOf(array2Size.get());
+        arrayReslutSizeBigInt = BigInteger.valueOf(array1Size.get() + array2Size.get());
         
         Platform.runLater(new Runnable() {
             @Override
@@ -92,80 +153,236 @@ public class ArrayFrame {
                 array1SizeSliderDisableProperty.set(true);
                 array2SizeSliderDisableProperty.set(true);
                 randomValuesButtonDisableProperty.set(true);
+                
                 for (int i = 0; i < 16; i++) {
                     array1TextField[i].setEditable(false);
                     array2TextField[i].setEditable(false);
                     arrayResultTextField[i].setText("");
                     arrayResultTextField[i + 16].setText("");
+                    arrayResultTextField[i].setId("empty");
+                    arrayResultTextField[i + 16].setId("empty");
                 }
+                
+                semaphore = 0;
             }
         });
+        while (semaphore > 0) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+            }
+        }
     }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="stopThread">
     public void threadStop() {
+        semaphore = 1;
+        
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < 16; i++) {
                     array1TextField[i].setEditable(true);
                     array2TextField[i].setEditable(true);
+                    array1TextField[i].setId("first");
+                    array2TextField[i].setId("second");
+                    arrayResultTextField[i].setText(arrayResultText[i]);
+                    arrayResultTextField[i + 16].setText(arrayResultText[i + 16]);
+                }
+                for (int i = 0; i < 32; i++) {
+                    arrayResultTextField[i].setText(arrayResultText[i]);
+                    if (arrayResultText[i] != null) {
+                        arrayResultTextField[i].setId("result");
+                    }
                 }
                 array1SizeSliderDisableProperty.set(false);
                 array2SizeSliderDisableProperty.set(false);
                 randomValuesButtonDisableProperty.set(false);
+                
+                semaphore = 0;
             }
         });
-        updateResultValues();
-    }
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="getArraySize">
-    public int getArraySize(int nr) {
-        assert nr == 1 || nr == 2;
-        return nr == 1 ? array1Size.get() : array2Size.get();
-    }
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="getArraySizeBigInt">
-    public BigInteger getArraySizeBigInt(int nr) {
-        assert nr == 1 || nr == 2;
-        return nr == 1 ? array1SizeBigInt : array2SizeBigInt;
-    }
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="getArrayValue">
-    public int getArrayValue(int index, int nr) {
-        assert nr == 1 || nr == 2;
-        return nr == 1 ? array1Values[index] : array2Values[index];
-    }
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="moveValueToResultArray">
-    public void moveValueToResultArray(int idxSrc, int nr, int idxDest) {
-        assert nr == 1 || nr == 2;
-        TextField[] array = nr == 1 ? array1TextField : array2TextField;
-        arrayResultTextValues[idxDest] = array[idxSrc].getText();
+        while (semaphore > 0) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+            }
+        }
     }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="updateResultValues">
     public void updateResultValues() {
+        semaphore = 1;
+        
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < 32; i++) {
-                    arrayResultTextField[i].setText(arrayResultTextValues[i]);
+                    arrayResultTextField[i].setText(arrayResultText[i]);
+                    if (arrayResultText[i] != null) {
+                        arrayResultTextField[i].setId("result");
+                    }
                 }
+                for (int i = 0; i < 16; i++) {
+                    if (array1Removed[i]) {
+                        array1TextField[i].setId("empty");
+                    }
+                    if (array2Removed[i]) {
+                        array2TextField[i].setId("empty");
+                    }
+                }
+                semaphore = 0;
             }
         });
+        while (semaphore > 0) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+            }
+        }
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="compare functions">
+    
+    public void compareStart(final int idx1, final int idx2) {
+        semaphore = 1;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                array1TextField[idx1].setId("comparing");
+                array2TextField[idx2].setId("comparing");
+                semaphore = 0;
+            }
+        });
+        while (semaphore > 0) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+            }
+        }
+    }
+
+    public void compareStop(final int idx1, final int idx2) {
+        semaphore = 1;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                String id = array1Removed[idx1] ? "empty" : "first";
+                array1TextField[idx1].setId(id);
+
+                id = array2Removed[idx2] ? "empty" : "second";
+                array2TextField[idx2].setId(id);
+
+                semaphore = 0;
+            }
+        });
+        while (semaphore > 0) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+            }
+        }
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="moveValue fuctions">
+    
+    public void moveValue(int idxSrc, boolean firstTab, int idxDest) {
+        boolean removedArray[] = firstTab ? array1Removed : array2Removed;
+        removedArray[idxSrc] = true;
+        
+        TextField textArray[] = firstTab ? array1TextField : array2TextField;
+        arrayResultText[idxDest] = textArray[idxSrc].getText();
+        
+        int array[] = firstTab ? array1Value : array2Value;
+        arrayResultValue[idxDest] = array[idxSrc];
+    }
+    
+    public void undoMoveValue(int idxSrc, boolean firstTab, int idxDest) {
+        boolean removedArray[] = firstTab ? array1Removed : array2Removed;
+        removedArray[idxSrc] = false;
+        
+        arrayResultText[idxDest] = null;
+    }
+    
+    public boolean isValueRemoved(int index, boolean firstTab) {
+        return firstTab ? array1Removed[index] : array2Removed[index];
+    }
+    public boolean isResultValueSet(int index) {
+        return arrayResultText[index] != null;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="animateMove">
+    
+    public void animateMove(final int idxSrc, final boolean firstTab, final int idxDest, final int delayTime) {
+        semaphore = 1;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                double xSrc, ySrc, xDest, yDest;
+
+                TextField arrayTextField[] = firstTab ? array1TextField : array2TextField;
+                boolean arrayRemoved[] = firstTab ? array1Removed : array2Removed;
+                DoubleProperty arrayLayoutYProperty = firstTab ? array1LayoutYProperty : array2LayoutYProperty;
+                
+                TextField testSrc = arrayTextField[idxSrc];
+                xSrc = testSrc.getLayoutX();
+                ySrc = testSrc.getLayoutY();
+                ySrc += arrayLayoutYProperty.get();
+
+                TextField testDest = arrayResultTextField[idxDest];
+                xDest = testDest.getLayoutX();
+                yDest = testDest.getLayoutY();
+                yDest += arrayResultLayoutYProperty.get();
+                
+                arrayTextField[idxSrc].setId("empty");
+                arrayRemoved[idxSrc] = true;
+                
+                final String text = arrayTextField[idxSrc].getText();
+                
+                flyingTextField.setText(text);
+                flyingTextField.setId(firstTab ? "first" : "second");
+                flyingTextField.setVisible(true);
+                
+                EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent t) {
+                        flyingTextField.setVisible(false);
+                        arrayResultText[idxDest] = text;
+                        arrayResultTextField[idxDest].setText(text);
+                        arrayResultTextField[idxDest].setId("result");
+                        semaphore = 0;
+                    }
+                };
+
+                int delay = animationSynchronizedProperty.get() ? delayTime
+                        : InterpreterThread.getDelayTime(animationTime.get());
+                
+                TranslateTransitionBuilder.create()
+                        .duration(Duration.millis(delay))
+                        .node(flyingTextField)
+                        .fromX(xSrc).toX(xDest)
+                        .fromY(ySrc).toY(yDest)
+                        .onFinished(event)
+                        .build()
+                        .play();
+            }
+        });
+        while (semaphore > 0) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {}
+        }
     }
     //</editor-fold>
     
     
+    //private functions:
     
-
     //<editor-fold defaultstate="collapsed" desc="RandomValuesAction">
     private class RandomValuesAction implements EventHandler<ActionEvent> {
         @Override
@@ -347,38 +564,6 @@ public class ArrayFrame {
     };
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="animateMove">
-    private void animateMove(int idxSrc, boolean first, int idxDest) {
-        double xSrc = 0, ySrc = 0, xDest = 0, yDest = 0;
-        
-        TextField arrayTextField[] = first ? array1TextField : array2TextField;
-        TextField testSrc = arrayTextField[idxSrc];
-        xSrc = testSrc.getLayoutX();
-        ySrc = testSrc.getLayoutY();
-        if (!first) {
-            ySrc += array2LayoutYProperty.get();
-        }
-        
-        TextField testDest = arrayResultTextField[idxDest];
-        xDest = testDest.getLayoutX();
-        yDest = testDest.getLayoutY();
-        yDest += arrayResultLayoutYProperty.get();
-        
-        flyingTextField.setText("WW");
-        flyingTextField.setVisible(true);
-        
-        TranslateTransition transition = TranslateTransitionBuilder.create()
-                .duration(Duration.millis(500))
-                .node(flyingTextField)
-                .fromX(xSrc)
-                .toX(xDest)
-                .fromY(ySrc)
-                .toY(yDest)
-                .build();
-        transition.play();
-    }
-    //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="hideMenu">
     private void hideMenu() {
         if (arraysSizeMenu == null || randomValuesMenu == null) {
@@ -399,6 +584,13 @@ public class ArrayFrame {
                     randomValuesMenu.hide();
                 }
             };
+        } else if (animationMenu.isShowing()) {
+            run = new Runnable() {
+                @Override
+                public void run() {
+                    animationMenu.hide();
+                }
+            };
         }
         if (run != null) {
             Platform.runLater(run);
@@ -416,13 +608,15 @@ public class ArrayFrame {
         AnchorPane.setTopAnchor(vbox, 0d);
         AnchorPane.setBottomAnchor(vbox, 0d);
         
-        flyingTextField = TextFieldBuilder.create()
+        TextFieldBuilder textFieldBuilder = TextFieldBuilder.create()
                 .alignment(Pos.CENTER)
                 .style("-fx-font: 12 Monospaced;")
-                .prefColumnCount(2)
-                .visible(false)
-                .editable(false)
-                .build();
+                .prefColumnCount(2);
+        
+        flyingTextField = textFieldBuilder.build();
+        flyingTextField.setVisible(false);
+        flyingTextField.setEditable(false);
+        flyingTextField.setFocusTraversable(false);
         
         anchorPane.getChildren().addAll(vbox, flyingTextField);
         
@@ -432,14 +626,16 @@ public class ArrayFrame {
 
         //<editor-fold defaultstate="collapsed" desc="Init arrays sizes menu">
         arraysSizeMenu = new Menu("Rozmiar");
-
-        Slider slider = SliderBuilder.create()
+        
+        SliderBuilder sliderBuilder = SliderBuilder.create()
                 .min(1).max(16).value(16)
                 .majorTickUnit(15)
                 .minorTickCount(14)
                 .snapToTicks(true)
                 .showTickMarks(true)
-                .build();
+                .prefWidth(200d);
+
+        Slider slider = sliderBuilder.build();
         slider.valueProperty().bindBidirectional(array1Size);
         array1Size.set(16);
         array1SizeSliderDisableProperty = slider.disableProperty();
@@ -453,13 +649,7 @@ public class ArrayFrame {
         arraysSizeMenu.getItems().add(new CustomMenuItem(vboxMenu, false));
         
         
-        slider = SliderBuilder.create()
-                .min(1).max(16).value(16)
-                .majorTickUnit(15)
-                .minorTickCount(14)
-                .snapToTicks(true)
-                .showTickMarks(true)
-                .build();
+        slider = sliderBuilder.build();
         slider.valueProperty().bindBidirectional(array2Size);
         array2Size.set(16);
         array2SizeSliderDisableProperty = slider.disableProperty();
@@ -491,13 +681,12 @@ public class ArrayFrame {
                 .minorTickCount(8)
                 .snapToTicks(true)
                 .showTickMarks(true)
+                .prefWidth(200d)
                 .build();
         slider.valueProperty().bindBidirectional(randMaxValue);
         randMaxValue.set(10);
 
         label = new Label();
-        label.setAlignment(Pos.CENTER);
-        label.setMaxWidth(Double.MAX_VALUE);
         strExpression = Bindings.format("Przedział losowania: [0,%02d]", randMaxValue);
         label.textProperty().bind(strExpression);
 
@@ -507,32 +696,50 @@ public class ArrayFrame {
 
         menuBar.getMenus().add(randomValuesMenu);
         //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="Init animation menu">
+        animationMenu = new Menu("Animacja");
 
-//        Button button = new Button("START");
-//        button.setMaxWidth(Double.MAX_VALUE);
-//        //button.setDisable(true);
-//        button.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent t) {
-//                animateMove(2,false,4);
-//            }
-//        });
-//        VBox.setMargin(button, new Insets(3, 6, 0, 6));
-//        vbox.getChildren().add(button);
+        CheckMenuItem synchronizeMenuItem = CheckMenuItemBuilder.create()
+                .text("Synchronizuj czas animacji")
+                .selected(true)
+                .build();
+        animationSynchronizedProperty = synchronizeMenuItem.selectedProperty();
+        animationMenu.getItems().add(synchronizeMenuItem);
+        
+        slider = SliderBuilder.create()
+                .min(0).max(19).value(10)
+                .majorTickUnit(1)
+                .minorTickCount(0)
+                .snapToTicks(true)
+                .showTickMarks(true)
+                .prefWidth(200d)
+                .build();
+        slider.valueProperty().bindBidirectional(animationTime);
+        slider.disableProperty().bind(synchronizeMenuItem.selectedProperty());
+        animationTime.set(10);
+        
+        label = new Label("Czas animacji:");
+        label.setMaxWidth(Double.MAX_VALUE);
 
+        vboxMenu = new VBox();
+        vboxMenu.getChildren().addAll(label, slider);
+        animationMenu.getItems().add(new CustomMenuItem(vboxMenu, false));
+
+        menuBar.getMenus().add(animationMenu);
+        //</editor-fold>
+
+        
         label = LabelBuilder.create()
                 .text("Pierwsza tablica")
                 .alignment(Pos.CENTER)
                 .maxWidth(Double.MAX_VALUE)
                 .build();
+        textFieldBuilder.id("first");
         GridPane grid = new GridPane();
+        array1LayoutYProperty = grid.layoutYProperty();
         for (int i = 0; i < 16; i++) {
-            final TextField text = TextFieldBuilder.create()
-                    .alignment(Pos.CENTER)
-                    .style("-fx-font: 12 Monospaced;")
-                    .prefColumnCount(2)
-                    .build();
-            
+            TextField text = textFieldBuilder.build();
             array1TextField[i] = text;
             
             text.disableProperty().bind(array1Size.lessThanOrEqualTo(i));
@@ -550,13 +757,9 @@ public class ArrayFrame {
                 .build();
         grid = new GridPane();
         array2LayoutYProperty = grid.layoutYProperty();
+        textFieldBuilder.id("second");
         for (int i = 0; i < 16; i++) {
-            final TextField text = TextFieldBuilder.create()
-                    .alignment(Pos.CENTER)
-                    .style("-fx-font: 12 Monospaced;")
-                    .prefColumnCount(2)
-                    .build();
-            
+            TextField text = textFieldBuilder.build();
             array2TextField[i] = text;
             
             text.disableProperty().bind(array2Size.lessThanOrEqualTo(i));
@@ -573,29 +776,29 @@ public class ArrayFrame {
         grid = new GridPane();
         arrayResultLayoutYProperty = grid.layoutYProperty();
         NumberBinding sizes = array1Size.add(array2Size);
+        textFieldBuilder.editable(false).focusTraversable(false).id("empty");
         for (int i = 0; i < 32; i++) {
-            TextField text = new TextField();
-            text.setEditable(false);
-            text.setStyle("-fx-font: 12 Monospaced; ");
-            text.setPrefColumnCount(2);
-            text.disableProperty().bind( sizes.lessThanOrEqualTo(i));
+            TextField text = textFieldBuilder.build();
             arrayResultTextField[i] = text;
+            
+            text.disableProperty().bind( sizes.lessThanOrEqualTo(i));
             grid.add(text, i % 8, i / 8);
         }
         vbox.getChildren().addAll(label, grid);
 
         randomMenuItem.getOnAction().handle(null);
-        Scene scene = new Scene(anchorPane);
         
+        Scene scene = new Scene(anchorPane);
+        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         fxPanel.setScene(scene);
     }
     //</editor-fold>
     
-    public ArrayFrame(MainClass mainClass) {
-        this.mainClass = mainClass;
+    //<editor-fold defaultstate="collapsed" desc="initFrame">
+    private void initFrame() {
         frame = new JInternalFrame(Lang.frameTitle);
         final JFXPanel fxPanel = new JFXPanel();
-        
+
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -606,8 +809,8 @@ public class ArrayFrame {
         frame.setContentPane(fxPanel);
         frame.setResizable(false);
         frame.setVisible(false);
-        ArrayFrame.this.mainClass.getDesktop().add(frame);
-        
+        mainClass.addAddictionalLessonFrame(Lang.frameMenuDescription, frame);
+
         frame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentMoved(ComponentEvent e) {
@@ -621,10 +824,15 @@ public class ArrayFrame {
             }
         });
     }
+    //</editor-fold>
+    
+    
+    //Langugage class:
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
         public static final String frameTitle = "Tablica liczb";
+        public static final String frameMenuDescription = "Tablica liczb";
     }
     //</editor-fold>
     

@@ -5,7 +5,9 @@ import interpreter.accessvar.AccessArray;
 import interpreter.accessvar.AccessInteger;
 import java.math.BigInteger;
 import parser.ProgramError;
+import stringcreator.FlexibleStringCreator;
 import stringcreator.StringCreator;
+import sun.security.util.BigInt;
 import syntax.SyntaxNode;
 import syntax.SyntaxNodeIdx;
 import syntax.expression.SyntaxNodeExpr;
@@ -93,25 +95,62 @@ public class Assigment extends SyntaxNodeIdx {
     
     @Override
     public StringCreator getStatusCreator(Instance instance) {
-        //TODO array
-//        BigInteger value = instance.stack.pop(), result = value;
-//        if (operationType != OperationType.NOTHING) {
-//            if (operationType.compareTo(OperationType.AND) >= 0) {
-//                result = operationEval.eval(value);
-//            } else {
-//                result = operationEval.eval(instance.stack.peek(), value);
-//            }
-//        }
-//        instance.stack.push(value);
-//        final BigInteger val = result;
-        return new StringCreator() {
-            @Override
-            public String getString(int maxWidth) {
-                assert fontMetrics!=null : "FontMetrics not initialized.";
-                //return "Przypisanie:  " + variable.name + " = " + val;
-                return "Przypisanie";
+        FlexibleStringCreator strCreator = new FlexibleStringCreator();
+        strCreator.addString("Przypisanie: ");
+        strCreator.addStringToExtend(variable.getName(), 10, true, 2);
+
+        if (variable.hasArrayIndex()) {
+            BigInteger value = instance.popStack();
+            BigInteger index = instance.peekStack();
+            instance.pushStack(value);
+            AccessArray access = (AccessArray) variable.getAccessVar();
+            if (index == null || !access.checkIndex(instance, index)) {
+                return strCreator;
             }
-        };
+            strCreator.addString("[" + index.toString() + "] = ");
+
+            if (operationType == OperationType.NOTHING) {
+                strCreator.addBigIntegerToExtend(value, 1, 2);
+            } else {
+                BigInteger prevValue = access.getValue(instance, index);
+                statusCreatorEvaluator(strCreator, prevValue, value);
+            }
+            return strCreator;
+        }
+
+        strCreator.addString(" = ");
+        if (operationType == OperationType.NOTHING) {
+            BigInteger value = instance.peekStack();
+            strCreator.addBigIntegerToExtend(value, 1, 2);
+        } else {
+            BigInteger value = instance.peekStack();
+            AccessInteger access = (AccessInteger) variable.getAccessVar();
+            BigInteger prevValue = access.getValue(instance);
+            statusCreatorEvaluator(strCreator, prevValue, value);
+        }
+        return strCreator;
+    }
+    
+    private void statusCreatorEvaluator(FlexibleStringCreator strCreator,
+            BigInteger prevValue, BigInteger value) {
+        
+        if (prevValue == null || value == null) {
+            return;
+        }
+        
+        BigInteger evalValue;
+        try {
+            evalValue = operationType.eval(prevValue, value);
+        } catch (ProgramError pe) {
+            return;
+        }
+        
+        strCreator.addBigIntegerToExtend(evalValue, 1, 2);
+        strCreator.addString(" (");
+        strCreator.addBigIntegerToExtend(prevValue, 1, 1);
+        strCreator.addString(" " + operationType.toString() + " ");
+        strCreator.addBigIntegerToExtend(prevValue, 1, 1);
+        strCreator.addString(")");
     }
     
     @Override

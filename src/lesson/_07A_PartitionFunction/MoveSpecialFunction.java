@@ -4,8 +4,9 @@ import interpreter.Instance;
 import interpreter.accessvar.VariableType;
 import interpreter.arguments.ArgInteger;
 import java.math.BigInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import parser.ProgramError;
+import stringcreator.SimpleLazyStringCreator;
+import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 import syntax.expression.Call;
 import syntax.function.SpecialFunctionBehavior;
@@ -34,17 +35,41 @@ class MoveSpecialFunction extends SpecialFunctionBehavior {
     }
 
     @Override
-    public SyntaxNode commit(Instance instance) {
-//        BigInteger n = arrayFrame.getArraySizeBigInt(1);
-//        BigInteger m = arrayFrame.getArraySizeBigInt(2);
+    public SyntaxNode commit(Instance instance) throws ProgramError {
         BigInteger idxSrc = ((ArgInteger)instance.getArgument(0)).getValue();
         BigInteger idxDest = ((ArgInteger)instance.getArgument(1)).getValue();
         
-        //TODO throw error
+        Call call = instance.getCallNode();
+        BigInteger size = arrayFrame.getArraySizeBigInt();
+        
+        if (idxSrc.signum() < 0) {
+            throw new ProgramError("Agrument idxSkad powinien być nieujemny", 
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        if (idxSrc.compareTo(size) >= 0) {
+            throw new ProgramError("Agrument idxSkad powinien być mniejszy niż rozmiar tablicy",
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        if (idxDest.signum() < 0) {
+            throw new ProgramError("Agrument idxDokad powinien być nieujemny", 
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        if (idxDest.compareTo(size) >= 0) {
+            throw new ProgramError("Agrument idxDokad powinien być mniejszy niż rozmiar tablicy",
+                    call.getLeftIndex(), call.getRightIndex());
+        }
         
         lastIdxSrc = idxSrc.intValue();
         lastIdxDest = idxDest.intValue();
         
+        if (arrayFrame.isValueRemoved(lastIdxSrc)) {
+            throw new ProgramError("Element tablicy pierwotnej o indeksie " + lastIdxSrc + " został już przeniesiony",
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        if (arrayFrame.isResultValueSet(lastIdxDest)) {
+            throw new ProgramError("Element tablicy wynikowej o indeksie " + lastIdxDest + " został już wypełniony",
+                    call.getLeftIndex(), call.getRightIndex());
+        }
         
         arrayFrame.moveValue(idxSrc.intValue(), idxDest.intValue());
         return null;
@@ -58,6 +83,13 @@ class MoveSpecialFunction extends SpecialFunctionBehavior {
     @Override
     public boolean isStoppedAfterCall() {
         return true;
+    }
+    
+    
+    @Override
+    public StringCreator getStatusCreatorAfterCall(Instance instance) {
+        String str = "Przenieś element o indeksie " + lastIdxSrc + " na miejsce o indeksie " + lastIdxDest;
+        return new SimpleLazyStringCreator(str);
     }
     
     public void undo(SyntaxNode node) {

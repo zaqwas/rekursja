@@ -7,6 +7,7 @@ import interpreter.accessvar.VariableType;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.TreeMap;
+import parser.ProgramError;
 import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 import syntax.SyntaxNodeIdx;
@@ -37,11 +38,11 @@ public class Function extends SyntaxNodeIdx implements FunctionDeclaration {
         //this.argsList = new ArrayList<DeclarationArgVar>();
         //this.argsVarsTree = new TreeSet<DeclarationArgVar>();
         
-        arguments = new ArrayList<VarDeclaration>();
-        localVars = new ArrayList<VarDeclaration>();
-        variablesMap = new TreeMap<String, VarDeclaration>();
+        arguments = new ArrayList<>();
+        localVars = new ArrayList<>();
+        variablesMap = new TreeMap<>();
         
-        this.statements = new ArrayList<SyntaxNode>();
+        this.statements = new ArrayList<>();
         
         funcitonBehavior = new FunctionBehavior() {
             {
@@ -134,7 +135,7 @@ public class Function extends SyntaxNodeIdx implements FunctionDeclaration {
     
 
     @Override
-    public SyntaxNode commit(Instance instance) {
+    public SyntaxNode commit(Instance instance) throws ProgramError {
         return funcitonBehavior.commit(instance);
     }
     

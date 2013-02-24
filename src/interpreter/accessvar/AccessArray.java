@@ -39,6 +39,10 @@ public abstract class AccessArray extends AccessVar {
         }
     }
     
+    public final boolean checkIndex(Instance instance, BigInteger index) {
+        return index.signum() >= 0 && index.compareTo(getSizeBigInt(instance)) < 0;
+    }
+    
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
         public static final String indexNegativ = "Indeks tablicy jest ujemny";

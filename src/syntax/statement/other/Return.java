@@ -1,8 +1,9 @@
 package syntax.statement.other;
 
 import interpreter.Instance;
-import java.awt.FontMetrics;
 import java.math.BigInteger;
+import stringcreator.FlexibleStringCreator;
+import stringcreator.SimpleLazyStringCreator;
 import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 import syntax.SyntaxNodeIdx;
@@ -32,18 +33,14 @@ public class Return extends SyntaxNodeIdx {
     
     @Override
     public StringCreator getStatusCreator(Instance instance) {
-        //TODO array
-        final BigInteger value = instance.stack.peek();
-        
-        return new StringCreator() {
-            @Override
-            public String getString(int maxWidth) {
-                assert fontMetrics!=null : "FontMetrics not initialized.";
-                return expresion == null
-                        ? "Wyjdź z funkcji"
-                        : "Zwróć:  " + value;
-            }
-        };
+        if (expresion == null) {
+            return new SimpleLazyStringCreator("Przerwij działanie funkcji");
+        }
+        FlexibleStringCreator strCreator = new FlexibleStringCreator();
+        strCreator.addString("Przerwij działanie funkcji i zwróć ");
+        BigInteger value = instance.stack.peek();
+        strCreator.addBigIntegerToExtend(value, 1, 1);
+        return strCreator;
     }
     
     

@@ -4,6 +4,9 @@ import interpreter.Instance;
 import interpreter.accessvar.VariableType;
 import interpreter.arguments.ArgInteger;
 import java.math.BigInteger;
+import parser.ProgramError;
+import stringcreator.SimpleLazyStringCreator;
+import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 import syntax.expression.Call;
 import syntax.function.SpecialFunctionBehavior;
@@ -35,21 +38,41 @@ class CompareTwoSpecialFunction extends SpecialFunctionBehavior {
     }
 
     @Override
-    public SyntaxNode commit(Instance instance) {
-        BigInteger n = arrayFrame.getArraySizeBigInt();
+    public SyntaxNode commit(Instance instance) throws ProgramError {
         BigInteger idx1 = ((ArgInteger)instance.getArgument(0)).getValue();
         BigInteger idx2 = ((ArgInteger)instance.getArgument(1)).getValue();
         
-        //TODO throw error
-        assert idx1.signum() >= 0 && idx1.compareTo(n) < 0;
+        BigInteger size = arrayFrame.getArraySizeBigInt();
+        Call call = instance.getCallNode();
+        if (idx1.signum() < 0) {
+            throw new ProgramError("Agrument idx1 powinien być nieujemny", 
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        if (idx1.compareTo(size) >= 0) {
+            throw new ProgramError("Agrument idx1 powinien być mniejszy niż rozmiar tablicy",
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        if (idx2.signum() < 0) {
+            throw new ProgramError("Agrument idx2 powinien być nieujemny", 
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        if (idx2.compareTo(size) >= 0) {
+            throw new ProgramError("Agrument idx2 powinien być mniejszy niż rozmiar tablicy",
+                    call.getLeftIndex(), call.getRightIndex());
+        }
         
         lastIndex1 = idx1.intValue();
         lastIndex2 = idx2.intValue();
         
         lastCompared1 = arrayFrame.isValueCompared(lastIndex1);
         lastCompared2 = arrayFrame.isValueCompared(lastIndex2);
-        //TODO throw error
-        assert !lastCompared1 || !lastCompared2;
+        
+        if (lastCompared1 && lastCompared2) {
+            throw new ProgramError("Oba elementy tablicy o indeksach " + lastIndex1 + 
+                    " oraz " + lastIndex2 + " brały już udział w porównaniu",
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        
         arrayFrame.setValueCompared(lastIndex1, true);
         arrayFrame.setValueCompared(lastIndex2, true);
         
@@ -70,6 +93,19 @@ class CompareTwoSpecialFunction extends SpecialFunctionBehavior {
     @Override
     public boolean isStoppedAfterCall() {
         return true;
+    }
+    
+    @Override
+    public StringCreator getStatusCreatorAfterCall(Instance instance) {
+        int cmp = arrayFrame.getArrayValue(lastIndex1) - 
+                arrayFrame.getArrayValue(lastIndex2);
+        String value = cmp == 0 ? " (0)"
+                : cmp < 0 ? " (-1)" : " (1)";
+        String cmpString = " jest " + (cmp == 0 ? "równy elementowi"
+                : (cmp < 0 ? "mniejszy" : "większy") + " niż element")
+                + " o indeksie ";
+        String str = "Element o indeksie " + lastIndex1 + cmpString + lastIndex2 + value;
+        return new SimpleLazyStringCreator(str);
     }
     
     public void undo(SyntaxNode node) {

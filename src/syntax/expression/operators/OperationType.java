@@ -8,14 +8,14 @@ public enum OperationType {
     NOTHING,//in assigment
     
     //<editor-fold defaultstate="collapsed" desc="NOT, SUB_UNAR">
-    NOT(0, 15, 12,
+    NOT("!", 0, 15, 12,
     new UnaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger expr) {
             return expr.signum() == 0 ? BigInteger.ONE : BigInteger.ZERO;
         }
     }),
-    SUB_UNAR(0, 7, 4,
+    SUB_UNAR("-", 0, 7, 4,
     new UnaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger expr) {
@@ -25,14 +25,14 @@ public enum OperationType {
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="MULT, DIV, MOD">
-    MULT(1, 9, 8,
+    MULT("*", 1, 9, 8,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) {
             return exprL.multiply(exprR);
         }
     }),
-    DIV(1, 10, 8,
+    DIV("/", 1, 10, 8,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) throws ProgramError {
@@ -42,7 +42,7 @@ public enum OperationType {
             return exprL.divide(exprR);
         }
     }),
-    MOD(1, 11, 8,
+    MOD("%", 1, 11, 8,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) throws ProgramError {
@@ -55,14 +55,14 @@ public enum OperationType {
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="PLUS, SUB_BINAR">
-    PLUS(2, 5, 4,
+    PLUS("+", 2, 5, 4,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) {
             return exprL.add(exprR);
         }
     }),
-    SUB_BINAR(2, 6, 4,
+    SUB_BINAR("-", 2, 6, 4,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) {
@@ -72,42 +72,42 @@ public enum OperationType {
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="COMPARE ">
-    GREATER(3, 19, 16,
+    GREATER(">", 3, 19, 16,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) {
             return exprL.compareTo(exprR) > 0 ? BigInteger.ONE : BigInteger.ZERO;
         }
     }),
-    LESS(3, 20, 16,
+    LESS("<", 3, 20, 16,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) {
             return exprL.compareTo(exprR) < 0 ? BigInteger.ONE : BigInteger.ZERO;
         }
     }),
-    GREATER_EQ(3, 21, 16,
+    GREATER_EQ(">=", 3, 21, 16,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) {
             return exprL.compareTo(exprR) >= 0 ? BigInteger.ONE : BigInteger.ZERO;
         }
     }),
-    LESS_EQ(3, 22, 16,
+    LESS_EQ("<=", 3, 22, 16,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) {
             return exprL.compareTo(exprR) <= 0 ? BigInteger.ONE : BigInteger.ZERO;
         }
     }),
-    EQUAL(4, 17, 16,
+    EQUAL("==", 4, 17, 16,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) {
             return exprL.compareTo(exprR) == 0 ? BigInteger.ONE : BigInteger.ZERO;
         }
     }),
-    NOT_EQ(4, 18, 16,
+    NOT_EQ("!=", 4, 18, 16,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) {
@@ -117,7 +117,7 @@ public enum OperationType {
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="AND, OR">
-    AND(5, 13, 12,
+    AND("&&", 5, 13, 12,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) {
@@ -131,7 +131,7 @@ public enum OperationType {
             return expr.compareTo(BigInteger.ZERO) != 0 ? BigInteger.ONE : BigInteger.ZERO;
         }
     }),
-    OR(6, 14, 12,
+    OR("||", 6, 14, 12,
     new BinaryEvaluator() {
         @Override
         public BigInteger eval(BigInteger exprL, BigInteger exprR) {
@@ -155,27 +155,32 @@ public enum OperationType {
     private int statisticsOperationGroupIndex;
     private UnaryEvaluator unary;
     private BinaryEvaluator binary;
+    private String operatorString;
     
     OperationType() {}
     OperationType(int priority) {
         this.priority = priority;
     }
-    OperationType(int priority, int statisticsOperationIndex,
+    OperationType(String operatorString, int priority, int statisticsOperationIndex,
             int statisticsOperationGroupIndex, BinaryEvaluator binary) {
+        this.operatorString = operatorString;
         this.priority = priority;
         this.statisticsOperationIndex = statisticsOperationIndex;
         this.statisticsOperationGroupIndex = statisticsOperationGroupIndex;
         this.binary = binary;
     }
-    OperationType(int priority, int statisticsOperationIndex,
+    OperationType(String operatorString, int priority, int statisticsOperationIndex,
             int statisticsOperationGroupIndex, UnaryEvaluator unary) {
+        this.operatorString = operatorString;
         this.priority = priority;
         this.statisticsOperationIndex = statisticsOperationIndex;
         this.statisticsOperationGroupIndex = statisticsOperationGroupIndex;
         this.unary = unary;
     }
-    OperationType(int priority, int statisticsOperationIndex, int statisticsOperationGroupIndex, 
+    OperationType(String operatorString, int priority, int statisticsOperationIndex, 
+            int statisticsOperationGroupIndex, 
             BinaryEvaluator binary, UnaryEvaluator unary) {
+        this.operatorString = operatorString;
         this.priority = priority;
         this.statisticsOperationIndex = statisticsOperationIndex;
         this.statisticsOperationGroupIndex = statisticsOperationGroupIndex;
@@ -205,6 +210,11 @@ public enum OperationType {
     }
     public int getStatisticsOperationGroupIndex() {
         return statisticsOperationGroupIndex;
+    }
+    
+    @Override
+    public String toString() {
+        return operatorString;
     }
     //</editor-fold>
     

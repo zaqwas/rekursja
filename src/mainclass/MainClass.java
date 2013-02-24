@@ -39,13 +39,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
@@ -58,6 +54,7 @@ import javax.swing.event.InternalFrameListener;
 import javax.swing.filechooser.FileFilter;
 import lesson.EmptyLesson;
 import lesson.LessonLoader;
+import lesson._06A_MergeFunction.MergeFunctionLessonLoader;
 import lesson._07A_PartitionFunction.PartitionFunctionLessonLoader;
 import parser.ProgramError;
 import stack.StackOfInstances;
@@ -756,6 +753,8 @@ public class MainClass {
     private void initChooseLessonMenu() {
         chooseLessonMenu = new JMenu(Lang.chooseLesson);
         menuBar.add(chooseLessonMenu);
+        addLessonLoader(new MergeFunctionLessonLoader());
+        chooseLessonMenu.add(new JSeparator());
         addLessonLoader(new PartitionFunctionLessonLoader());
     }
     
@@ -803,7 +802,7 @@ public class MainClass {
     }
 
     public void setSaveLessonFile(File file) {
-        assert file.isFile();
+        assert file==null || file.isFile();
         saveLessonFile = file;
         if (file != null) {
             saveLessonDirectory = file.getParentFile();
@@ -1171,69 +1170,86 @@ public class MainClass {
     
     public void clearThread() {
         thread = null;
-    }
-    
-    public String getCurrentDir() {
-        //TODO curr dir
-        return ".";
+        setInterfaceEnabled(true);
     }
     //</editor-fold>
     
     
     //<editor-fold defaultstate="collapsed" desc="Run-buttons functions">
-    private void tryStartThread() {
-        if ( thread==null ) {
+    private boolean tryStartThread() {
+        if (thread == null) {
             SyntaxTree syntaxTree = editor.getSyntaxTree();
             if (syntaxTree != null) {
-                thread = new InterpreterThread(syntaxTree, this, 
+                thread = new InterpreterThread(syntaxTree, this,
                         visualizationSpeedSlider.getValue());
-                thread.start();
+                setInterfaceEnabled(false);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void runButtonClick() {
+        boolean newThread = tryStartThread();
+        InterpreterThread th = thread;
+        if (th != null) {
+            th.requestRun();
+            if (newThread) {
+                th.start();
             }
         }
     }
-    private void runButtonClick() {
-        tryStartThread();
-        InterpreterThread th = thread;
-        if ( th!=null ) {
-            th.requestRun();
-        }
-    }
+
     private void pauseButtonClick() {
         InterpreterThread th = thread;
-        if ( th!=null ) {
+        if (th != null) {
             th.requestPause();
         }
     }
+
     private void stepIntoButtonClick() {
-        tryStartThread();
+        boolean newThread = tryStartThread();
         InterpreterThread th = thread;
-        if ( th!=null ) {
+        if (th != null) {
             th.requestStepInto();
+            if (newThread) {
+                th.start();
+            }
         }
     }
+
     private void stepOverButtonClick() {
-        tryStartThread();
+        boolean newThread = tryStartThread();
         InterpreterThread th = thread;
-        if ( th!=null ) {
+        if (th != null) {
             th.requestStepOver();
+            if (newThread) {
+                th.start();
+            }
         }
     }
+
     private void stepOutButtonClick() {
         InterpreterThread th = thread;
-        if ( th!=null ) {
+        if (th != null) {
             th.requestStepOut();
         }
     }
+
     private void fastRunButtonClick() {
-        tryStartThread();
+        boolean newThread = tryStartThread();
         InterpreterThread th = thread;
-        if ( th!=null ) {
+        if (th != null) {
             th.requestFast();
+            if (newThread) {
+                th.start();
+            }
         }
     }
+
     private void stopButtonClick() {
         InterpreterThread th = thread;
-        if ( th!=null ) {
+        if (th != null) {
             th.requestStop();
         }
     }
@@ -1265,6 +1281,13 @@ public class MainClass {
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Private functions">
+    private void setInterfaceEnabled(boolean enabled) {
+        chooseLessonMenu.setEnabled(enabled);
+        loadLessonStateMenuItem.setEnabled(enabled);
+        closeLessonMenuItem.setEnabled(enabled);
+        editor.setEnabled(enabled);
+    }
+    
     private void setStatusLabelText() {
         if ( statusCreator==null ) {
             statusLabel.setText(Lang.statusDots);

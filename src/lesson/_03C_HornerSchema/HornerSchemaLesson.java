@@ -4,7 +4,7 @@ package lesson._03C_HornerSchema;
 import lesson._03B_EuclideanAlgorithm.*;
 import lesson._03A_Exponentiation.*;
 import lesson._02B_ArithmeticSeries.*;
-import helpers.ReadFileHelper;
+import helpers.LessonHelper;
 import interpreter.InterpreterThread;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -568,26 +568,26 @@ public class HornerSchemaLesson implements Lesson {
         //<editor-fold defaultstate="collapsed" desc="Init codes">
         InputStream stream;
         stream = getClass().getResourceAsStream("part1_solution_code.txt");
-        part1SolutionCode = ReadFileHelper.readFile(stream);
+        part1SolutionCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_solution_left_to_right_code.txt");
-        part2SolutionLeftToRightCode = ReadFileHelper.readFile(stream);
+        part2SolutionLeftToRightCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_solution_right_to_left_code.txt");
-        part2SolutionRightToLeftCode = ReadFileHelper.readFile(stream);
+        part2SolutionRightToLeftCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part3_solution_recursion_code.txt");
-        part3SolutionRecursionCode = ReadFileHelper.readFile(stream);
+        part3SolutionRecursionCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part3_solution_iteration_code.txt");
-        part3SolutionIterationCode = ReadFileHelper.readFile(stream);
+        part3SolutionIterationCode = LessonHelper.readFile(stream);
         
         stream = getClass().getResourceAsStream("part1_user_code.txt");
-        part1UserCode = ReadFileHelper.readFile(stream);
+        part1UserCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_user_left_to_right_code.txt");
-        part2UserLeftToRightCode = ReadFileHelper.readFile(stream);
+        part2UserLeftToRightCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_user_right_to_left_code.txt");
-        part2UserRightToLeftCode = ReadFileHelper.readFile(stream);
+        part2UserRightToLeftCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part3_user_recursion_code.txt");
-        part3UserRecursionCode = ReadFileHelper.readFile(stream);
+        part3UserRecursionCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part3_user_iteration_code.txt");
-        part3UserIterationCode = ReadFileHelper.readFile(stream);
+        part3UserIterationCode = LessonHelper.readFile(stream);
         
         oldCode = mainClass.getEditor().getCode();
         //</editor-fold>

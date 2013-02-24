@@ -49,6 +49,7 @@ import mainclass.MainClass;
 
 public class ArrayFrame {
 
+    //<editor-fold defaultstate="collapsed" desc="Components and variables">
     private MainClass mainClass;
     private JInternalFrame frame;
     
@@ -74,6 +75,7 @@ public class ArrayFrame {
     private TextField flyingTextField2;
     private Menu arraysSizeMenu;
     private Menu randomValuesMenu;
+    private Menu animationMenu;
     private StringProperty arrayLabelTextProperty;
     private StringProperty arrayResultLabelTextProperty;
     
@@ -84,6 +86,13 @@ public class ArrayFrame {
     private String arrayResultText[] = new String[32];
     private boolean removedValue[] = new boolean[32];
     private boolean comparedValue[] = new boolean[32];
+    //</editor-fold>
+    
+    
+    public ArrayFrame(MainClass mainClass) {
+        this.mainClass = mainClass;
+        initFrame();
+    }
 
     
     //<editor-fold defaultstate="collapsed" desc="getFrame">
@@ -109,9 +118,18 @@ public class ArrayFrame {
     public int getArrayValue(int index) {
         return selectedPart == 3 ? arrayResultValue[index] : arrayValue[index];
     }
+    public int getArrayResultValue(int index) {
+        return arrayResultValue[index];
+    }
     
     public BigInteger getArraySizeBigInt() {
         return arraySizeBigInt;
+    }
+    public int getArraySize() {
+        return arraySize.get();
+    }
+    public int getPivot() {
+        return pivot;
     }
     //</editor-fold>
 
@@ -243,7 +261,7 @@ public class ArrayFrame {
     }
     
     public void compareStart(final int idx1, final int idx2) {
-        assert selectedPart < 3 && idx1 == 0;
+        assert selectedPart == 3 || idx1 == 0;
         
         duringJavafxThread = true;
         Platform.runLater(new Runnable() {
@@ -359,7 +377,7 @@ public class ArrayFrame {
 
                 final int delay = animationSynchronizedProperty.get() ? delayTime
                         : InterpreterThread.getDelayTime(animationTime.get());
-                TranslateTransition transition = TranslateTransitionBuilder.create()
+                TranslateTransitionBuilder.create()
                         .duration(Duration.millis(delay))
                         .node(flyingTextField1)
                         .fromX(xSrc)
@@ -367,8 +385,8 @@ public class ArrayFrame {
                         .fromY(ySrc)
                         .toY(yDest)
                         .onFinished(event)
-                        .build();
-                transition.play();
+                        .build()
+                        .play();
             }
         });
         while (animationSemaphore > 0) {
@@ -670,6 +688,13 @@ public class ArrayFrame {
                     randomValuesMenu.hide();
                 }
             };
+        } else if (animationMenu.isShowing()) {
+            run = new Runnable() {
+                @Override
+                public void run() {
+                    animationMenu.hide();
+                }
+            };
         }
         if (run != null) {
             Platform.runLater(run);
@@ -783,7 +808,7 @@ public class ArrayFrame {
         //</editor-fold>
         
         //<editor-fold defaultstate="collapsed" desc="Init animation menu">
-        Menu animationMenu = new Menu("Animacja");
+        animationMenu = new Menu("Animacja");
 
         CheckMenuItem synchronizeMenuItem = CheckMenuItemBuilder.create()
                 .text("Synchronizuj czas animacji")
@@ -900,10 +925,8 @@ public class ArrayFrame {
     }
     //</editor-fold>
     
-    public ArrayFrame(MainClass mainClass) {
-        this.mainClass = mainClass;
-        initFrame();
-    }
+    
+    //Langugage class:
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {

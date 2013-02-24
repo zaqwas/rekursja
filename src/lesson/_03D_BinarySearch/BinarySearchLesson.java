@@ -1,10 +1,7 @@
 package lesson._03D_BinarySearch;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
-import lesson._03B_EuclideanAlgorithm.*;
-import lesson._03A_Exponentiation.*;
-import lesson._02B_ArithmeticSeries.*;
-import helpers.ReadFileHelper;
+import helpers.LessonHelper;
 import interpreter.InterpreterThread;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -19,19 +16,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TitledPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javax.swing.ButtonGroup;
-import javax.swing.JEditorPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
 import lesson.Lesson;
 import lesson.LessonLoader;
 import mainclass.MainClass;
@@ -425,18 +418,18 @@ public class BinarySearchLesson implements Lesson {
         //<editor-fold defaultstate="collapsed" desc="Init codes">
         InputStream stream;
         stream = getClass().getResourceAsStream("part1_solution_code.txt");
-        part1SolutionCode = ReadFileHelper.readFile(stream);
+        part1SolutionCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_solution_recursion_code.txt");
-        part2SolutionRecursionCode = ReadFileHelper.readFile(stream);
+        part2SolutionRecursionCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_solution_iteration_code.txt");
-        part2SolutionIterationCode = ReadFileHelper.readFile(stream);
+        part2SolutionIterationCode = LessonHelper.readFile(stream);
         
         stream = getClass().getResourceAsStream("part1_user_code.txt");
-        part1UserCode = ReadFileHelper.readFile(stream);
+        part1UserCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_user_recursion_code.txt");
-        part2UserRecursionCode = ReadFileHelper.readFile(stream);
+        part2UserRecursionCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_user_iteration_code.txt");
-        part2UserIterationCode = ReadFileHelper.readFile(stream);
+        part2UserIterationCode = LessonHelper.readFile(stream);
         
         oldCode = mainClass.getEditor().getCode();
         //</editor-fold>

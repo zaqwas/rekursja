@@ -4,6 +4,9 @@ import interpreter.Instance;
 import interpreter.accessvar.VariableType;
 import interpreter.arguments.ArgInteger;
 import java.math.BigInteger;
+import parser.ProgramError;
+import stringcreator.SimpleLazyStringCreator;
+import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 import syntax.expression.Call;
 import syntax.function.SpecialFunctionBehavior;
@@ -35,19 +38,27 @@ class CompareOneSpecialFunction extends SpecialFunctionBehavior {
     }
 
     @Override
-    public SyntaxNode commit(Instance instance) {
-        BigInteger n = arrayFrame.getArraySizeBigInt();
+    public SyntaxNode commit(Instance instance) throws ProgramError {
         BigInteger idx = ((ArgInteger)instance.getArgument(0)).getValue();
         
-        //TODO throw error
-        assert idx.signum() >= 0 && idx.compareTo(n) < 0;
+        BigInteger size = arrayFrame.getArraySizeBigInt();
+        Call call = instance.getCallNode();
+        if (idx.signum() < 0) {
+            throw new ProgramError("Agrument idx powinien być nieujemny", 
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        if (idx.compareTo(size) >= 0) {
+            throw new ProgramError("Agrument idx powinien być mniejszy niż rozmiar tablicy",
+                    call.getLeftIndex(), call.getRightIndex());
+        }
         
         lastIndex = idx.intValue();
         
-        if ( selectedPart == 2) {
-            boolean compared = arrayFrame.isValueCompared(lastIndex);
-            //TODO throw error
-            assert !compared;
+        if (selectedPart == 2) {
+            if (arrayFrame.isValueCompared(lastIndex)) {
+                throw new ProgramError("Element tablicy o indeksie " + lastIndex + " został już porównany",
+                        call.getLeftIndex(), call.getRightIndex());
+            }
             arrayFrame.setValueCompared(lastIndex, true);
         }
         
@@ -68,6 +79,18 @@ class CompareOneSpecialFunction extends SpecialFunctionBehavior {
     @Override
     public boolean isStoppedAfterCall() {
         return true;
+    }
+    
+    @Override
+    public StringCreator getStatusCreatorAfterCall(Instance instance) {
+        int cmp = arrayFrame.getArrayValue(lastIndex) - 
+                arrayFrame.getArrayValue(0);
+        String value = cmp == 0 ? " (0)"
+                : cmp < 0 ? " (-1)" : " (1)";
+        String cmpString = " jest " + (cmp == 0 ? "równy „wartości osiowej”"
+                : (cmp < 0 ? "mniejszy" : "większy") + " niż „wartość osiowa”");
+        String str = "Element o indeksie " + lastIndex + cmpString + value;
+        return new SimpleLazyStringCreator(str);
     }
     
     

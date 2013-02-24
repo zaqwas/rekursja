@@ -1,35 +1,20 @@
 package lesson._06A_MergeFunction;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
-import lesson._02B_ArithmeticSeries.*;
-import helpers.ReadFileHelper;
+import helpers.LessonHelper;
 import interpreter.InterpreterThread;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.control.SelectionModel;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TitledPane;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javax.swing.ButtonGroup;
-import javax.swing.JEditorPane;
-import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
 import lesson.Lesson;
 import lesson.LessonLoader;
 import mainclass.MainClass;
@@ -37,25 +22,53 @@ import parser.SpecialFunctions;
 import syntax.SyntaxNode;
 //</editor-fold>
 
-public class MergeFunctionLesson implements Lesson {
+class MergeFunctionLesson implements Lesson {
 
     @Override
     public LessonLoader getLessonLoader() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return loader;
     }
     @Override
     public void save(DataOutputStream stream) throws IOException {
         mainClass.saveFramesPositionAndSettnings(stream);
+        
+        stream.writeByte(state.id);
+        stream.writeByte(chosenCode.Id);
+        
+        if (chosenCode == ChosenCode.User) {
+            userCode = mainClass.getEditor().getCode();
+        }
+        stream.writeUTF(userCode);
     }
     
     //<editor-fold defaultstate="collapsed" desc="Enums">
-    private static enum State {
-        NothingShown(0),Hint1Shown(1), Hint2Shown(2), Hint3Shown(3),
-        SolutionShown(4), SummaryShown(5);
-        public final byte Id;
+    public static enum State {
+        NothingShown(0, 0),
+        Hint1Shown(1, 1), Hint2Shown(2, 2), 
+        Hint3Shown(3, 3), PseudocodeShown(4, 4),
+        SolutionShown(5, 4), SummaryShown(6, 4);
+        
+        public final byte id;
+        public final byte hint;
 
-        State(int id) {
-            Id = (byte) id;
+        State(int id, int hint) {
+            this.id = (byte) id;
+            this.hint = (byte)hint;
+        }
+        
+        public static State getById(int id) {
+            assert 0 <= id && id <= 6;
+            
+            State[] values = values();
+            if ( values[id].id == id ) {
+                return values[id];
+            }
+            for (State state : values) {
+                if ( state.id == id ) {
+                    return state;
+                }
+            }
+            return null;
         }
     }
     
@@ -66,6 +79,11 @@ public class MergeFunctionLesson implements Lesson {
         ChosenCode(int id) {
             Id = (byte) id;
         }
+        
+        public static ChosenCode getById(int id) {
+            assert id == 0 || id == 1;
+            return id == 0 ? User : Solution;
+        }
     }
     //</editor-fold>
     
@@ -73,14 +91,17 @@ public class MergeFunctionLesson implements Lesson {
     private ChosenCode chosenCode = ChosenCode.User;
     
     private MainClass mainClass;
+    private MergeFunctionLessonLoader loader;
     
     private TextFrame textFrame;
     private ArrayFrame arrayFrame;
     
     private JMenuItem textMenuItem;
+    private JMenuItem functionsMenuItem;
     private JMenuItem hint1MenuItem;
     private JMenuItem hint2MenuItem;
     private JMenuItem hint3MenuItem;
+    private JMenuItem pseudocodeMenuItem;
     private JRadioButtonMenuItem userCodeMenuItem;
     private JRadioButtonMenuItem solutionCodeMenuItem;
     private JMenuItem summaryMenuItem;
@@ -89,13 +110,49 @@ public class MergeFunctionLesson implements Lesson {
     private String userCode;
     private String solutionCode;
     
-    public MergeFunctionLesson(MainClass mainClass) {
+    private CompareSpecialFunction compareSpecialFunction;
+    private MoveSpecialFunction moveSpecialFunction;
+    
+    public MergeFunctionLesson(MainClass mainClass, DataInputStream stream, 
+            MergeFunctionLessonLoader loader) throws IOException {
         this.mainClass = mainClass;
+        this.loader = loader;
+        
+        textFrame = new TextFrame(mainClass);
+        arrayFrame = new ArrayFrame(mainClass);
+        
+        initMenuItems();
+        
+        SpecialFunctions.addSpecialFunction(new StartSpecialFunction(arrayFrame));
+        SpecialFunctions.addSpecialFunction(new CheckSpecialFunction(mainClass, arrayFrame));
+        
+        compareSpecialFunction = new CompareSpecialFunction(arrayFrame);
+        SpecialFunctions.addSpecialFunction(compareSpecialFunction);
+        moveSpecialFunction = new MoveSpecialFunction(arrayFrame);
+        SpecialFunctions.addSpecialFunction(moveSpecialFunction);
+        
+        if (stream == null) {
+            initCodes(true);
+            textFrame.gotoText();
+            arrayFrame.frameToFront();
+        } else {
+            initCodes(false);
+            mainClass.loadFramesPositionAndSettnings(stream);
+            
+            state = State.getById(stream.readByte());
+            chosenCode = ChosenCode.getById(stream.readByte());
+            userCode = stream.readUTF();
+            
+            textFrame.initialize(state);
+            //textFrame.gotoText();
+        }
+        
+        initLesson();
     }
     
     //<editor-fold defaultstate="collapsed" desc="showSolutionConifrm">
     private boolean showSolutionConifrm() {
-        if (state.Id >= State.Hint3Shown.Id) {
+        if (state.id >= State.PseudocodeShown.id) {
             return true;
         }
         int option = JOptionPane.showOptionDialog(
@@ -106,7 +163,9 @@ public class MergeFunctionLesson implements Lesson {
         if (option != 0) {
             userCodeMenuItem.setSelected(true);
             if (option == 1) {
-                if (state == State.Hint2Shown ) {
+                if (state == State.Hint3Shown) {
+                    pseudocodeMenuItem.doClick();
+                } else if (state == State.Hint2Shown ) {
                     hint3MenuItem.doClick();
                 } else if (state == State.Hint1Shown) {
                     hint2MenuItem.doClick();
@@ -123,7 +182,7 @@ public class MergeFunctionLesson implements Lesson {
     
     //<editor-fold defaultstate="collapsed" desc="showConifrmDialog">
     private boolean showConifrmDialog(String message, State state) {
-        if (this.state.Id >= state.Id) {
+        if (this.state.id >= state.id) {
             return true;
         }
         int option = JOptionPane.showOptionDialog(
@@ -136,13 +195,15 @@ public class MergeFunctionLesson implements Lesson {
 
     
     //<editor-fold defaultstate="collapsed" desc="initCodes">
-    private void initCodes() {
+    private void initCodes(boolean initUserCode) {
         InputStream stream;
         stream = getClass().getResourceAsStream("solution_code.txt");
-        solutionCode = ReadFileHelper.readFile(stream);
-
-        stream = getClass().getResourceAsStream("user_code.txt");
-        userCode = ReadFileHelper.readFile(stream);
+        solutionCode = LessonHelper.readFile(stream);
+        
+        if (initUserCode) {
+            stream = getClass().getResourceAsStream("user_code.txt");
+            userCode = LessonHelper.readFile(stream);
+        }
 
         oldCode = mainClass.getEditor().getCode();
     }
@@ -158,11 +219,19 @@ public class MergeFunctionLesson implements Lesson {
             }
         });
         
+        functionsMenuItem = new JMenuItem(Lang.functionsMenuItem);
+        functionsMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textFrame.gotoFunctions();
+            }
+        });
+        
         hint1MenuItem = new JMenuItem(Lang.hint1MenuItem);
         hint1MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( state.Id < State.Hint1Shown.Id ) {
+                if ( state.id < State.Hint1Shown.id ) {
                     state = State.Hint1Shown;
                 }
                 textFrame.gotoHint(1);
@@ -176,7 +245,7 @@ public class MergeFunctionLesson implements Lesson {
                 if (!showConifrmDialog(Lang.showHint, State.Hint1Shown)) {
                     return;
                 }
-                if ( state.Id < State.Hint2Shown.Id ) {
+                if ( state.id < State.Hint2Shown.id ) {
                     state = State.Hint2Shown;
                 }
                 textFrame.gotoHint(2);
@@ -190,10 +259,24 @@ public class MergeFunctionLesson implements Lesson {
                 if (!showConifrmDialog(Lang.showHint, State.Hint2Shown)) {
                     return;
                 }
-                if ( state.Id < State.Hint3Shown.Id ) {
+                if ( state.id < State.Hint3Shown.id ) {
                     state = State.Hint3Shown;
                 }
                 textFrame.gotoHint(3);
+            }
+        });
+        
+        pseudocodeMenuItem = new JMenuItem(Lang.pseudocodeMenuItem);
+        pseudocodeMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!showConifrmDialog(Lang.showHint, State.Hint3Shown)) {
+                    return;
+                }
+                if ( state.id < State.PseudocodeShown.id ) {
+                    state = State.PseudocodeShown;
+                }
+                textFrame.gotoHint(4);
             }
         });
         
@@ -224,7 +307,7 @@ public class MergeFunctionLesson implements Lesson {
                 userCode = mainClass.getEditor().getCode();
                 mainClass.getEditor().setCode(solutionCode);
                 chosenCode = ChosenCode.Solution;
-                if ( state.Id < State.SolutionShown.Id ) {
+                if ( state.id < State.SolutionShown.id ) {
                     state = State.SolutionShown;
                 }
             }
@@ -237,7 +320,7 @@ public class MergeFunctionLesson implements Lesson {
                 if (!showConifrmDialog(Lang.showSummaryConifrm, State.SolutionShown)) {
                     return;
                 }
-                if (state.Id < State.SummaryShown.Id) {
+                if (state.id < State.SummaryShown.id) {
                     state = State.SummaryShown;
                 }
                 textFrame.gotoSummary();
@@ -256,10 +339,12 @@ public class MergeFunctionLesson implements Lesson {
         lessonMenu.removeAll();
 
         lessonMenu.add(textMenuItem);
+        lessonMenu.add(functionsMenuItem);
         lessonMenu.add(new JSeparator());
         lessonMenu.add(hint1MenuItem);
         lessonMenu.add(hint2MenuItem);
         lessonMenu.add(hint3MenuItem);
+        lessonMenu.add(pseudocodeMenuItem);
         lessonMenu.add(new JSeparator());
         lessonMenu.add(userCodeMenuItem);
         lessonMenu.add(solutionCodeMenuItem);
@@ -275,56 +360,68 @@ public class MergeFunctionLesson implements Lesson {
             mainClass.getEditor().setCode(solutionCode);
             solutionCodeMenuItem.setSelected(true);
         }
-
-        arrayFrame.showFrame();
-        //textFrame.showFrame();
     }
     //</editor-fold>
     
-    
-    public void start() {
-        textFrame = new TextFrame(mainClass);
-        arrayFrame = new ArrayFrame(mainClass);
-        
-        initCodes();
-        initMenuItems();
-        initLesson();
-        
-        SpecialFunctions.addSpecialFunction(new StartSpecialFunction(arrayFrame));
-        SpecialFunctions.addSpecialFunction(new CompareSpecialFunction(arrayFrame));
-        SpecialFunctions.addSpecialFunction(new MoveSpecialFunction(arrayFrame));
+    public State getState() {
+        return state;
     }
     
     @Override
     public void close() {
+        JMenu lessonMenu = mainClass.getLessonMenu();
+        lessonMenu.removeAll();
+        lessonMenu.setEnabled(false);
+        
+        SpecialFunctions.clear();
+        
+        mainClass.removeAddictionalLessonFrame(textFrame.getFrame());
+        mainClass.removeAddictionalLessonFrame(arrayFrame.getFrame());
+        mainClass.getEditor().setCode(oldCode);
     }
     
     @Override
     public void threadStart(InterpreterThread thread) {
         arrayFrame.threadStart();
+        userCodeMenuItem.setEnabled(false);
+        solutionCodeMenuItem.setEnabled(false);
     }
     
     @Override
     public void threadStop() {
         arrayFrame.threadStop();
+        userCodeMenuItem.setEnabled(true);
+        solutionCodeMenuItem.setEnabled(true);
     }
     
     @Override
     public boolean pauseStart(SyntaxNode node, final int delayTime) {
+        moveSpecialFunction.undo(node);
+        
         arrayFrame.updateResultValues();
+        
+        boolean wait = moveSpecialFunction.pauseStart(node, delayTime);
+        if ( !wait ) {
+            return false;
+        }
+        compareSpecialFunction.pauseStart(node);
         return true;
     }
 
     @Override
     public void pauseStop(SyntaxNode node) {
+        compareSpecialFunction.pauseStop();
     }
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
         public static final String textMenuItem = "Treść zadania";
+        public static final String functionsMenuItem = "Funkcje specjalne";
         public static final String hint1MenuItem = "Wskazówka I";
         public static final String hint2MenuItem = "Wskazówka II";
         public static final String hint3MenuItem = "Wskazówka III";
+        public static final String pseudocodeMenuItem = "Wskazówka IV - pseudokod";
+        
         public static final String userCodeMenuItem = "Rozwiązanie użytkownika";
         public static final String solutionCodeMenuItem = "Rozwiązanie wzorcowe";
         public static final String summaryMenuItem = "Podsumowanie";

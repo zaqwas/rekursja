@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import parser.ProgramError;
 import stringcreator.StringCreator;
-import syntax.expression.Variable;
 
 public abstract class SyntaxNode {
     protected final static BigInteger MAX_VALUE = BigInteger.TEN.pow(100);

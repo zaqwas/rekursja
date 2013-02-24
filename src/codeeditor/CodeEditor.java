@@ -288,7 +288,7 @@ public class CodeEditor {
     }
     
     private void undoAction() {
-        if ( undoStack.isEmpty() ) {
+        if (undoStack.isEmpty() || !editorTextPane.isEditable()) {
             return;
         }
         UndoInfo info = undoStack.removeLast();
@@ -303,7 +303,7 @@ public class CodeEditor {
     }
     
     private void redoAction() {
-        if ( redoStack.isEmpty() ) {
+        if (redoStack.isEmpty() || !editorTextPane.isEditable()) {
             return;
         }
         UndoInfo info = redoStack.pop();
@@ -528,6 +528,19 @@ public class CodeEditor {
     //<editor-fold defaultstate="collapsed" desc="Public functions">
     public JInternalFrame getFrame() {
         return frame;
+    }
+    
+    public void setEnabled(final boolean enabled) {
+        editorTextPane.setEditable(enabled);
+        
+        if (editorTextPane.isFocusOwner()) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    editorTextPane.getCaret().setVisible(enabled);
+                }
+            });
+        }
     }
     
     public void selectText(int indexL, int indexR) {

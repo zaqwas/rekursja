@@ -73,7 +73,7 @@ class JumpLinker {
         } else if (sn instanceof Call) {
             Call call = (Call) sn;
             int paramIdx = 0;
-            if ( call.name.equals("write") ) {
+            if ( call.name.equals("write") || call.name.equals("writeln") ) {
                 for (SyntaxNodeExpr param : call.params) {
                     expr(param, prev);
                     int idx = paramIdx == 0 ? -call.getArgumentsLength() : paramIdx;

@@ -1,36 +1,36 @@
-void start(n&){}
-void sprawdz(){}
-int porownaj(i){ return 0; }
-void przenies(idx,idxCel){}
+//Funkcje specjalne:
+void start(&n){}
+//-----------------------
+int porownaj(idx1,idx2){}
+void zamien(idx1,idx2){}
 
-//Rozwiązanie użytkownika:
-void podziel(n)
-var i, k;
+//Rozwiązanie wzorcowe:
+void podziel(n,&idx1,&idx2)
+var p, idx3;
 {
-  for (i=0; i<n; i++) {
-    if (porownaj(i)<0) {
-      przenies(i,k);
-      k++;
-    }
-  }
-  for (i=0; i<n; i++) {
-    if (porownaj(i)==0) {
-      przenies(i,k);
-      k++;
-    }
-  }
-  for (i=0; i<n; i++) {
-    if (porownaj(i)>0) {
-      przenies(i,k);
-      k++;
+  idx1=0; idx2=1; idx3=n;
+  
+  while(idx2 < idx3) {
+    p = porownaj(idx2,idx1);
+    
+    if (p<0) {
+      zamien(idx1,idx2);
+      idx1++;
+      idx2++;
+    } else if (p>0) {
+      idx3--;
+      zamien(idx2,idx3);
+    } else {
+      idx2++;
     }
   }
 }
 
 void main()
-var n;
+var n, idx1, idx2;
 {
   start(n);
-  scal(n);
-  sprawdz();
+  podziel(n,idx1,idx2);
+  writeln("idx1 = ", idx1);
+  writeln("idx2 = ", idx2);
 }

@@ -4,6 +4,7 @@ import interpreter.Instance;
 import java.awt.FontMetrics;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import stringcreator.FlexibleStringCreator;
 import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 import syntax.SyntaxNodeIndexed;
@@ -25,20 +26,27 @@ public abstract class SyntaxNodeCond extends SyntaxNode implements SyntaxNodeInd
         return true;
     }
     
+    protected abstract String getNameOfInstruction();
+    
     @Override
     public StringCreator getStatusCreator(Instance instance) {
-        //TODO array
-        final BigInteger value = instance.stack.peek();
+        FlexibleStringCreator strCreator = new FlexibleStringCreator();
+        strCreator.addString(getNameOfInstruction());
         
-        return new StringCreator() {
-            @Override
-            public String getString(int maxWidth) {
-                assert fontMetrics!=null : "FontMetrics not initialized.";
-                return value.compareTo(BigInteger.ZERO)!=0
-                        ? "Prawda"
-                        : "Fałsz";
-            }
-        };
+        final BigInteger value = instance.stack.peek();
+        if (value == null) {
+            return strCreator;
+        }
+        
+        if (value.compareTo(BigInteger.ZERO) == 0) {
+            strCreator.addString("warunek niespełniony (0)");
+        } else 
+        {
+            strCreator.addString("warunek spełniony (");
+            strCreator.addBigIntegerToExtend(value, 1, 1);
+            strCreator.addString(")");
+        }
+        return strCreator;
     }
     
     @Override

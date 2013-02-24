@@ -22,4 +22,9 @@ public class For extends SyntaxNodeCond {
         SyntaxNode.printDebugList(statementsEnd);
         SyntaxNode.printDebugList(statements);
     }
+
+    @Override
+    protected String getNameOfInstruction() {
+        return "Pętla for: ";
+    }
 }

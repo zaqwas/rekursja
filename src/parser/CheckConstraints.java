@@ -96,12 +96,11 @@ public class CheckConstraints {
                         checkExpr(param, false);
                     }
                 }
-            } else if (cl.name.equals("write")) {
+            } else if (cl.name.equals("write") || cl.name.equals("writeln")) {
                 for (SyntaxNodeExpr param : cl.params) {
                     checkExpr(param, false);
                 }
-                cl.function = FunctionWrite.getInstance();
-                
+                cl.function = FunctionWrite.getInstance(cl.name.equals("writeln"));
             } else {
                 for (SyntaxNodeExpr param : cl.params) {
                     checkExpr(param, true);
@@ -186,10 +185,9 @@ public class CheckConstraints {
                 throw new ParseError(88, main.indexL);
             }
             syntaxTree.main = main;
-
             
         } finally {
-            syntaxTree = null;
+            CheckConstraints.syntaxTree = null;
             currentFunction = null;
         }
     }

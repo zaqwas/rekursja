@@ -4,8 +4,6 @@ import codeeditor.CodeEditor;
 import instanceframe.InstanceFrame;
 import instancetree.TreeOfInstances;
 import java.math.BigInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lesson.Lesson;
 import mainclass.MainClass;
 import parser.ProgramError;
@@ -24,6 +22,7 @@ public class InterpreterThread extends Thread {
     private static enum RequestStatus {
         RUN, PAUSE, STEP_INTO, STEP_OVER, STEP_OUT, FAST, STOP
     }
+    
     private static enum RunStatus {
         PAUSED, RUNNING, STOPPED, DELAY;
     }
@@ -242,6 +241,7 @@ public class InterpreterThread extends Thread {
                 Function function = realInstance.getFunction();
                 BigInteger returnedValue = realInstance.getReturnedValue();
                 realInstance.removeFromStack();
+                Instance prevInstance = realInstance;
                 realInstance = realInstance.getParentInstance();
                 currentInstance = realInstance;
                 if (realInstance == null) {
@@ -252,7 +252,9 @@ public class InterpreterThread extends Thread {
                 }
                 if ( !function.isVoid() ) {
                     if ( returnedValue==null ) {
-                        //TODO error
+                        programError = new ProgramError(Lang.functionNotReaturnedValue, 
+                                call.getLeftIndex(), call.getRightIndex());
+                        break;
                     }
                     realInstance.pushStack(returnedValue);
                 }
@@ -262,7 +264,7 @@ public class InterpreterThread extends Thread {
                 }
                 if ( function.isStoppedAfterCall() ) {
                     if ( checkPauseStatus() ) {
-                        statusCreator = function.getStatusCreatorAfterCall(realInstance);
+                        statusCreator = function.getStatusCreatorAfterCall(prevInstance);
                         markTopStackInstance = function.isAddedToHistory();
                     }
                 }
@@ -318,9 +320,8 @@ public class InterpreterThread extends Thread {
                 
             } else {
                 if (nextNode.isStopNode()) {
-                    boolean pause = checkPauseStatus();
-                    if ( pause ) {
-                        //statusCreator = nextNode.getStatusCreator(realInstance);
+                    if ( checkPauseStatus() ) {
+                        statusCreator = nextNode.getStatusCreator(realInstance);
                     }
                 }
                 if ( nextNode.isStatisticsNode() ) {
@@ -366,7 +367,7 @@ public class InterpreterThread extends Thread {
     private static class Lang {
         public static final String stackSizeExceeded = "Przekroczono rozmiar stosu (maksymalny rozmiar = 100)";
         public static final String treeSizeExceeded = "Przekroczono liczbę wywołań funkcji (maksymalna liczba = 2000)";
-        
+        public static final String functionNotReaturnedValue = "Funkcja typu int nie zwróciła żadnej wartości";
     }
     //</editor-fold>
     

@@ -1,38 +1,23 @@
-void start(n&){}
-void sprawdz(i1,i2){}
-int porownaj(i){}
-void zamien(i1,i2){}
-void przenies(idx,idxCel){}
+//Funkcje specjalne:
+void start(&n){}
+void sprawdz(idx1,idx2){}
+//-----------------------
+int porownaj(idx){}
+void przenies(idxSkad,idxDokad){}
+void zamien(idx1,idx2){}
 
 //Rozwiązanie użytkownika:
-void podziel(n,i1&,i2&)
-var i, p, k;
-{
-  przenies(0,0);
-  i1=0; i2=n; k=1;
-  
-  for(i=1; i<n; i++) {
-    p = porownaj(i);
-
-    if (p==0) {
-      przenies(i,k);
-      k++;
-    } else if (p<0) {
-      przenies(i,k);
-      zamien(i1,k);
-      i1++; 
-      k++;
-    } else {
-      i2--;
-      przenies(i,i2);
-    }
-  }
-}
+void podziel(n,&idx1,&idx2)
+~var i;
+~{
+~  //Zaimplementuj tę funkcję
+  //zgodnie z treścią zadania
+~}
 
 void main()
-var n, i1, i2;
+var n, idx1, idx2;
 {
   start(n);
-  podziel(n,i1,i2);
-  sprawdz(i1,i2);
+  podziel(n,idx1,idx2);
+  sprawdz(idx1,idx2);
 }

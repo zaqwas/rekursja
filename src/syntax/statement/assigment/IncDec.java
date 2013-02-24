@@ -5,6 +5,7 @@ import interpreter.accessvar.AccessArray;
 import interpreter.accessvar.AccessInteger;
 import java.math.BigInteger;
 import parser.ProgramError;
+import stringcreator.FlexibleStringCreator;
 import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 import syntax.SyntaxNodeIdx;
@@ -75,36 +76,33 @@ public class IncDec extends SyntaxNodeIdx {
     
     @Override
     public StringCreator getStatusCreator(Instance instance) {
-        //TODO array
-//        BigInteger value = variable.accessVar.getVar(instance);
-//        if ( value==null ) {
-//            return null;
-//        }
-//        if ( increasing ) {
-//            value = value.add( BigInteger.ONE );
-//        } else {
-//            value = value.subtract( BigInteger.ONE );
-//        }
-//        final BigInteger val = value;
-//        return new StringCreator() {
-//            @Override
-//            public String getString(int maxWidth, FontMetrics fontMetrics) {
-//                return (increasing?"Inkrementacja:  ":"Dekrementacja:  ") + variable.name + " = " + val;
-//            }
-//        };
-        return new StringCreator() {
-            @Override
-            public String getString(int maxWidth) {
-                assert fontMetrics!=null : "FontMetrics not initialized.";
-                return increasing?"Inkrementacja":"Dekrementacja";
+        FlexibleStringCreator strCreator = new FlexibleStringCreator();
+        strCreator.addString(increasing ? "Inkrementacja: " : "Dekrementacja: ");
+        strCreator.addStringToExtend(variable.getName(), 10, true, 1);
+
+        BigInteger value;
+        if (variable.hasArrayIndex()) {
+            BigInteger index = instance.peekStack();
+            AccessArray access = (AccessArray) variable.getAccessVar();
+            if (index == null || !access.checkIndex(instance, index)) {
+                return strCreator;
             }
-        };
-    }
-    
-    private BigInteger eval(Instance instance) {
-        BigInteger value = instance.popStack();
-        return increasing ? value.add(BigInteger.ONE)
-                : value.subtract(BigInteger.ONE);
+            strCreator.addString("[" + index.toString() + "] = ");
+            value = access.getValue(instance, index);
+        } else {
+            strCreator.addString(" = ");
+            AccessInteger access = (AccessInteger) variable.getAccessVar();
+            value = access.getValue(instance);
+        }
+        
+        if (value == null) {
+            return strCreator;
+        }
+        BigInteger newValue = increasing ? value.add(BigInteger.ONE) : 
+                value.subtract(BigInteger.ONE);
+        strCreator.addBigIntegerToExtend(newValue, 1, 1);
+        
+        return strCreator;
     }
     
     @Override

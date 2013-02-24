@@ -1,15 +1,42 @@
-void wczytaj_n(&n){}
+//Funkcje specjalne:
+void start(&n,&m){}
+//-----------------------
+int porownaj(idx1,idx2){}
+void przenies(idxSkad,tabSkad,idxDokad){}
 
-//Szybkie rozwiązanie
-int suma_ciagu_arytmetycznego(n)
+//Rozwiązanie wzorcowe:
+void scal(n,m)
+var p, idx1, idx2, idx3;
 {
-  return n * (n + 1) / 2;
+  idx1=0; idx2=0; idx3=0;
+  
+  while(idx1<n && idx2<m) {
+    p = porownaj(idx1,idx2);
+    if (p<=0) {
+      przenies(idx1,0,idx3);
+      idx1++;
+    } else {
+      przenies(idx2,1,idx3);
+      idx2++;
+    }
+    idx3++;
+  }
+  
+  //Przepisywanie
+  //pozostałych elementów:
+  while (idx1<n) {
+    przenies(idx1,0,idx3);
+    idx1++; idx3++;
+  }
+  while (idx2<m) {
+    przenies(idx2,1,idx3);
+    idx2++; idx3++;
+  }
 }
 
 void main()
-var n, wynik;
+var n, m;
 {
-  wczytaj_n(&n);
-  wynik = suma_ciagu_arytmetycznego(n);
-  writeln("S(",n,") = ",wynik);
+  start(n,m);
+  scal(n,m);
 }

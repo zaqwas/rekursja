@@ -1,7 +1,7 @@
 package lesson._02B_ArithmeticSeries;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
-import helpers.ReadFileHelper;
+import helpers.LessonHelper;
 import interpreter.InterpreterThread;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -443,18 +443,18 @@ public class ArithmeticSeriesLesson implements Lesson {
         //<editor-fold defaultstate="collapsed" desc="Init codes">
         InputStream stream;
         stream = getClass().getResourceAsStream("part1_solution_recursion_code.txt");
-        part1SolutionRecursionCode = ReadFileHelper.readFile(stream);
+        part1SolutionRecursionCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part1_solution_iteration_code.txt");
-        part1SolutionIterationCode = ReadFileHelper.readFile(stream);
+        part1SolutionIterationCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_solution_code.txt");
-        part2SolutionCode = ReadFileHelper.readFile(stream);
+        part2SolutionCode = LessonHelper.readFile(stream);
         
         stream = getClass().getResourceAsStream("part1_user_recursion_code.txt");
-        part1UserRecursionCode = ReadFileHelper.readFile(stream);
+        part1UserRecursionCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part1_user_iteration_code.txt");
-        part1UserIterationCode = ReadFileHelper.readFile(stream);
+        part1UserIterationCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_user_code.txt");
-        part2UserCode = ReadFileHelper.readFile(stream);
+        part2UserCode = LessonHelper.readFile(stream);
         
         oldCode = mainClass.getEditor().getCode();
         //</editor-fold>

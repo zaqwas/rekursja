@@ -2,6 +2,7 @@
 package syntax.function;
 
 import interpreter.Instance;
+import parser.ProgramError;
 import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 
@@ -13,7 +14,7 @@ public abstract class FunctionBehavior {
     }
     
     
-    public SyntaxNode commit(Instance instance) {
+    public SyntaxNode commit(Instance instance) throws ProgramError {
         return function.getJumpNode();
     }
     

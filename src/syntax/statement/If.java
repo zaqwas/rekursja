@@ -19,4 +19,10 @@ public class If extends SyntaxNodeCond {
         SyntaxNode.printDebugList(statements);
         SyntaxNode.printDebugList(statementsElse);
     }
+    
+    
+    @Override
+    protected String getNameOfInstruction() {
+        return "Instrukcja warunkowa: ";
+    }
 }

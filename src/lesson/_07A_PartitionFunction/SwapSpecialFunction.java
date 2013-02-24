@@ -4,6 +4,9 @@ import interpreter.Instance;
 import interpreter.accessvar.VariableType;
 import interpreter.arguments.ArgInteger;
 import java.math.BigInteger;
+import parser.ProgramError;
+import stringcreator.SimpleLazyStringCreator;
+import stringcreator.StringCreator;
 import syntax.SyntaxNode;
 import syntax.expression.Call;
 import syntax.function.SpecialFunctionBehavior;
@@ -32,13 +35,28 @@ class SwapSpecialFunction extends SpecialFunctionBehavior {
     }
 
     @Override
-    public SyntaxNode commit(Instance instance) {
-        BigInteger n = arrayFrame.getArraySizeBigInt();
+    public SyntaxNode commit(Instance instance) throws ProgramError {
         BigInteger idx1 = ((ArgInteger)instance.getArgument(0)).getValue();
         BigInteger idx2 = ((ArgInteger)instance.getArgument(1)).getValue();
         
-        //TODO throw error
-        assert idx1.signum() >= 0 && idx1.compareTo(n) < 0;
+        BigInteger size = arrayFrame.getArraySizeBigInt();
+        Call call = instance.getCallNode();
+        if (idx1.signum() < 0) {
+            throw new ProgramError("Agrument idx1 powinien być nieujemny", 
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        if (idx1.compareTo(size) >= 0) {
+            throw new ProgramError("Agrument idx1 powinien być mniejszy niż rozmiar tablicy",
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        if (idx2.signum() < 0) {
+            throw new ProgramError("Agrument idx2 powinien być nieujemny", 
+                    call.getLeftIndex(), call.getRightIndex());
+        }
+        if (idx2.compareTo(size) >= 0) {
+            throw new ProgramError("Agrument idx2 powinien być mniejszy niż rozmiar tablicy",
+                    call.getLeftIndex(), call.getRightIndex());
+        }
         
         lastIndex1 = idx1.intValue();
         lastIndex2 = idx2.intValue();
@@ -55,6 +73,12 @@ class SwapSpecialFunction extends SpecialFunctionBehavior {
     @Override
     public boolean isStoppedAfterCall() {
         return true;
+    }
+
+    @Override
+    public StringCreator getStatusCreatorAfterCall(Instance instance) {
+        String str = "Zamień elementy o indeksach: " + lastIndex1 + " oraz " + lastIndex2;
+        return new SimpleLazyStringCreator(str);
     }
     
     public void undo(SyntaxNode node) {

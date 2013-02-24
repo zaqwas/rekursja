@@ -1,7 +1,7 @@
 package lesson._02A_RecursionIntro;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
-import helpers.ReadFileHelper;
+import helpers.LessonHelper;
 import interpreter.InterpreterThread;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -132,15 +132,15 @@ public class RecursionIntroLesson implements Lesson {
         //<editor-fold defaultstate="collapsed" desc="Init codes">
         InputStream stream;
         stream = getClass().getResourceAsStream(resourcesDir + "part1_code_recursion.txt");
-        part1CodeRecursion = ReadFileHelper.readFile(stream);
+        part1CodeRecursion = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream(resourcesDir + "part1_code_iteration.txt");
-        part1CodeIteration = ReadFileHelper.readFile(stream);
+        part1CodeIteration = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream(resourcesDir + "part2_code.txt");
-        part2Code = ReadFileHelper.readFile(stream);
+        part2Code = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream(resourcesDir + "part3_code_without_stop.txt");
-        part3CodeWithoutStop = ReadFileHelper.readFile(stream);
+        part3CodeWithoutStop = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream(resourcesDir + "part3_code_with_stop.txt");
-        part3CodeWithStop = ReadFileHelper.readFile(stream);
+        part3CodeWithStop = LessonHelper.readFile(stream);
         
         oldCode = mainClass.getEditor().getCode();
         mainClass.getEditor().setCode(part1CodeRecursion);

@@ -31,8 +31,8 @@ class StartSpecialFunction extends SpecialFunctionBehavior {
 
     @Override
     public SyntaxNode commit(Instance instance) {
-        BigInteger n = arrayFrame.getArraySizeBigInt(1);
-        BigInteger m = arrayFrame.getArraySizeBigInt(1);
+        BigInteger n = arrayFrame.getArraySizeBigInt(true);
+        BigInteger m = arrayFrame.getArraySizeBigInt(false);
         ((ArgReference) instance.getArgument(0)).setValue(n);
         ((ArgReference) instance.getArgument(1)).setValue(m);
         return null;

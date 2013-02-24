@@ -3,7 +3,7 @@ package lesson._03B_EuclideanAlgorithm;
 //<editor-fold defaultstate="collapsed" desc="Import classes">
 import lesson._03A_Exponentiation.*;
 import lesson._02B_ArithmeticSeries.*;
-import helpers.ReadFileHelper;
+import helpers.LessonHelper;
 import interpreter.InterpreterThread;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -437,18 +437,18 @@ public class EuclideanAlgorithmLesson implements Lesson {
         //<editor-fold defaultstate="collapsed" desc="Init codes">
         InputStream stream;
         stream = getClass().getResourceAsStream("part1_solution_code.txt");
-        part1SolutionCode = ReadFileHelper.readFile(stream);
+        part1SolutionCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_solution_recursion_code.txt");
-        part2SolutionRecursionCode = ReadFileHelper.readFile(stream);
+        part2SolutionRecursionCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_solution_iteration_code.txt");
-        part2SolutionIterationCode = ReadFileHelper.readFile(stream);
+        part2SolutionIterationCode = LessonHelper.readFile(stream);
         
         stream = getClass().getResourceAsStream("part1_user_code.txt");
-        part1UserCode = ReadFileHelper.readFile(stream);
+        part1UserCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_user_recursion_code.txt");
-        part2UserRecursionCode = ReadFileHelper.readFile(stream);
+        part2UserRecursionCode = LessonHelper.readFile(stream);
         stream = getClass().getResourceAsStream("part2_user_iteration_code.txt");
-        part2UserIterationCode = ReadFileHelper.readFile(stream);
+        part2UserIterationCode = LessonHelper.readFile(stream);
         
         oldCode = mainClass.getEditor().getCode();
         //</editor-fold>
