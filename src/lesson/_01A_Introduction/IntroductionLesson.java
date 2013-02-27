@@ -1,5 +1,6 @@
 package lesson._01A_Introduction;
 
+import interpreter.Instance;
 import interpreter.InterpreterThread;
 import java.awt.Dimension;
 import java.io.DataOutputStream;
@@ -83,12 +84,12 @@ public class IntroductionLesson implements Lesson {
     }
 
     @Override
-    public boolean pauseStart(SyntaxNode node, int delayTime) {
+    public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, int delayTime) {
         return true;
     }
 
     @Override
-    public void pauseStop(SyntaxNode node) {
+    public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
     }
 
     @Override

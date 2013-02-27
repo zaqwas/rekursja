@@ -1,9 +1,10 @@
-package lesson._06A_MergeFunction;
+package lesson._06B_MergeSort;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
 import helpers.LessonHelper;
 import interpreter.Instance;
 import interpreter.InterpreterThread;
+import interpreter.arguments.ArgInteger;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
@@ -21,9 +22,11 @@ import lesson.LessonLoader;
 import mainclass.MainClass;
 import parser.SpecialFunctions;
 import syntax.SyntaxNode;
+import syntax.expression.Call;
+import syntax.statement.assigment.Assigment;
 //</editor-fold>
 
-class MergeFunctionLesson implements Lesson {
+class MergeSortLesson implements Lesson {
 
     @Override
     public LessonLoader getLessonLoader() {
@@ -44,21 +47,17 @@ class MergeFunctionLesson implements Lesson {
     
     //<editor-fold defaultstate="collapsed" desc="Enums">
     public static enum State {
-        NothingShown(0, 0),
-        Hint1Shown(1, 1), Hint2Shown(2, 2), 
-        Hint3Shown(3, 3), PseudocodeShown(4, 4),
-        SolutionShown(5, 4), SummaryShown(6, 4);
+        NothingShown(0),PseudocodeShown(1),
+        SolutionShown(2), SummaryShown(3);
         
         public final byte id;
-        public final byte hint;
 
-        State(int id, int hint) {
+        State(int id) {
             this.id = (byte) id;
-            this.hint = (byte)hint;
         }
         
         public static State getById(int id) {
-            assert 0 <= id && id <= 6;
+            assert 0 <= id && id <= 3;
             
             State[] values = values();
             if ( values[id].id == id ) {
@@ -92,16 +91,13 @@ class MergeFunctionLesson implements Lesson {
     private ChosenCode chosenCode = ChosenCode.User;
     
     private MainClass mainClass;
-    private MergeFunctionLessonLoader loader;
+    private MergeSortLessonLoader loader;
     
     private TextFrame textFrame;
     private ArrayFrame arrayFrame;
     
     private JMenuItem textMenuItem;
     private JMenuItem functionsMenuItem;
-    private JMenuItem hint1MenuItem;
-    private JMenuItem hint2MenuItem;
-    private JMenuItem hint3MenuItem;
     private JMenuItem pseudocodeMenuItem;
     private JRadioButtonMenuItem userCodeMenuItem;
     private JRadioButtonMenuItem solutionCodeMenuItem;
@@ -111,25 +107,23 @@ class MergeFunctionLesson implements Lesson {
     private String userCode;
     private String solutionCode;
     
-    private CompareSpecialFunction compareSpecialFunction;
-    private MoveSpecialFunction moveSpecialFunction;
+    private MergeSpecialFunction moveSpecialFunction;
     
-    public MergeFunctionLesson(MainClass mainClass, DataInputStream stream, 
-            MergeFunctionLessonLoader loader) throws IOException {
+    public MergeSortLesson(MainClass mainClass, DataInputStream stream, 
+            MergeSortLessonLoader loader) throws IOException {
         this.mainClass = mainClass;
         this.loader = loader;
         
+        mainClass.getTreeOfInstances().setTreeNodeMaxLetters(11);
         textFrame = new TextFrame(mainClass);
         arrayFrame = new ArrayFrame(mainClass);
         
         initMenuItems();
         
         SpecialFunctions.addSpecialFunction(new StartSpecialFunction(arrayFrame));
-        SpecialFunctions.addSpecialFunction(new CheckSpecialFunction(mainClass, arrayFrame));
-        
-        compareSpecialFunction = new CompareSpecialFunction(arrayFrame);
-        SpecialFunctions.addSpecialFunction(compareSpecialFunction);
-        moveSpecialFunction = new MoveSpecialFunction(arrayFrame);
+        SpecialFunctions.addSpecialFunction(new CheckSpecialFunction(mainClass.getConsole(), arrayFrame));
+        SpecialFunctions.addSpecialFunction(new SortSpecialFunction());
+        moveSpecialFunction = new MergeSpecialFunction(arrayFrame);
         SpecialFunctions.addSpecialFunction(moveSpecialFunction);
         
         if (stream == null) {
@@ -164,19 +158,11 @@ class MergeFunctionLesson implements Lesson {
         if (option != 0) {
             userCodeMenuItem.setSelected(true);
             if (option == 1) {
-                if (state == State.Hint3Shown) {
-                    pseudocodeMenuItem.doClick();
-                } else if (state == State.Hint2Shown ) {
-                    hint3MenuItem.doClick();
-                } else if (state == State.Hint1Shown) {
-                    hint2MenuItem.doClick();
-                } else {
-                    hint1MenuItem.doClick();
-                }
+                pseudocodeMenuItem.doClick();
             }
             return false;
         }
-        textFrame.showHint(3);
+        textFrame.showPseudocode();
         return true;
     }
     //</editor-fold>
@@ -228,56 +214,14 @@ class MergeFunctionLesson implements Lesson {
             }
         });
         
-        hint1MenuItem = new JMenuItem(Lang.hint1MenuItem);
-        hint1MenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if ( state.id < State.Hint1Shown.id ) {
-                    state = State.Hint1Shown;
-                }
-                textFrame.gotoHint(1);
-            }
-        });
-        
-        hint2MenuItem = new JMenuItem(Lang.hint2MenuItem);
-        hint2MenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!showConifrmDialog(Lang.showHint, State.Hint1Shown)) {
-                    return;
-                }
-                if ( state.id < State.Hint2Shown.id ) {
-                    state = State.Hint2Shown;
-                }
-                textFrame.gotoHint(2);
-            }
-        });
-        
-        hint3MenuItem = new JMenuItem(Lang.hint3MenuItem);
-        hint3MenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!showConifrmDialog(Lang.showHint, State.Hint2Shown)) {
-                    return;
-                }
-                if ( state.id < State.Hint3Shown.id ) {
-                    state = State.Hint3Shown;
-                }
-                textFrame.gotoHint(3);
-            }
-        });
-        
         pseudocodeMenuItem = new JMenuItem(Lang.pseudocodeMenuItem);
         pseudocodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!showConifrmDialog(Lang.showHint, State.Hint3Shown)) {
-                    return;
-                }
                 if ( state.id < State.PseudocodeShown.id ) {
                     state = State.PseudocodeShown;
                 }
-                textFrame.gotoHint(4);
+                textFrame.gotoPseudocode();
             }
         });
         
@@ -285,12 +229,13 @@ class MergeFunctionLesson implements Lesson {
         userCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //editor to front
                 if ( chosenCode == ChosenCode.User ) {
                     return;
                 }
                 mainClass.getEditor().setCode(userCode);
                 chosenCode = ChosenCode.User;
+                
+                mainClass.getEditor().frameToFront();
             }
         });
         
@@ -301,7 +246,6 @@ class MergeFunctionLesson implements Lesson {
                 if ( !showSolutionConifrm() ) {
                     return;
                 }
-                //editor to front
                 if (chosenCode == ChosenCode.Solution) {
                     return;
                 }
@@ -311,6 +255,8 @@ class MergeFunctionLesson implements Lesson {
                 if ( state.id < State.SolutionShown.id ) {
                     state = State.SolutionShown;
                 }
+                
+                mainClass.getEditor().frameToFront();
             }
         });
         
@@ -342,9 +288,6 @@ class MergeFunctionLesson implements Lesson {
         lessonMenu.add(textMenuItem);
         lessonMenu.add(functionsMenuItem);
         lessonMenu.add(new JSeparator());
-        lessonMenu.add(hint1MenuItem);
-        lessonMenu.add(hint2MenuItem);
-        lessonMenu.add(hint3MenuItem);
         lessonMenu.add(pseudocodeMenuItem);
         lessonMenu.add(new JSeparator());
         lessonMenu.add(userCodeMenuItem);
@@ -364,12 +307,10 @@ class MergeFunctionLesson implements Lesson {
     }
     //</editor-fold>
     
-    public State getState() {
-        return state;
-    }
     
     @Override
     public void close() {
+        mainClass.getTreeOfInstances().setDefaultTreeNodeMaxLetters();
         JMenu lessonMenu = mainClass.getLessonMenu();
         lessonMenu.removeAll();
         lessonMenu.setEnabled(false);
@@ -399,29 +340,42 @@ class MergeFunctionLesson implements Lesson {
     public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, final int delayTime) {
         moveSpecialFunction.undo(node);
         
-        arrayFrame.updateResultValues();
-        
-        boolean wait = moveSpecialFunction.pauseStart(node, delayTime);
-        if ( !wait ) {
-            return false;
+        if ( chosenCode == ChosenCode.User ) {
+            arrayFrame.updateArray();
+        } else {
+            int mode = 0, argIdx = 1;
+            if (node instanceof Call) {
+                if (instance.getParentInstance().getParentInstance() == null) {
+                    mode = (afterCall ? 1 : 2);
+                } else if (instance.getFunction().getFunctionBehavior() == moveSpecialFunction) {
+                    argIdx = 2;
+                } else {
+                    instance = instance.getParentInstance();
+                }
+            }
+            else {
+                mode = node instanceof Assigment ? 0 : 2;
+            }
+            int idx1 = ((ArgInteger) instance.getArgument(0)).getValueAtTheBeginning().intValue();
+            int idx2 = ((ArgInteger) instance.getArgument(argIdx)).getValueAtTheBeginning().intValue();
+            arrayFrame.updateArray(idx1, idx2, mode);
         }
-        compareSpecialFunction.pauseStart(node);
-        return true;
+        
+        return moveSpecialFunction.pauseStart(node, delayTime);
     }
 
     @Override
     public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
-        compareSpecialFunction.pauseStop();
+        if (chosenCode == ChosenCode.User) {
+            moveSpecialFunction.pauseStop();
+        }
     }
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
         public static final String textMenuItem = "Treść zadania";
         public static final String functionsMenuItem = "Funkcje specjalne";
-        public static final String hint1MenuItem = "Wskazówka I";
-        public static final String hint2MenuItem = "Wskazówka II";
-        public static final String hint3MenuItem = "Wskazówka III";
-        public static final String pseudocodeMenuItem = "Wskazówka IV - pseudokod";
+        public static final String pseudocodeMenuItem = "Pseudokod";
         
         public static final String userCodeMenuItem = "Rozwiązanie użytkownika";
         public static final String solutionCodeMenuItem = "Rozwiązanie wzorcowe";

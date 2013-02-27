@@ -1,10 +1,8 @@
 package lesson._03C_HornerSchema;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
-import lesson._03B_EuclideanAlgorithm.*;
-import lesson._03A_Exponentiation.*;
-import lesson._02B_ArithmeticSeries.*;
 import helpers.LessonHelper;
+import interpreter.Instance;
 import interpreter.InterpreterThread;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -19,19 +17,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TitledPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javax.swing.ButtonGroup;
-import javax.swing.JEditorPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
 import lesson.Lesson;
 import lesson.LessonLoader;
 import mainclass.MainClass;
@@ -956,12 +950,12 @@ public class HornerSchemaLesson implements Lesson {
     }
     
     @Override
-    public boolean pauseStart(SyntaxNode node, final int delayTime) {
+    public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, final int delayTime) {
         return true;
     }
 
     @Override
-    public void pauseStop(SyntaxNode node) {
+    public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
     }
     
     //<editor-fold defaultstate="collapsed" desc="Language">

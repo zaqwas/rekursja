@@ -1,0 +1,28 @@
+//Funkcje specjalne:
+void start(&n){}
+//-----------------------
+void scal(idx1,idx2,idx3){}
+
+//Porządkowanie przez scalanie
+//Rozwiązanie wzorcowe:
+void uporzadkuj(idx1,idx2)
+var idxSr;
+{
+  if (idx1+1 >= idx2) {
+    return;
+  }
+  
+  idxSr = (idx1+idx2)/2;
+  
+  uporzadkuj(idx1, idxSr);
+  uporzadkuj(idxSr, idx2);
+  
+  scal(idx1,idxSr,idx2);
+}
+
+void main()
+var n;
+{
+  start(n);
+  uporzadkuj(0,n);
+}

@@ -55,6 +55,7 @@ import javax.swing.filechooser.FileFilter;
 import lesson.EmptyLesson;
 import lesson.LessonLoader;
 import lesson._06A_MergeFunction.MergeFunctionLessonLoader;
+import lesson._06B_MergeSort.MergeSortLessonLoader;
 import lesson._07A_PartitionFunction.PartitionFunctionLessonLoader;
 import parser.ProgramError;
 import stack.StackOfInstances;
@@ -753,7 +754,9 @@ public class MainClass {
     private void initChooseLessonMenu() {
         chooseLessonMenu = new JMenu(Lang.chooseLesson);
         menuBar.add(chooseLessonMenu);
+        
         addLessonLoader(new MergeFunctionLessonLoader());
+        addLessonLoader(new MergeSortLessonLoader());
         chooseLessonMenu.add(new JSeparator());
         addLessonLoader(new PartitionFunctionLessonLoader());
     }

@@ -2,6 +2,7 @@ package lesson._03D_BinarySearch;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
 import helpers.LessonHelper;
+import interpreter.Instance;
 import interpreter.InterpreterThread;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -689,12 +690,12 @@ public class BinarySearchLesson implements Lesson {
     }
     
     @Override
-    public boolean pauseStart(SyntaxNode node, final int delayTime) {
+    public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, final int delayTime) {
         return true;
     }
 
     @Override
-    public void pauseStop(SyntaxNode node) {
+    public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
     }
     
     //<editor-fold defaultstate="collapsed" desc="Language">

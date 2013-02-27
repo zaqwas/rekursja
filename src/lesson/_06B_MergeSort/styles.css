@@ -1,0 +1,48 @@
+.menu-bar {
+  -fx-font-size: 12;
+  -fx-padding: 0em 0.4em 0em 0.4em;
+}
+.menu-bar *.label {
+  -fx-padding: 0.3em 0.4em 0.3em 0.4em;
+}
+
+
+#empty {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
+}
+#empty:focused {
+  -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
+}
+
+
+#marked {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #ffff80;
+}
+#marked:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #ffffd0;
+}
+
+
+#result {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00ff80;
+}
+#result:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00ff80;
+}
+
+
+#first {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00f0f0;
+}
+#first:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00f0f0;
+}
+
+
+#second {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00c0ff;
+}
+#second:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00c0ff;
+}
+

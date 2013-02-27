@@ -173,7 +173,7 @@ public class InterpreterThread extends Thread {
                     SyntaxNodeIndexed idx = (SyntaxNodeIndexed) prevNode;
                     editorMgr.paintStatement(idx.getLeftIndex(), idx.getRightIndex());
                 }
-                if ( statusCreator!=null ) {
+                if (statusCreator != null) {
                     mainClass.setStatus(statusCreator);
                     statusCreator = null;
                 }
@@ -185,7 +185,7 @@ public class InterpreterThread extends Thread {
                     tree.mark();
                     stack.mark();
                 }
-                boolean wait = lesson.pauseStart(prevNode, delayTime);
+                boolean wait = lesson.pauseStart(topStackInstance, prevNode, !newInstance, delayTime);
                 if ( wait && runStatus == RunStatus.DELAY ) {
                     try {
                         sleep(delayTime);
@@ -206,7 +206,7 @@ public class InterpreterThread extends Thread {
                     }
                     runStatus = RunStatus.RUNNING;
                 }
-                lesson.pauseStop(prevNode);
+                lesson.pauseStop(topStackInstance, prevNode, !newInstance);
                 editorMgr.clrearStatement();
                 if (markTopStackInstance) {
                     tree.unmark();

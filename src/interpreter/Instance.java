@@ -1,16 +1,26 @@
 package interpreter;
 
-import interpreter.accessvar.*;
-import interpreter.arguments.*;
+//<editor-fold defaultstate="collapsed" desc="Import classes">
+import interpreter.accessvar.AccessArray;
+import interpreter.accessvar.AccessInteger;
+import interpreter.accessvar.AccessVar;
+import interpreter.accessvar.VariableScope;
+import interpreter.accessvar.VariableType;
+import interpreter.arguments.ArgArray;
+import interpreter.arguments.ArgIntOrRef;
+import interpreter.arguments.ArgRefNormal;
+import interpreter.arguments.ArgReference;
+import interpreter.arguments.Argument;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Stack;
-import stringcreator.StringExtender;
 import stringcreator.Extender;
 import stringcreator.IntegerExtender;
 import stringcreator.StringCreator;
-import syntax.function.Function;
+import stringcreator.StringExtender;
 import syntax.expression.Call;
+import syntax.function.Function;
+//</editor-fold>
 
 public class Instance {
 
@@ -24,12 +34,12 @@ public class Instance {
     public BigInteger arrayLocal[];
     public Argument arrayArgs[];
     
-    public Stack<Argument[]> argsStack = new Stack<Argument[]>();
-    public Stack<BigInteger> stack = new Stack<BigInteger>();
+    public Stack<Argument[]> argsStack = new Stack<>();
+    public Stack<BigInteger> stack = new Stack<>();
 
     private Instance parentInst;
     private int indexParentInst;
-    public ArrayList<Instance> childrenInst = new ArrayList<Instance>();
+    public ArrayList<Instance> childrenInst = new ArrayList<>();
     //</editor-fold>
     
     
@@ -76,9 +86,16 @@ public class Instance {
     }
     public void removeFromStack() {
         onStack = false;
+        
+        argsStack = null;
+        stack = null;
+        arrayLocal = null;
+        if (arrayArgs != null) {
+            for (Argument argument : arrayArgs) {
+                argument.clear();
+            }
+        }
     }
-    
-    
     
 
     //<editor-fold defaultstate="collapsed" desc="Args, local and global array access">

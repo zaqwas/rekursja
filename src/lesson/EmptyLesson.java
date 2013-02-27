@@ -1,5 +1,6 @@
 package lesson;
 
+import interpreter.Instance;
 import interpreter.InterpreterThread;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -31,12 +32,12 @@ public class EmptyLesson implements Lesson, LessonLoader {
     public void close() {}
 
     @Override
-    public boolean pauseStart(SyntaxNode node, int delayTime) {
+    public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, int delayTime) {
         return true;
     }
 
     @Override
-    public void pauseStop(SyntaxNode node) {}
+    public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {}
 
     @Override
     public void threadStart(InterpreterThread thread) {}

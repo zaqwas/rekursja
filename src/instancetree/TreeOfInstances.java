@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -96,27 +97,24 @@ public class TreeOfInstances {
     
     private Font labelFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
     private FontMetrics statusLabelFontMetrics;
+    private int letterWidth;
     
     private Font treeNodeFont = new java.awt.Font(Font.MONOSPACED, Font.PLAIN, 12);
-    public int xShiftNodeLabel = 1, yShiftNodeLabel = 9;
-    public int maxNodeLabelLength = 2;
+    private FontMetrics treeNodeFontMetrics;
+    private int xShiftNodeLabel = 1, yShiftNodeLabel = 12;
+    private int maxNodeLabelLength = 2;
+    private int nextMaxNodeLabelLength = 2;
     
-    public int xRectSize = 16, yRectSize = 10;
-    public int xSpace = 10, ySpace = 30, margin=4;
     
-    //TODO popraw to!!!
-    public void setTreeNodeMaxLetters(int maxLength) {
-        maxNodeLabelLength = maxLength;
-        xRectSize = 7*maxLength+2;
-        xSpace = (xRectSize+5)/2;
-    }
+    private int xRectSize = 16, yRectSize = 15;
+    private int xSpace = 10, ySpace = 30, margin=4;
     
     private int maxNodesX, maxNodesY;
     private int displayXShift, displayYShift;
     private int displayXSize, displayYSize;
     
-    private ArrayList<ArrayList<TreeNode>> nodesXY = new ArrayList<ArrayList<TreeNode>>();
-    private TreeMap<Function, String> functionNumberMap = new TreeMap<Function, String>();
+    private ArrayList<ArrayList<TreeNode>> nodesXY = new ArrayList<>();
+    private TreeMap<Function, String> functionNumberMap = new TreeMap<>();
 
     private Instance mainInstance;
     private Instance currentInstance;
@@ -505,6 +503,13 @@ public class TreeOfInstances {
             }
         });
         //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="Init fontmetric">
+        treeNodeFontMetrics = panel.getFontMetrics(treeNodeFont);
+        yRectSize = treeNodeFontMetrics.getHeight();
+        yShiftNodeLabel = treeNodeFontMetrics.getAscent() - 1;
+        letterWidth = treeNodeFontMetrics.charWidth('0');
+        //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Layout">
         GroupLayout layout = new GroupLayout(frame.getContentPane());
@@ -578,19 +583,11 @@ public class TreeOfInstances {
         return frame;
     }
     
-    public void savePosition(DataOutputStream dataOutputStream) throws IOException {
-        dataOutputStream.writeInt(frame.getX());
-        dataOutputStream.writeInt(frame.getY());
-        dataOutputStream.writeInt(frame.getWidth());
-        dataOutputStream.writeInt(frame.getHeight());
+    public void setTreeNodeMaxLetters(int maxLength) {
+        nextMaxNodeLabelLength = maxLength;
     }
-    
-    public void loadPosition(DataInputStream dataInputStream) throws IOException {
-        int x = dataInputStream.readInt();
-        int y = dataInputStream.readInt();
-        int w = dataInputStream.readInt();
-        int h = dataInputStream.readInt();
-        frame.setBounds(x, y, w, h);
+    public void setDefaultTreeNodeMaxLetters() {
+        nextMaxNodeLabelLength = 2;
     }
     
     public void saveSettnings(DataOutputStream stream) throws IOException {
@@ -651,6 +648,10 @@ public class TreeOfInstances {
     }
     
     public synchronized void start(Instance mainInstance) {
+        maxNodeLabelLength = nextMaxNodeLabelLength;
+        xRectSize = letterWidth * maxNodeLabelLength + 3;
+        xSpace = xRectSize / 2 + 3;
+        
         functionNumberMap.clear();
         this.mainInstance = mainInstance;
         currentInstance = mainInstance;
@@ -921,7 +922,7 @@ public class TreeOfInstances {
             return;
         }
 
-        displayXSize = Math.min(maxNodesX, (panel.getWidth() - 2 * margin) / xSpace);
+        displayXSize = Math.min(maxNodesX, (panel.getWidth() - 2 * margin) / xSpace - 1);
         displayXShift = selectedNode.xPosition - (displayXSize - 1) / 2;
         displayXShift -= Math.max(0, displayXShift + displayXSize - maxNodesX);
         displayXShift = Math.max(0, displayXShift);
@@ -1116,7 +1117,7 @@ public class TreeOfInstances {
             onStack = instance.isOnStack();
             strCreator = instance.getInstanceStringCreator("","");
             strCreator.setFontMetrics(statusLabelFontMetrics);
-
+            
             nodeLabel = instance.getFunction().getTreeNodeLabel(maxNodeLabelLength, instance);
         }
         
@@ -1346,7 +1347,7 @@ public class TreeOfInstances {
         public static final String options = "Opcje";
         
         public static final String observe = "Obserwuj";
-        public static final String observeCurrentInstance = "Obecnie wykonywaną instancję";
+        public static final String observeCurrentInstance = "Instancję na szczycie stosu";
         public static final String observeSelectedInstance = "Wybraną instację";
         
         public static final String jumpLength = "Długość skoku";

@@ -598,7 +598,7 @@ public class FindElementLesson implements Lesson {
     }
     
     @Override
-    public boolean pauseStart(SyntaxNode node, final int delayTime) {
+    public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, final int delayTime) {
         return true;
 //        if (node == null || node != callNode) {
 //            updateTextFieldsPosition();
@@ -638,7 +638,7 @@ public class FindElementLesson implements Lesson {
     }
 
     @Override
-    public void pauseStop(SyntaxNode node) {
+    public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
 //        if (node == callNode) {
 //            while ( duringAnimation ) {
 //                try {

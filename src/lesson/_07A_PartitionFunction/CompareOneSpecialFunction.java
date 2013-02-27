@@ -99,8 +99,8 @@ class CompareOneSpecialFunction extends SpecialFunctionBehavior {
     }
     
     public void undo(SyntaxNode node) {
-        assert selectedPart == 2;
-        if (!(node instanceof Call) || ((Call)node).getFunction().getFunctionBehavior() != this) {
+        if (selectedPart != 2 || !(node instanceof Call) || 
+                ((Call)node).getFunction().getFunctionBehavior() != this) {
             return;
         }
         arrayFrame.setValueCompared(lastIndex, false);

@@ -525,9 +525,15 @@ public class CodeEditor {
     }
     //</editor-fold>
     
+    
     //<editor-fold defaultstate="collapsed" desc="Public functions">
     public JInternalFrame getFrame() {
         return frame;
+    }
+    
+    public void frameToFront() {
+        frame.setVisible(true);
+        frame.toFront();
     }
     
     public void setEnabled(final boolean enabled) {

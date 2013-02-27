@@ -2,6 +2,7 @@ package lesson._07A_PartitionFunction;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
 import helpers.LessonHelper;
+import interpreter.Instance;
 import interpreter.InterpreterThread;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -864,7 +865,7 @@ class PartitionFunctionLesson implements Lesson {
     }
     
     @Override
-    public boolean pauseStart(SyntaxNode node, final int delayTime) {
+    public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, final int delayTime) {
         compareTwoSpecialFunction.undo(node);
         moveSpecialFunction.undo(node);
         compareOneSpecialFunction.undo(node);
@@ -883,7 +884,7 @@ class PartitionFunctionLesson implements Lesson {
     }
 
     @Override
-    public void pauseStop(SyntaxNode node) {
+    public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
         compareOneSpecialFunction.pauseStop();
         compareTwoSpecialFunction.pauseStop();
     }
