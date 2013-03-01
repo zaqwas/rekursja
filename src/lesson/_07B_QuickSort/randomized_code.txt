@@ -1,0 +1,31 @@
+//Funkcje specjalne:
+void start(&n){}
+//-----------------------
+void podziel(idx1,idx2,&i1,&i2){}
+int losuj(n){}
+void zamien(idx1,idx2){}
+
+//Szybki algorytm porządkowania
+//Rozwiązanie zrandomizowane:
+void uporzadkuj(idx1,idx2)
+var i1, i2, tmp;
+{
+  if (idx1+1 >= idx2) {
+    return;
+  }
+  
+  tmp = losuj(idx2-idx1);
+  zamien(idx1, idx1+tmp);
+  
+  podziel(idx1,idx2,i1,i2);
+  
+  uporzadkuj(idx1, i1);
+  uporzadkuj(i2, idx2);
+}
+
+void main()
+var n;
+{
+  start(n);
+  uporzadkuj(0,n);
+}

@@ -1,0 +1,26 @@
+//Funkcje specjalne:
+void start(&n){}
+//-----------------------
+void podziel(idx1,idx2,&i1,&i2){}
+
+//Szybki algorytm porządkowania
+//Rozwiązanie wzorcowe:
+void uporzadkuj(idx1,idx2)
+var i1, i2;
+{
+  if (idx1+1 >= idx2) {
+    return;
+  }
+  
+  podziel(idx1,idx2,i1,i2);
+  
+  uporzadkuj(idx1, i1);
+  uporzadkuj(i2, idx2);
+}
+
+void main()
+var n;
+{
+  start(n);
+  uporzadkuj(0,n);
+}

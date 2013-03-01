@@ -1,6 +1,8 @@
-package lesson._06B_MergeSort;
+package lesson._07B_QuickSort;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
+import com.sun.deploy.util.ArrayUtil;
+import lesson._06B_MergeSort.*;
 import interpreter.InterpreterThread;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -85,8 +87,6 @@ public class ArrayFrame {
     private BigInteger arraySizeBigInt;
     private int arrayResultValue[] = new int[32];
     private String arrayResultText[] = new String[32];
-    private int arrayTempValue[] = new int[32];
-    private String arrayTempText[] = new String[32];
     private int arrayTempIndex[] = new int[32];
     //</editor-fold>
 
@@ -203,9 +203,9 @@ public class ArrayFrame {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < 32; i++) {
+                int size = arraySize.get();
+                for (int i = 0; i < size; i++) {
                     arrayResultTextField[i].setText(arrayResultText[i]);
-                    arrayResultTextField[i].setId("empty");
                 }
                 duringJavafxThread = false;
             }
@@ -218,23 +218,99 @@ public class ArrayFrame {
         }
     }
     
-    public void updateArray(final int idx1, final int idx2, final int mode) {
-        assert 0 <= mode && mode <= 2;
-        final int idxSr = (idx1 + idx2) >> 1;
-        
+    public void updateArrayAndPaint(final String id) {
         duringJavafxThread = true;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < 32; i++) {
+                int size = arraySize.get();
+                for (int i = 0; i < size; i++) {
                     arrayResultTextField[i].setText(arrayResultText[i]);
-                    if ( idx1 <= i && i<idx2 ) {
-                        String id = mode == 0 ? (i < idxSr ? "first" : "second") :
-                                mode == 1 ? "result" : "marked";
-                        arrayResultTextField[i].setId(id);
+                    arrayResultTextField[i].setId(id);
+                }
+                duringJavafxThread = false;
+            }
+        });
+        while (duringJavafxThread) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+            }
+        }
+    }
+    
+    public void updateAfterPartition(final int idx1, final int idx2, final int idxPivot,
+            final boolean less, final boolean after) {
+        duringJavafxThread = true;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                int pivot = arrayResultValue[idxPivot];
+                int size = arraySize.get();
+                for (int i = 0; i < size; i++) {
+                    arrayResultTextField[i].setText(arrayResultText[i]);
+                    String id;
+                    if (i < idx1 || i >= idx2) {
+                        id = "empty";
                     } else {
-                        arrayResultTextField[i].setId("empty");
+                        int val = arrayResultValue[i];
+                        if (val < pivot) {
+                            id = !less ? "less" : after ? "lessEnd" : "lessBegin";
+                        } else if (val > pivot) {
+                            id = less ? "greater" : after ? "greaterEnd" : "greaterBegin";
+                        } else {
+                            id = "equal";
+                        }
                     }
+                    arrayResultTextField[i].setId(id);
+                }
+                duringJavafxThread = false;
+            }
+        });
+        while (duringJavafxThread) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+            }
+        }
+    }
+    
+    public void updateBeforePartition(final int idx1, final int idx2) {
+        duringJavafxThread = true;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                int size = arraySize.get();
+                int pivot = idx1 < size ? arrayResultValue[idx1] : 0;
+                for (int i = 0; i < size; i++) {
+                    arrayResultTextField[i].setText(arrayResultText[i]);
+                    
+                    String id = "empty";
+                    if (idx1 <= i && i < idx2) {
+                        int val = arrayResultValue[i];
+                        id = val < pivot ? "less" : val > pivot ? "greater" : "equal";
+
+                    }
+                    arrayResultTextField[i].setId(id);
+                }
+                duringJavafxThread = false;
+            }
+        });
+        while (duringJavafxThread) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+            }
+        }
+    }
+    
+    public void paintArrayRange(final int idx1, final int idx2, final String id) {
+        duringJavafxThread = true;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = idx1; i < idx2; i++) {
+                    arrayResultTextField[i].setId(id);
                 }
                 duringJavafxThread = false;
             }
@@ -255,69 +331,75 @@ public class ArrayFrame {
             arrayStr[i] = arrayResultText[i];
         }
     }
-    public void restoreValues(int idx1, int idx2, int[] arrayVal, String[] arrayStr) {
+    
+    public int[] partition(int idx1, int idx2) {
+        int i1 = idx1, i2 = idx1 + 1, i3 = idx2;
+        
+        while (i2 < i3) {
+            if (arrayResultValue[i2] < arrayResultValue[i1]) {
+                int val = arrayResultValue[i1];
+                arrayResultValue[i1] = arrayResultValue[i2];
+                arrayResultValue[i2] = val;
+                String str = arrayResultText[i1];
+                arrayResultText[i1] = arrayResultText[i2];
+                arrayResultText[i2] = str;
+                i1++; 
+                i2++;
+            } else if (arrayResultValue[i2] > arrayResultValue[i1]) {
+                i3--;
+                int val = arrayResultValue[i3];
+                arrayResultValue[i3] = arrayResultValue[i2];
+                arrayResultValue[i2] = val;
+                String str = arrayResultText[i3];
+                arrayResultText[i3] = arrayResultText[i2];
+                arrayResultText[i2] = str;
+            } else {
+                i2++;
+            }
+        }
+        return new int[] { i1, i2 };
+    }
+    
+
+    public void animatePartition(final int idx1, final int idx2, 
+            int[] arrayVal, String[] arrayStr,final int delayTime) {
+        
         for (int i = idx1; i < idx2; i++) {
+            arrayTempIndex[i] = i;
             arrayResultValue[i] = arrayVal[i];
             arrayResultText[i] = arrayStr[i];
         }
-    }
-
-    public void merge(int idx1, int idx2, int idx3) {
-        int i1 = idx1, i2 = idx2, i3 = 0;
         
-        while (i1 < idx2 && i2 < idx3) {
-            if (arrayResultValue[i1] <= arrayResultValue[i2]) {
-                arrayTempValue[i3] = arrayResultValue[i1];
-                arrayTempText[i3++] = arrayResultText[i1++];
+        final int pivot = arrayResultValue[idx1];
+        int i1 = idx1, i2 = idx1 + 1, i3 = idx2;
+        
+        while (i2 < i3) {
+            if (arrayResultValue[i2] < arrayResultValue[i1]) {
+                int val = arrayResultValue[i1];
+                arrayResultValue[i1] = arrayResultValue[i2];
+                arrayResultValue[i2] = val;
+                String str = arrayResultText[i1];
+                arrayResultText[i1] = arrayResultText[i2];
+                arrayResultText[i2] = str;
+                val = arrayTempIndex[i1];
+                arrayTempIndex[i1] = arrayTempIndex[i2];
+                arrayTempIndex[i2] = val;
+                i1++; 
+                i2++;
+            } else if (arrayResultValue[i2] > arrayResultValue[i1]) {
+                i3--;
+                int val = arrayResultValue[i3];
+                arrayResultValue[i3] = arrayResultValue[i2];
+                arrayResultValue[i2] = val;
+                String str = arrayResultText[i3];
+                arrayResultText[i3] = arrayResultText[i2];
+                arrayResultText[i2] = str;
+                val = arrayTempIndex[i3];
+                arrayTempIndex[i3] = arrayTempIndex[i2];
+                arrayTempIndex[i2] = val;
             } else {
-                arrayTempValue[i3] = arrayResultValue[i2];
-                arrayTempText[i3++] = arrayResultText[i2++];
+                i2++;
             }
-        }
-        while (i1 < idx2) {
-            arrayTempValue[i3] = arrayResultValue[i1];
-            arrayTempText[i3++] = arrayResultText[i1++];
-        }
-        while (i2 < idx3) {
-            arrayTempValue[i3] = arrayResultValue[i2];
-            arrayTempText[i3++] = arrayResultText[i2++];
-        }
-
-        i1 = idx3;
-        while (i3 > 0) {
-            arrayResultValue[--i1] = arrayTempValue[--i3];
-            arrayResultText[i1] = arrayTempText[i3];
-        }
-    }
-    //</editor-fold>
-
-    //<editor-fold defaultstate="collapsed" desc="animations">
-    
-    public void animateMerge(final int idx1, final int idx2, final int idx3, 
-            final int delayTime) {
-        
-        
-        int i1 = idx1, i2 = idx2, i3 = 0;
-        while (i1 < idx2 && i2 < idx3) {
-            if (arrayResultValue[i1] <= arrayResultValue[i2]) {
-                arrayTempIndex[i3] = i1;
-                arrayTempValue[i3] = arrayResultValue[i1];
-                arrayTempText[i3++] = arrayResultText[i1++];
-            } else {
-                arrayTempIndex[i3] = i2;
-                arrayTempValue[i3] = arrayResultValue[i2];
-                arrayTempText[i3++] = arrayResultText[i2++];
-            }
-        }
-        while (i1 < idx2) {
-            arrayTempIndex[i3] = i1;
-            arrayTempValue[i3] = arrayResultValue[i1];
-            arrayTempText[i3++] = arrayResultText[i1++];
-        }
-        while (i2 < idx3) {
-            arrayTempIndex[i3] = i2;
-            arrayTempValue[i3] = arrayResultValue[i2];
-            arrayTempText[i3++] = arrayResultText[i2++];
         }
         
         animationSemaphore = 2;
@@ -326,41 +408,49 @@ public class ArrayFrame {
             @Override
             public void run() {
                 
-                final int idxEnd = idx3 - idx1;
+                final int size = idx2 - idx1;
                 
                 final int delay = animationSynchronizedProperty.get() ? delayTime
                         : InterpreterThread.getDelayTime(animationTime.get());
                 Duration moveDuration = Duration.millis(2 * delay / 5);
                 Duration duration = Duration.millis(delay / 5);
                 
-                TranslateTransition firstTransition[] = new TranslateTransition[idxEnd];
-                TranslateTransition secondTransition[] = new TranslateTransition[idxEnd];
+                TranslateTransition firstTransition[] = new TranslateTransition[size];
+                TranslateTransition secondTransition[] = new TranslateTransition[size];
                 
                 TranslateTransitionBuilder translateBuilder = 
                         TranslateTransitionBuilder.create();
                 
-                for (int i = 0; i < idxEnd; i++) {
-                    flyingTextField[i].setText(arrayTempText[i]);
-                    flyingTextField[i].setId(arrayTempIndex[i] < idx2 ? "first" : "second");
+                double prefHight = arrayResultTextField[0].getHeight() / 2d;
+                
+                for (int i = idx1, j = 0; i < idx2; i++, j++) {
+                    String id = arrayResultValue[i] < pivot ? "less": 
+                            arrayResultValue[i] > pivot ? "greater" : "equal";
                     
+                    flyingTextField[i].setText(arrayResultText[i]);
+                    flyingTextField[i].setId(id);
+
                     double x1, y1, x2, y2;
-                    
+
                     TextField field1 = arrayResultTextField[arrayTempIndex[i]];
                     x1 = field1.getLayoutX();
                     y1 = field1.getLayoutY();
                     y1 += arrayResultLayoutYProperty.get();
-                    
+
                     flyingTextField[i].setTranslateX(x1);
                     flyingTextField[i].setTranslateY(y1);
-                    
-                    TextField field2 = arrayResultTextField[i + idx1];
+                    flyingTextField[i].setVisible(true);
+
+                    TextField field2 = arrayResultTextField[i];
                     x2 = field2.getLayoutX();
                     y2 = field2.getLayoutY();
                     y2 += arrayResultLayoutYProperty.get();
                     
-                    double prefHight = arrayResultTextField[0].getHeight() / 2d;
-                    
-                    firstTransition[i] = translateBuilder
+                    field2.setVisible(false);
+                    field2.setText(arrayResultText[i]);
+                    field2.setId(id);
+
+                    firstTransition[j] = translateBuilder
                             .node(flyingTextField[i])
                             .duration(moveDuration)
                             .fromX(x1)
@@ -368,7 +458,7 @@ public class ArrayFrame {
                             .toX(x2)
                             .toY(y2 - prefHight)
                             .build();
-                    secondTransition[i] = translateBuilder
+                    secondTransition[j] = translateBuilder
                             .node(flyingTextField[i])
                             .duration(duration)
                             .fromX(x2)
@@ -378,20 +468,11 @@ public class ArrayFrame {
                             .build();
                 }
                 
-                EventHandler eventChangeIdToResult = new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent t) {
-                        for (int i = 0; i < idxEnd; i++) {
-                            flyingTextField[i].setId("result");
-                        }
-                    }
-                };
-                
                 EventHandler eventOnFinished = new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent t) {
-                        for (int i = 0, j = idx1; i < idxEnd; i++, j++) {
-                            arrayResultTextField[j].setVisible(true);
+                        for (int i = idx1; i < idx2; i++) {
+                            arrayResultTextField[i].setVisible(true);
                             flyingTextField[i].setVisible(false);
                         }
                         animationSemaphore = 0;
@@ -407,21 +488,11 @@ public class ArrayFrame {
                         .children(
                             pauseBuilder.build(),
                             parallelBuilder.children(firstTransition).build(),
-                            pauseBuilder.onFinished(eventChangeIdToResult).build(),
+                            pauseBuilder.build(),
                             parallelBuilder.children(secondTransition).build()
                         )
                         .onFinished(eventOnFinished)
                         .build();
-                
-                for (int i = 0, j = idx1; i < idxEnd; i++, j++) {
-                    flyingTextField[i].setVisible(true);
-                    TextField field = arrayResultTextField[j];
-                    field.setVisible(false);
-                    field.setText(arrayTempText[i]);
-                    field.setId("result");
-                    arrayResultValue[j] = arrayTempValue[i];
-                    arrayResultText[j] = arrayTempText[i];
-                }
                 
                 transition.play();
             }
@@ -434,7 +505,161 @@ public class ArrayFrame {
     }
     //</editor-fold>
 
+    
+    //<editor-fold defaultstate="collapsed" desc="swap functions">
+    public void swap(int idx1, int idx2) {
+        int val = arrayResultValue[idx1];
+        arrayResultValue[idx1] = arrayResultValue[idx2];
+        arrayResultValue[idx2] = val;
+        String str = arrayResultText[idx1];
+        arrayResultText[idx1] = arrayResultText[idx2];
+        arrayResultText[idx2] = str;
+    }
 
+    public void animateSwap(final int idx1, final int idx2, final int idx3, final int delayTime) {
+        
+        int val = arrayResultValue[idx1];
+        arrayResultValue[idx1] = arrayResultValue[idx2];
+        arrayResultValue[idx2] = val;
+        String str = arrayResultText[idx1];
+        arrayResultText[idx1] = arrayResultText[idx2];
+        arrayResultText[idx2] = str;
+        
+        animationSemaphore = 2;
+        
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                int pivot = arrayResultValue[idx1];
+                for (int i = 0; i < 32; i++) {
+                    String id = "empty";
+                    if (idx1 <= i && i < idx3) {
+                        int val = arrayResultValue[i];
+                        id = val < pivot ? "less"
+                                : val > pivot ? "greater" : "equal";
+                        
+                    }
+                    arrayResultTextField[i].setId(id);
+                    arrayResultTextField[i].setText(arrayResultText[i]);
+                }
+
+                double x1, y1, x2, y2;
+
+                TextField field1 = arrayResultTextField[idx1];
+                x1 = field1.getLayoutX();
+                y1 = field1.getLayoutY();
+                y1 += arrayResultLayoutYProperty.get();
+
+                flyingTextField[0].setText(arrayResultText[idx1]);
+                flyingTextField[0].setId("equal");
+                flyingTextField[0].setTranslateX(x1);
+                flyingTextField[0].setTranslateY(y1);
+                flyingTextField[0].setVisible(true);
+
+                TextField field2 = arrayResultTextField[idx2];
+                x2 = field2.getLayoutX();
+                y2 = field2.getLayoutY();
+                y2 += arrayResultLayoutYProperty.get();
+
+                flyingTextField[1].setText(arrayResultText[idx2]);
+                flyingTextField[1].setId(field2.getId());
+                flyingTextField[1].setTranslateX(x2);
+                flyingTextField[1].setTranslateY(y2);
+                flyingTextField[1].setVisible(true);
+                
+                field1.setVisible(false);
+                field1.setText(arrayResultText[idx2]);
+
+                field2.setVisible(false);
+                field2.setText(arrayResultText[idx1]);
+                
+                int val = arrayResultValue[idx1];
+                arrayResultValue[idx1] = arrayResultValue[idx2];
+                arrayResultValue[idx2] = val;
+                String str = arrayResultText[idx1];
+                arrayResultText[idx1] = arrayResultText[idx2];
+                arrayResultText[idx2] = str;
+                
+                
+                final int delay = animationSynchronizedProperty.get() ? delayTime
+                        : InterpreterThread.getDelayTime(animationTime.get());
+                Duration moveDuration = Duration.millis(3 * delay / 5);
+                Duration duration = Duration.millis(delay / 5);
+
+                TranslateTransitionBuilder translateBuilder =
+                        TranslateTransitionBuilder.create().duration(moveDuration);
+
+                TranslateTransition firstTransition = translateBuilder
+                        .node(flyingTextField[0])
+                        .fromX(x1)
+                        .fromY(y1)
+                        .toX(x2)
+                        .toY(y2)
+                        .build();
+                
+                TranslateTransition secondTransition = translateBuilder
+                        .node(flyingTextField[1])
+                        .fromX(x2)
+                        .fromY(y2)
+                        .toX(x1)
+                        .toY(y1)
+                        .build();
+                
+                
+                EventHandler eventChangeId = new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent t) {
+                        int pivot = arrayResultValue[idx1];
+                        for (int i = idx1; i < idx3; i++) {
+                            int val = arrayResultValue[i];
+                            String id = val < pivot ? "less" : 
+                                    val > pivot ? "greater" : "equal";
+                            arrayResultTextField[i].setId(id);
+                        }
+                        
+                        arrayResultTextField[idx1].setVisible(true);
+                        arrayResultTextField[idx2].setVisible(true);
+                        
+                        flyingTextField[0].setVisible(false);
+                        flyingTextField[1].setVisible(false);
+                    }
+                };
+                
+                EventHandler eventOnFinished = new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent t) {
+                        animationSemaphore = 0;
+                    }
+                };
+
+                ParallelTransitionBuilder parallelBuilder = ParallelTransitionBuilder.create();
+                PauseTransitionBuilder pauseBuilder = PauseTransitionBuilder.create()
+                        .duration(duration);
+
+
+                SequentialTransition transition = SequentialTransitionBuilder.create()
+                        .children(
+                            pauseBuilder.build(),
+                            parallelBuilder.children(firstTransition,secondTransition)
+                                .onFinished(eventChangeId).build(),
+                            pauseBuilder.build()
+                        )
+                        .onFinished(eventOnFinished)
+                        .build();
+
+                transition.play();
+            }
+        });
+        while (animationSemaphore > 0) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {}
+        }
+    }
+    //</editor-fold>
+    
+    
     //private functions:
 
     //<editor-fold defaultstate="collapsed" desc="TextFieldStringChangeListener">

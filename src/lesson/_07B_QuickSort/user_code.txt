@@ -1,0 +1,22 @@
+//Funkcje specjalne:
+void start(&n){}
+void sprawdz(){}
+//-----------------------
+void podziel(idx1,idx2,&i1,&i2){}
+
+//Szybki algorytm porządkowania
+//Rozwiązanie użytkownika:
+void uporzadkuj(idx1,idx2)
+~var i;
+~{
+~  //Zaimplementuj tę funkcję
+  //zgodnie z treścią zadania
+~}
+
+void main()
+var n;
+{
+  start(n);
+  uporzadkuj(0,n);
+  sprawdz();
+}
