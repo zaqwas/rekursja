@@ -88,15 +88,7 @@ public class CheckConstraints {
 
         if (sn instanceof Call) {
             Call cl = (Call) sn;
-            if (cl.name.equals("read")) {
-                for (SyntaxNodeExpr param : cl.params) {
-                    if (!(sn instanceof Variable)) {
-                        throw new ParseError(81, param.indexL);
-                    } else {
-                        checkExpr(param, false);
-                    }
-                }
-            } else if (cl.name.equals("write") || cl.name.equals("writeln")) {
+            if (cl.name.equals("write") || cl.name.equals("writeln")) {
                 for (SyntaxNodeExpr param : cl.params) {
                     checkExpr(param, false);
                 }
@@ -127,6 +119,7 @@ public class CheckConstraints {
             Variable v = (Variable) sn;
             AccessVar accessVar = currentFunction.getAccessVarByName(v.getName());
             if (accessVar == null) {
+                accessVar = syntaxTree.getAccessVarByName(v.getName());
                 if (accessVar == null) {
                     throw new ParseError(84, v.indexL);
                 }

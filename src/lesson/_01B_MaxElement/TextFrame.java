@@ -1,4 +1,4 @@
-package lesson._07B_QuickSort;
+package lesson._01B_MaxElement;
 
 import helpers.LessonHelper;
 import java.awt.Dimension;
@@ -12,7 +12,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javax.swing.JInternalFrame;
-import lesson._07B_QuickSort.QuickSortLesson.State;
+import lesson._01B_MaxElement.MaxElementLesson.State;
 import mainclass.MainClass;
 
 class TextFrame {
@@ -140,10 +140,6 @@ class TextFrame {
                 if (state.id >= State.PseudocodeShown.id) {
                     LessonHelper.initializeHintTab(hintTabWebEngine, 2);
                 }
-                
-                if (state == State.SummaryShown) {
-                    summaryTabDisabledProperty.set(false);
-                }
             }
         });
     }
@@ -180,23 +176,14 @@ class TextFrame {
                 tab.setContent(web);
                 tabPane.getTabs().add(tab);
 
-                tab = new Tab(Lang.pseudocodeTabName);
+                tab = new Tab(Lang.hintTabName);
                 web = new WebView();
                 web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("pseudocode.html").toString());
+                web.getEngine().load(getClass().getResource("hint.html").toString());
                 tab.setContent(web);
                 tab.setDisable(true);
                 hintTabDisabledProperty = tab.disableProperty();
                 hintTabWebEngine = web.getEngine();
-                tabPane.getTabs().add(tab);
-                
-                tab = new Tab(Lang.summaryTabName);
-                web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("summary.html").toString());
-                tab.setContent(web);
-                tab.setDisable(true);
-                summaryTabDisabledProperty = tab.disableProperty();
                 tabPane.getTabs().add(tab);
                 
                 Scene scene = new Scene(tabPane);
@@ -225,8 +212,7 @@ class TextFrame {
         
         public static final String textTabName = "Treść zadania";
         public static final String functionsTabName = "Funkcje specjalne";
-        public static final String pseudocodeTabName = "Wskazówki";
-        public static final String summaryTabName = "Podsumowanie";
+        public static final String hintTabName = "Wskazówki";
     }
     //</editor-fold>
     

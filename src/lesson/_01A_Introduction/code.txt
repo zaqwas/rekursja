@@ -1,22 +1,26 @@
 //Oto przykładowa funkcja.
-//Funkcja przyjmuje tablicę ilczb oraz rozmiar tablicy.
-//Jako wynik zwraca sumę liczb zawartych w tej tablicy.
-//Dodatkowo w referencji zwracany jest iloczyn liczb.
-int sumaOrazIloczyn(tablica[], rozmiar, iloczyn&)
+//Funkcja przyjmuje tablicę ilczb 
+//oraz rozmiar tablicy. Jako wynik 
+//zwraca sumę liczb zawartych w tej tablicy.
+//Dodatkowo poprzez referencję 
+//zwracany jest iloczyn liczb.
+int sumaOrazIloczyn(tablica[], rozmiar, &iloczyn)
 //Jak widzimy parametrem funkcji może być: 
 //- zmienna przykazywana przez wartość
 //- tablica liczb (kończy się znakami [])
-//- referencja na zmienną (kończy się znakiem &)
+//- referencja na zmienną (zaczyna się znakiem &)
 
 //Po nagłówku funkcji możemy definiować zmienne 
 //lokalne dostępne tylko w tej funkcji:
 var i, suma, tablica_1[7];
 var zmienna, tablica_2[5];
-//Deklaracja zmiennych zaczyna się od słowa kluczowego "var",
-//po którym możemy zadeklarować zmienne lub tablice.
-//W tym programie jedynymi typami zmiennych są typy całkowitoliczbowe.
+//Deklaracja zmiennych zaczyna się od słowa 
+//kluczowego "var", po którym możemy zadeklarować 
+//zmienne lub tablice. W tym programie jedynymi 
+//typami zmiennych są typy całkowitoliczbowe.
 
-//Po deklaracji zmiennych lokalnych występuje ciało funkcji:
+//Po deklaracji zmiennych lokalnych 
+//występuje ciało funkcji:
 {
   suma = 0;
   iloczyn = 1;
@@ -39,56 +43,55 @@ var zmienna, tablica_2[5];
     //Dostępna jest też inkrementacja(++)
     //oraz dekrementacja(--)
     
-    //Nadmienić również należy, że w tym języku przypisanie,
-    //inkrementacja oraz dekrementacja nie zwraca żadnej wartości.
-    //Dlatego poniższe funkcje zakończyłyby się błędem:
+    //Nadmienić również należy, że w tym języku 
+    //przypisanie, inkrementacja oraz dekrementacja 
+    //nie zwraca żadnej wartości. Dlatego poniższe 
+    //instrukcje zakończyłyby się błędem syntaktycznym:
     //suma = iloczyn = 0;
-    //iloczyn *= tablica[i++];
+    //tablica[i++] = 0;
   }
   //Wartość funkcji zwracamy używając słowa "return".
   //Po wywołaniu operacji return funkcja kończy działanie.
   return suma;
-  //Poniższy kod nigdy się nie wykona:
+  //Poniższa instrukcja nigdy się nie wykona:
   iloczyn = 0;
 }
 
 
-//Oto kolejna przykładowa funkcja:
+//Oto kolejna przykładowa funkcja.
 //Funkcja przyjmuje tablicę liczb i jej rozmiar.
 //Funkcja przestawia liczby w odwrotnej kolejności
-
 void przestawLiczb(tablica[], rozmiar)
-var idxLewy, idxPrawy, temp;
 //Zwróć uwagę na słówko "void". Podana funkcja 
 //nie zwraca żadnej liczby, więc jest typu void.
 //W programie są dostępne funkcje typu void i int.
+var idxLewy, idxPrawy, temp;
 {
   //W poniższej pętli iterujemy po dwóch indeksach
   //lewym zwiększając go i prawym zmiejszając.
-  for (idxLewy=0, idxPrawy<rozmiar-1; idxLewy<j; 
+  for (idxLewy=0, idxPrawy=rozmiar-1;
+         idxLewy<idxPrawy; 
          idxLewy++, idxPrawy--)
   {
-    //W tym miejscu zamieniamy liczby w tabeli.
+    //W tym miejscu zamieniamy liczby w tabeli:
     temp = tablica[idxLewy];
     tablica[idxLewy] = tablica[idxPrawy];
     tablica[idxPrawy] = temp;
   }
-    
   //Zwróć uwagę, że w funkcji for w pierwszym i 
   //trzecim członie użyto dwóch instrukcji.
   //Instrukcje w tym miejscu oddzielamy przecinkiem.
-  
     
   //W funkcji void możemy użyć instrukcji "return"
-  //Służy ona do zakończenia działania pętli.
+  //Służy ona do zakończenia działania funkcji.
   return;
   //Poniższy kod nigdy się nie wykona:
   tablica[0] = 0;
 }
 
 //Oprócz funkcji możemy tetakże deklarować zmienne globalne
-var zmienna_globalna, tablica_globalna[5]
 //Zmienne globalne deklarujemy tak samo jak zmienne lokalne.
+var zmienna_globalna, tablica_globalna[5];
 
 //Najważniejszą funkcja w programie jest bezargumentowa 
 //funkcja "main". Każdy program musi ją posiadać. 
@@ -98,38 +101,39 @@ void main()
 var i, suma, iloczyn;
 {
   //Zminne globalne są inicjializowane zerami
-  writeln(zmienna_globalna);
-  writeln(tablica_globalna[0]);
+  writeln("zmienna_globalna: ", zmienna_globalna);
+  writeln("tablica_globalna[0]: ", tablica_globalna[0]);
   //W programie możliwe jest wywołanie dwóch specjalnych 
-  //funkcji "write" i "writeln". Funkcję wypisują w konsoli liczby oraz tekst.
-  //Funkcja writeln dodatkowo kończy wypisywanie dodając znak nowej linii.
+  //funkcji: "write" i "writeln". Funkcję wypisują 
+  //w konsoli liczby oraz tekst. Funkcja writeln dodatkowo 
+  //kończy wypisywanie dodając znak nowej linii.
+  //Funkcje write mogą przyjmować dowolną ilość parametrów.
+  
+  //Jeśli chcemy wypisać tekst, 
+  //to umieszczamy go w cudzysłowiu.
+  //W łańcuchu znaków dostępne są także znaki specjalne:
+  // \n - znak nowej linii
+  // \" - znak cudzysłowia
+  // \\ - znak backslash(\)
 
-  //!! Pamiętaj o inicjalizacji zmiennych lokalnych, 
+  //!!! Pamiętaj o inicjalizacji zmiennych lokalnych, 
   //gdyż użycie niezainicjalizowanych zmiennych skończy
   //się błędem wykonania programu.
   //Np. Poniższe instrukcje spowodowały by błąd:
   //write(i);
   //i = tablica_globalna[i];
-  
-  //Funkcje write mogą wypisywać też tekst, 
-  //czyli ciąg znaków w cudzysłowiu.
-  writeln("Tablica w początkowym ustawieniu:");
-  //W łańcuchu znaków dostępne są także znaki specjalne:
-  // \n - znak nowej linie
-  // \" - znak cudzysłowia
-  // \\ - znak backslash(\)
+
   i = 0;
-  //Oprócz pętli for użytych w powyższych funkcjach
-  //możemy używać też pętli while oraz do ... while
+  //Oprócz pętli for w tym języku można
+  //używać pętli while oraz do ... while
+  writeln("Tablica w początkowym ustawieniu:");
   while (i<5)
   {
     tablica_globalna[i] = i+1;
     write(tablica_globalna[i], ", ");
-    //Zwróć uwagę, że funkcja write przyjmuje dwa argumenty.
-    //Liczba argumentów w funkcji write
-    //jest nieograniczona.
     i++;
   }
+  writeln();
   
   //W tym miejscu wywołujemy pierwszą funkcję:
   suma = sumaOrazIloczyn(tablica_globalna, 5, iloczyn);
@@ -146,14 +150,15 @@ var i, suma, iloczyn;
     write(tablica_globalna[i], ", ");
     i++;
   }
-  while (i<5)
+  while (i < 5);
+  writeln();
       
   //Warto nadmienić, iż w programie nie rozróżniamy
   //typów całkowitoliczbowych od boolowskich.
   //Wszystkie liczby, które są różne od zera 
   //uznajemy za prawdę, a zero za fałsz
   //Możliwe są takie instrukcje:
-  if ( i+1 )
+  if (i + 1)
   {
     //i+1 - wynosi 6, więc poniższy fragment się wykona:
     tablica_globalna[i==5] = 100;

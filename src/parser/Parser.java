@@ -253,14 +253,17 @@ public final class Parser {
         br.index2 = index - 1;
         brackets.add(br);
 
-        skipBlank();
-        indexBegin = index;
-        String s = getStr();
-        if (s.equals("var")) {
-            parseVar(f, null);
-        } else {
-            if (!s.equals("")) {
-                throw new ParseError(43, indexBegin);
+        while (true) {
+            skipBlank();
+            indexBegin = index;
+            String s = getStr();
+            if (s.equals("var")) {
+                parseVar(f, null);
+            } else {
+                if (!s.equals("")) {
+                    throw new ParseError(43, indexBegin);
+                }
+                break;
             }
         }
         if (str.charAt(index) != '{') {
@@ -403,8 +406,8 @@ public final class Parser {
                 fr.statementsEnd.add(parseAssigmentOrCall(null, 0));
                 char c = str.charAt(index);
                 if (c == ',') {
-                    skipBlank();
                     index++;
+                    skipBlank();
                 } else if (c == ')') {
                     break;
                 } else {

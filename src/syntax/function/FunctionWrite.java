@@ -62,11 +62,13 @@ public class FunctionWrite extends Function {
         
         @Override
         public SyntaxNode commit(Instance instance) {
-            for (Argument arg : instance.arrayArgs) {
-                if (arg instanceof ArgIntOrRef) {
-                    console.append(((ArgIntOrRef) arg).getValue().toString());
-                } else {
-                    console.append(((ArgString) arg).getString());
+            if (instance.arrayArgs != null) {
+                for (Argument arg : instance.arrayArgs) {
+                    if (arg instanceof ArgIntOrRef) {
+                        console.append(((ArgIntOrRef) arg).getValue().toString());
+                    } else {
+                        console.append(((ArgString) arg).getString());
+                    }
                 }
             }
             if (writeln) {

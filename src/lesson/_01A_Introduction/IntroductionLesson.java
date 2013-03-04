@@ -1,15 +1,19 @@
 package lesson._01A_Introduction;
 
+import helpers.LessonHelper;
 import interpreter.Instance;
 import interpreter.InterpreterThread;
-import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.swing.JInternalFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
 import lesson.Lesson;
 import lesson.LessonLoader;
 import mainclass.MainClass;
@@ -17,69 +21,67 @@ import syntax.SyntaxNode;
 
 public class IntroductionLesson implements Lesson {
     
-    private final static String resourcesDir = "/lesson/_01A_Introduction/";
-    
     private MainClass mainClass;
-    
-    private JInternalFrame textFrame;
-    private JScrollPane textScrollPane;
-    private JTextPane textPane;
-    
+    private IntroductionLessonLoader lessonLoader;
+    private TextFrame textFrame;
     private String oldCode;
     
-    public IntroductionLesson(MainClass mainClass) {
+    
+    public IntroductionLesson(MainClass mainClass, DataInputStream stream, 
+            IntroductionLessonLoader loader) throws IOException {
         this.mainClass = mainClass;
+        this.lessonLoader = loader;
+        
+        textFrame = new TextFrame(mainClass);
+        
+        oldCode = mainClass.getEditor().getCode();
+        InputStream inputStream = getClass().getResourceAsStream("code.txt");
+        String code = LessonHelper.readFile(inputStream);
+        mainClass.getEditor().setCode(code);
+        
+        initMenu();
+        
+        if (stream == null) {
+            textFrame.gotoText();
+        } else {
+            mainClass.loadFramesPositionAndSettnings(stream);
+        }
     }
     
-    public void start() {
+    private void initMenu() {
+        JMenu lessonMenu = mainClass.getLessonMenu();
         
-        //<editor-fold defaultstate="collapsed" desc="Setting code in editor">
-        oldCode = mainClass.getEditor().getCode();
+        JMenuItem textMenuItem = new JMenuItem(Lang.textMenuItem);
+        textMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textFrame.gotoText();
+            }
+        });
+        lessonMenu.add(textMenuItem);
         
-        InputStream stream = getClass().getResourceAsStream(resourcesDir + "code.txt");
-        byte bytes[] = new byte[8192];
-        int bytesRead;
-        try {
-            bytesRead = stream.read(bytes);
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-            return;
-        }
-        if ( bytesRead >= 8192 ) {
-            throw new RuntimeException("Array too short.");
-        }
-        String code = new String(bytes, 0, bytesRead);
+        lessonMenu.add(new JSeparator());
         
-        mainClass.getEditor().setCode(code);
-        //</editor-fold>
+        JMenuItem programExampleMenuItem = new JMenuItem(Lang.programExampleMenuItem);
+        programExampleMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainClass.getEditor().frameToFront();
+            }
+        });
+        lessonMenu.add(programExampleMenuItem);
         
-        //<editor-fold defaultstate="collapsed" desc="Init frame with introduction text">
-        textFrame = new JInternalFrame(Lang.textFrameTitle);
-        
-        textScrollPane = new JScrollPane();
-        textFrame.add(textScrollPane);
-
-        textPane = new JTextPane();
-        textPane.setEditable(false);
-        try {
-            textPane.setPage(getClass().getResource(resourcesDir + "text.html"));
-        } catch (IOException ex) {
-            textPane.setText(Lang.loadTabPaneError);
-        }
-        textScrollPane.setViewportView(textPane);
-
-        
-        textFrame.setResizable(true);
-        textFrame.setPreferredSize(new Dimension(700, 500));
-        textFrame.pack();
-        
-        mainClass.addToDesktop(textFrame);
-        textFrame.setVisible(true);
-        //</editor-fold>
+        lessonMenu.setEnabled(true);
     }
 
     @Override
     public void close() {
+        JMenu lessonMenu = mainClass.getLessonMenu();
+        lessonMenu.removeAll();
+        lessonMenu.setEnabled(false);
+        
+        mainClass.removeAddictionalLessonFrame(textFrame.getFrame());
+        
         mainClass.getEditor().setCode(oldCode);
     }
 
@@ -102,7 +104,7 @@ public class IntroductionLesson implements Lesson {
 
     @Override
     public LessonLoader getLessonLoader() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return lessonLoader;
     }
     
     @Override
@@ -112,8 +114,8 @@ public class IntroductionLesson implements Lesson {
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
-        public static final String textFrameTitle = "Wprowadzenie";
-        public static final String loadTabPaneError = "Nie można załadować tej zakładki.";
+        public static final String textMenuItem = "Treść zadania";
+        public static final String programExampleMenuItem = "Przykładowy program";
     }
     //</editor-fold>
     

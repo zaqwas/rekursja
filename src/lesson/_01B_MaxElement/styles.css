@@ -1,0 +1,31 @@
+.menu-bar {
+  -fx-font-size: 12;
+  -fx-padding: 0em 0.4em 0em 0.4em;
+}
+.menu-bar *.label {
+  -fx-padding: 0.3em 0.4em 0.3em 0.4em;
+}
+
+#empty {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
+}
+#empty:focused {
+  -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
+}
+
+
+#comparing {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, orange;
+}
+#comparing:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, orange;
+}
+
+
+#maxElement {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00ff80;
+}
+#maxElement:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00ff80;
+}
+

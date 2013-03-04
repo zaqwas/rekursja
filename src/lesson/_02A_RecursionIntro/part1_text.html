@@ -1,90 +1,129 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Treść zadania</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  </head>
-
-  <body>
-    <h2 style="text-align: center">Wprowadzenie do rekurencji</h2>
-
-    <p>
-      Poprzednie lekcje miały wprowadzić Cię w strukturę systemu, a także zapoznać 
-      z językiem wykorzystywanym w systemie. Mam nadzieję, że dokładnie zapoznałeś się z ww. elementami, 
-      gdyż w tym momencie przejdziemy do głównego tematu tego systemu, czyli do nauki rekurencji.
-    </p>
-
-    <p>
-      Definicja rekurencji brzmi następująco:<br>
-      <b>Rekurencja</b> - sposób definiowania funkcji, polegający na umieszczeniu 
-      w treści funkcji odwołań do samej siebie.
-    </p>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style type="text/css">
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h3 {
+      margin-top: 20px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    p {
+      margin-top: 20px;
+      margin-bottom: 0px;
+    }
+    p.first {
+      margin-top: 5px;
+    }
+    div {
+      margin-top: 20px;
+      margin-bottom: 0px;
+    }
     
-    <h3>Przykład: funkcja silnia</h3>
+    td.codes {
+      vertical-align: top;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    th {
+      text-align: left;
+      padding-left: 20px;
+    }
+    code {
+      white-space: nowrap;
+    }
+  </style>
+</head>
 
-    <p>
-      Silnią liczby naturalnej nazywamy iloczyn wszystkich liczb naturalnych nie większych niż n.
-      Oznaczamy ją wykrzyknikiem, <i>n</i>! Np. 5!=1&sdot;2&sdot;3&sdot;4&sdot;5=120. 
-      Ponadto przyjmuje się że dla zera silnia wynosi jeden (0! = 1).
-    </p>
-    
-    <p>
-      Funkcję silnia można zdefiniować na dwa sposoby:
-    </p>
+<body>
+  <h2>Wprowadzenie do rekurencji</h2>
+
+  <p class="first">
+    Poprzednie lekcje miały wprowadzić Cię w strukturę systemu, a także zapoznać 
+    z językiem wykorzystywanym w systemie. Mam nadzieję, że dokładnie zapoznałeś się z ww. elementami, 
+    gdyż w tym momencie przejdziemy do głównego tematu tego systemu, czyli do nauki rekurencji.
+  </p>
+
+  <p>
+    Definicja rekurencji brzmi następująco:<br>
+    <b>Rekurencja</b> - sposób definiowania funkcji, polegający na umieszczeniu 
+    w treści funkcji odwołań do samej siebie.
+  </p>
+
+  <h3>Przykład rekurencji: funkcja silnia</h3>
+
+  <p class="first">
+    Silnią liczby naturalnej nazywamy iloczyn wszystkich liczb naturalnych nie większych niż n.
+    Oznaczamy ją wykrzyknikiem, <i>n</i>! Np. 5!=1&sdot;2&sdot;3&sdot;4&sdot;5=120. 
+    Ponadto przyjmuje się, że dla zera silnia wynosi jeden (0! = 1).
+  </p>
+
+  <div>
+    Funkcję silnia można zdefiniować na dwa sposoby:
+  
     <table>
       <tr>
         <td>1. &nbsp;&nbsp;</td>
-        <td><img src="factorial_iteration.png"></td>
+        <td><img src="factorial_iteration.png" alt="Nie można załadować obrazka"></td>
       </tr>
       <tr>
         <td>2. &nbsp;&nbsp;</td>
-        <td><img src="factorial_recursion.png"></td>
+        <td><img src="factorial_recursion.png" alt="Nie można załadować obrazka"></td>
       </tr>
     </table>
     
-    <div>
-      Zauważmy, że ta druga definicja zawiera właśnie rekurencję, 
-      gdyż w opisie problemu użyty jest element, który właśnie opisujemy.
-    </div>
-    
+    Zauważmy, że ta druga definicja zawiera właśnie rekurencję, 
+    gdyż w opisie problemu użyty jest element, który właśnie opisujemy.
     Na podstawie tych dwóch wzorów można napisać dwie funkcje:
-    <p>ffff</p>
     <table>
-      <tr>
-        <td>
-          <code>
-            int silnia(n)<br>
-            var i, wynik;<br>
-            {<br>
-            &nbsp;&nbsp;wynik = 1;<br>
-            &nbsp;&nbsp;for (i=2; i&lt;=n; i++)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;wynik *= i;<br>
-            &nbsp;&nbsp;return wynik;<br>
-            }
-          </code>
-        </td>
-        <td>
-          <code>
-            int silnia(n)<br>
-            {<br>
-            &nbsp;&nbsp;if ( n&lt;=1 )<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
-            &nbsp;&nbsp;else<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;return n * silnia(n-1);<br>
-            }
-          </code>
-        </td>
-      </tr>
-    </table>
-    
-    
+    <tr>
+      <th>
+        Wersja iteracyjna
+      </th>
+      <th>
+        Wersja rekurencyjna
+      </th>
+    </tr>
+    <tr>
+      <td class="codes">
+        <code>
+          int silnia(n)<br>
+          var i, wynik;<br>
+          {<br>
+          &nbsp;&nbsp;wynik = 1;<br>
+          &nbsp;&nbsp;for (i=2; i&lt;=n; i++) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;wynik *= i;<br>
+          &nbsp;&nbsp;}<br>
+          &nbsp;&nbsp;return wynik;<br>
+          }
+        </code>
+      </td>
+      <td class="codes">
+        <code>
+          int silnia(n)<br>
+          {<br>
+          &nbsp;&nbsp;if (n &lt;= 1) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+          &nbsp;&nbsp;}<br>
+          &nbsp;&nbsp;return n * silnia(n-1);<br>
+          }
+        </code>
+      </td>
+    </tr>
+  </table>
+  </div>
 
-    
-
-    <p>
-      Przed rozpoczęciem zadania należy zapoznać się ze specyfikacją zadania, 
-      znajdującą się w zakładce pod tym samym tytułem.
-    </p>
-
-  </body>
+  <p>
+    Twoim zadaniem w tej części lekcji jest włączyć program 
+    i krok po kroku (za pomocą klawisza F7) przeanalizować te dwie funkcje.
+    Kiedy to zrobisz przejdź do drugiej części lekcji, w której skupimy 
+    się na przeanalizowaniu funkcji rekurencyjnej.
+  </p>
+</body>
 </html>

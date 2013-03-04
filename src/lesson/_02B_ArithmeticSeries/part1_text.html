@@ -1,45 +1,67 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    p {
+      margin-top: 20px;
+      margin-bottom: 0px;
+    }
+    div {
+      margin-top: 20px;
+      margin-bottom: 0px;
+    }
+    p.first {
+      margin-top: 5px;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Suma ciągu arytmetycznego</h2>
-    <p>
-      W poprzedniej lekcji zapoznaliśmy się z funkcją silnia.
-      W tej lekcji zajmiemy się problemem, który bardzo przypomina funkcję silnię.
-      Mianowicie zajmiemy się obliczaniem sumy ciągu arytmetycznego liczb od jeden do n.
-    </p>
+<body>
+  <h2>Suma ciągu arytmetycznego</h2>
+  <p class="first">
+    W poprzedniej lekcji zapoznaliśmy się z funkcją silnia.
+    W tej lekcji zajmiemy się problemem obliczania sumy ciągu arytmetycznego liczb od jeden do n.
+    Jednak najpierw zapoznajmy się z definicją ciągu arytmetycznego:<br />
+    <b>Ciąg arytmetyczny</b> – ciąg liczbowy, w którym każdy wyraz można otrzymać dodając wyraz 
+    bezpośrednio go poprzedzający oraz ustaloną liczbę, zwaną różnicą ciągu.<br />
+  </p>
+  
+  <p>
+    Na przykład ciągiem arytmetycznym jest: 7, 10, 13, 16, 19, 22, 25, ...
+    Różnicą tego ciągu jest liczba 3, natomiast pierwszym elementem jest liczba 7.<br />
+    W tej lekcji zajmiemy się jednak tylko takimi ciągami, których różnica wynosi jeden oraz 
+    pierwszy wyraz też wynosi jeden. Inaczej mówiąc będziemy sumować kolejne liczby naturalne.
+  </p>
 
-    <p>
-      Najpierw zapoznajmy się z definicją ciągu arytmetycznego.<br />
-      <b>Ciąg arytmetyczny</b> – ciąg liczbowy, w którym każdy wyraz można otrzymać dodając wyraz 
-      bezpośrednio go poprzedzający oraz ustaloną liczbę, zwaną różnicą ciągu.<br />
-      Np. ciągiem arytmetycznym jest: 7, 10, 13, 16, 19, 22, 25, ...
-      Różnicą tego ciągu jest liczba 5, natomiast pierwszym elementem jest liczba 7.<br />
-      W tej lekcji zajmiemy się jednak tylko takimi ciągami, których różnica wynosi jeden oraz 
-      pierwszy wyraz też wynosi jeden. Inaczej mówiąc będziemy sumować kolejne liczby naturalne.
-    </p>
+  <div>
+    Sumę takiego ciągu arytmetycznego podobnie jak silnię możemy zdefiniować na dwa sposoby:
+    <table>
+    <tr>
+      <td>1. Definicja iteracyjna:&nbsp;&nbsp;</td>
+      <td><img src="definition_iteration.png" alt="Nie można załadować obrazka"></td>
+    </tr>
+    <tr>
+      <td>2. Definicja iteracyjna:&nbsp;&nbsp;</td>
+      <td><img src="definition_recurcive.png" alt="Nie można załadować obrazka"></td>
+    </tr>
+    </table>
+  </div>
 
-    <p>
-      Sumę takiego ciągu arytmetycznego podobnie jak silnię możemy zdefiniować na dwa sposoby:<br />
-      1. Definicja iteracyjna: <img src="definition_iteration.png" alt="Nie można załadować obrazka"/><br />
-      2. Definicja rekurencyjna: <img src="definition_recurcive.png" alt="Nie można załadować obrazka"/><br />
-    </p>
+  <p>
+    <b>Na podstawie tych dwóch definicji spróbuj napisać funkcje liczące sumy liczb od 1 do <i>n</i>.
+    Napisz te funkcje w dwóch postaciach: iteracyjnej i rekurencyjnej.</b>
+    Funkcje powinny działać poprawnie dla wszystkich liczb nieujemnych.
+    W przypadku pojawienia się problemów, możesz spojrzeć na pseudokody podanych funkcji. 
+    Po zakończeniu implementowania tych dwóch funkcji i porównaniu ich z rozwiązaniami wzorcowymi,
+    przejdź do następnej części tej lekcji, gdzie poznasz znacznie szybszy sposób wyliczania tej sumy.
+  </p>
 
-    <p>
-      Na podstawie tych dwóch definicji spróbuj napisać funkcje liczenia sumy ciągu arytmetycznego.
-      Napisz te funkcje w dwóch postaciach: iteracyjnej i rekurencyjnej. 
-      Funkcję powinny działać poprawnie dla wszystkich liczb nieujemnych.
-    </p>
-
-    <p>
-      W przypadku pojawienia się problemów, możesz spojrzeć na pseudokody podanych funkcji. 
-      Po zakończeniu implementowania tych dwóch funkcji i porównaniu ich z rozwiązaniami wzorcowymi,
-      przejdź do następnej części tej lekcji, gdzie poznasz znacznie szybszy sposób wyliczania tej sumy.
-    </p>
-
-  </body>
+</body>
 </html> 

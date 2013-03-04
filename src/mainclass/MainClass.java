@@ -32,6 +32,8 @@ import javax.swing.filechooser.FileFilter;
 import lesson.EmptyLesson;
 import lesson.Lesson;
 import lesson.LessonLoader;
+import lesson._01A_Introduction.IntroductionLessonLoader;
+import lesson._01B_MaxElement.MaxElementLessonLoader;
 import lesson._06A_MergeFunction.MergeFunctionLessonLoader;
 import lesson._06B_MergeSort.MergeSortLessonLoader;
 import lesson._07A_PartitionFunction.PartitionFunctionLessonLoader;
@@ -733,6 +735,11 @@ public class MainClass {
     private void initChooseLessonMenu() {
         chooseLessonMenu = new JMenu(Lang.chooseLesson);
         menuBar.add(chooseLessonMenu);
+        
+        addLessonLoader(new IntroductionLessonLoader());
+        addLessonLoader(new MaxElementLessonLoader());
+        
+        chooseLessonMenu.add(new JSeparator());
         
         addLessonLoader(new MergeFunctionLessonLoader());
         addLessonLoader(new MergeSortLessonLoader());

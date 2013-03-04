@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+    body {
+      font-size: small;
+    }
+    img {
+      margin-right: 3px;
+      float: left;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    div {
+      padding-top: 15px;
+      margin-bottom: 0px;
+      margin-top: 0px;
+      clear: both;
+    }
+    div.first {
+      padding-top: 5px;
+    }
+    span.nowrap {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Pierwszy program: znajdowanie<br/>maksymalnego elementu</h2>
+
+  <div class="first">
+    Zanim przejdziemy do nauki rekurencji, warto byłoby bliżej zapoznać się 
+    ze strukturą tej aplikacji. Jak już wcześniej było powiedziane ta aplikacja 
+    jest dość nietypowa, gdyż pozwoli Ci na próbę napisania własnych programów. 
+    Właśnie dlatego w tym miejscu dobrze byłoby abyś zaimplementował 
+    jakiś prosty algorytm. Dla wprowadzenie spróbuj zrealizować 
+    <b>algorytm znajdowania indeksu maksymalnego elementu w tablicy</b>.
+  </div>
+
+  <div>
+    <img src="array.png" alt="Nie udało załadować się obrazka"/>
+    Oprócz normalnych komend języka w niektórych lekcjach będą pojawiały się 
+    tzw. „funkcje specjalne”, które będą integrować Twój program z otoczeniem.
+    Pewnie zauważyłeś, iż oprócz tego okna (z treścią zadania) w
+    aplikacji pojawiło się także drugie okno z tablicą liczb (na obrazku po lewej).
+    To właśnie na tej tablicy powinien działać twój program. 
+    Oczywiście w tym celu w swoim programie powinieneś 
+    skorzystać funkcji specjalnej: <span class="nowrap">„int <b>porownaj</b>(idx1, idx2)”</span>.
+    Funkcja „porownaj” jest dokładnie omówiona w zakładce „funkcje specjalne”.
+  </div>
+  
+  <div>
+    W tej lekcji Twoim zadaniem jest zaimplementowanie funkcji: 
+    <span class="nowrap">„int <b>idxMaxElement</b>(n)”</span>. 
+    Jako parametr funkcja przyjmuje rozmiar tablicy 
+    (możesz założyć, że <span class="nowrap">1 &le; <i>n</i> &le; 32</span>).
+    Funkcja powinna zwracać <b>indeks</b> maksymalnego elementu. Jeśli w tablicy 
+    znajduje się <b>więcej niż jeden element maksymalny</b>, to funkcja powinna 
+    zwrócić indeks elementu maksymalnego o <b>najmniejszej wartości</b>.
+    Na przykład dla tablicy pokazanej na rysunku powyżej
+    maksymalnym elementem jest liczba 19 i znajduję się ona 
+    w trzech miejscach: 8, 12 i 23. Wobec tego funkcja powinna zwrócić 8, 
+    gdyż ten indeks jest najmniejszy spośród wszystkich indeksów elementów maksymalnych.
+    W przypadku pojawienia się problemów z implementacją tej funkcji, możesz wyświetlić 
+    dwie wskazówki, które powinny przybliżyć Cię do rozwiązania.
+    Po zakończeniu implementowania tej funkcji powinienś 
+    porównać swoje roziązanie z rozwiązaniem wzorcowym.
+  </div>
+
+</body>
+</html>
