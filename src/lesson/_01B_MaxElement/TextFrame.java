@@ -159,27 +159,27 @@ class TextFrame {
             public void run() {
                 TabPane tabPane = new TabPane();
                 tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-                tabPane.tabMinHeightProperty().set(0d);
+                tabPane.setStyle("-fx-tab-min-height: 16px");
                 tabSelectionModel = tabPane.getSelectionModel();
                 
                 Tab tab = new Tab(Lang.textTabName);
                 WebView web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("text.html").toString());
+                web.setContextMenuEnabled(false);
+                web.getEngine().load(getClass().getResource("text.html").toExternalForm());
                 tab.setContent(web);
                 tabPane.getTabs().add(tab);
                 
                 tab = new Tab(Lang.functionsTabName);
                 web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("functions.html").toString());
+                web.setContextMenuEnabled(false);
+                web.getEngine().load(getClass().getResource("functions.html").toExternalForm());
                 tab.setContent(web);
                 tabPane.getTabs().add(tab);
 
                 tab = new Tab(Lang.hintTabName);
                 web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("hint.html").toString());
+                web.setContextMenuEnabled(false);
+                web.getEngine().load(getClass().getResource("hint.html").toExternalForm());
                 tab.setContent(web);
                 tab.setDisable(true);
                 hintTabDisabledProperty = tab.disableProperty();

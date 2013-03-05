@@ -159,7 +159,11 @@ class MaxElementLesson implements Lesson {
         if (option != 0) {
             userCodeMenuItem.setSelected(true);
             if (option == 1) {
-                pseudocodeMenuItem.doClick();
+                if (state == State.NothingShown) {
+                    hintMenuItem.doClick();
+                } else {
+                    pseudocodeMenuItem.doClick();
+                }
             }
             return false;
         }
@@ -230,7 +234,7 @@ class MaxElementLesson implements Lesson {
         pseudocodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!showConifrmDialog(Lang.showHint, State.HintShown)) {
+                if (!showConifrmDialog(Lang.showHintConifrm, State.HintShown)) {
                     return;
                 }
                 if ( state.id < State.PseudocodeShown.id ) {

@@ -41,8 +41,8 @@ class TextFrame {
             @Override
             public void run() {
                 WebView web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("text.html").toString());
+                web.setContextMenuEnabled(false);
+                web.getEngine().load(getClass().getResource("text.html").toExternalForm());
                 
                 Scene scene = new Scene(web);
                 fxPanel.setScene(scene);

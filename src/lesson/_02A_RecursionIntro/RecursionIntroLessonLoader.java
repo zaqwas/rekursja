@@ -1,4 +1,4 @@
-package lesson._01B_MaxElement;
+package lesson._02A_RecursionIntro;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -6,21 +6,22 @@ import lesson.Lesson;
 import lesson.LessonLoader;
 import mainclass.MainClass;
 
-public class MaxElementLessonLoader implements LessonLoader {
+public class RecursionIntroLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Pierwszy program: maksymalny element";
+        return "Wprowadzenie do rekurencji";
     }
 
     @Override
     public String getLessonKey() {
-        return "Uo18983Yji";
+        return "aFa0gd13i3";
     }
 
     @Override
     public Lesson getLesson(MainClass mainClass, DataInputStream dataInputStream) throws IOException {
-        return new MaxElementLesson(mainClass, dataInputStream, this);
+        //return new MaxElementLesson(mainClass, dataInputStream, this);
+        return null;
     }
     
 }

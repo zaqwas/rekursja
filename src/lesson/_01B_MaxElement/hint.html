@@ -1,68 +1,124 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Treść zadania</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script>
-      function gotoHint1()
-      {
-        window.location.href = "#hint1";
-      }
-      function gotoHint2()
-      {
-        window.location.href = "#hint2";
-      }
-      function gotoHint3()
-      {
-        window.location.href = "#hint3";
-      }
-      function gotoHint4()
-      {
-        window.location.href = "#hint4";
-      }
-      
-      function showHint2()
-      {
-        hint2.style.display = "inherit";
-      }
-      function showHint3()
-      {
-        hint2.style.display = "inherit";
-        hint3.style.display = "inherit";
-      }
-      function showHint4()
-      {
-        hint2.style.display = "inherit";
-        hint3.style.display = "inherit";
-        hint4.style.display = "inherit";
-      }
-    </script>
-  </head>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <script type="text/javascript">
+    function gotoHint1() {
+      window.location.href = "#hint1";
+    }
+    function gotoHint2() {
+      window.location.href = "#hint2";
+    }
 
-  <body>
-    
-    <div id="hint1">
-      <h2 style="text-align: center">Wskazówka I</h2>
-      <br>
-      <br>
-    </div>
-    
-    <div id="hint2" style="display: none;">
-      <h2 style="text-align: center">Wskazówka II</h2>
-      <br>
-      <br>
-    </div>
-    
-    <div id="hint3" style="display: none">
-      <h2 style="text-align: center">Wskazówka III</h2>
-      <br>
-      <br>
-    </div>
-    
-    <div id="hint4" style="display: none">
-      <h2 style="text-align: center">Wskazówka IV - pseudokod</h2>
-      <br>
-      <br>
-    </div>
-  </body>
+    function showHint2() {
+      hint2.style.display = "inherit";
+    }
+  </script>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 0px; 
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    div.hidden {
+      margin-top: 15px;
+      display: none;
+    }
+    div.indent {
+      margin-left: 20px;
+    }
+    span.nowrap {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <h2 id="hint1">Wskazówka</h2>
+  <div class="first">
+    W zadaniu jest mowa o znajdowaniu maksymalnej liczby. Jednak przez chwilkę 
+    nie zajmujmy się liczbami tylko, powiedzmy patykami. Wyobraźmy sobie, 
+    iż mamy ogromny stos patyków różnej długości i chcemy znaleźć najdłuższy. 
+    Oczywiście w jednej chwili możemy porównywać tylko dwa patyki. 
+    Zastanówmy się jak może wyglądać algorytm rozwiązania tego problemu. 
+    Najpierw powinniśmy wziąć do prawej ręki dowolny patyk. 
+    Następnie do lewej ręki bierzemy kolejny dowolny patyk i porównujemy je ze sobą. 
+    Jeśli patyk w lewej dłoni jest większy wyrzucamy patyk z prawej dłoni 
+    (odkładamy patyk na inny stos) i przekładamy patyk z lewej dłoni do prawej. 
+    Jeśli jednak patyk z lewej dłonie jest mniejszy albo równy wówczas wyrzucamy 
+    patyk z lewej dłoni. Następnie znowu dobieramy kolejny patyk do lewej dłoni, 
+    porównujemy patyki i wyrzucamy odpowiedni z nich, ten krok powtarzamy 
+    aż na pierwotnym stosie nie będzie już żadnego patyka, 
+    wówczas w prawej dłoni będziemy dzierżyć najdłuższy patyk.
+  </div>
+
+  <div id="hint2" class="hidden">
+    <h2>Pseudokod algorytmu</h2>
+    <table>
+      <tr>
+         <td class="first">
+            Dane:
+         </td>
+         <td>
+            Liczba naturalna <i>n</i> oraz ciąg liczb
+            <span class="nowrap">
+              <i>x</i><sub>0</sub>, <i>x</i><sub>1</sub>,..., <i>x</i><sub><i>n</i>-1</sub>
+            </span>
+         </td>
+      </tr>
+      <tr>
+         <td class="first">
+            Wynik:
+         </td>
+         <td>
+            Indeks elementu maksymalnego.
+         </td>
+      </tr>
+      <tr>
+         <td class="first">
+            Krok 1.
+         </td>
+         <td>
+            Przyjmij za <i>idxMax</i> := 0
+         </td>
+      </tr>
+      <tr>
+         <td class="first">
+            Krok 2.
+         </td>
+         <td>
+            Dla <i>i</i> := 1, 2,..., <i>n</i>-1 wykonaj:<br/> 
+            <div class="indent">
+              jeśli <i>x<sub>i</sub></i> &gt; <i>x<sub>idxMax</sub></i>, 
+              to przyjmij za <span class="nowrap"><i>idxMax</i> := <i>i</i></span>
+            </div>
+         </td>
+      </tr>
+      <tr>
+         <td class="first">
+            Krok 3.
+         </td>
+         <td>
+           Zwróć wartość zmiennej <i>idxMax</i> i wyjdź z funkcji.
+         </td>
+      </tr>
+    </table>
+  </div>
+  
+</body>
 </html>
