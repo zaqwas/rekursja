@@ -21,7 +21,7 @@ public class RecursionIntroLessonLoader implements LessonLoader {
     @Override
     public Lesson getLesson(MainClass mainClass, DataInputStream dataInputStream) throws IOException {
         //return new MaxElementLesson(mainClass, dataInputStream, this);
-        return null;
+        return new RecursionIntroLesson2(mainClass, dataInputStream, this);
     }
     
 }

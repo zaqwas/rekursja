@@ -7,7 +7,7 @@ import parser.ProgramError;
 import stringcreator.StringCreator;
 
 public abstract class SyntaxNode {
-    protected final static BigInteger MAX_VALUE = BigInteger.TEN.pow(100);
+    protected final static BigInteger MAX_VALUE = BigInteger.TEN.pow(1000);
     protected final static BigInteger MIN_VALUE = MAX_VALUE.negate();
     
     public SyntaxNode jump;
@@ -37,8 +37,8 @@ public abstract class SyntaxNode {
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     protected static final class Lang {
-        public static final String exceedMaxValue = "Przekroczenie maksymalnej wartości zmiennej (>10^100)";
-        public static final String exceedMinValue = "Przekroczenie minimalnej wartości zmiennej (>10^100)";
+        public static final String exceedMaxValue = "Przekroczenie maksymalnej wartości zmiennej (maksymalny rozmiar = 10^1000)";
+        public static final String exceedMinValue = "Przekroczenie minimalnej wartości zmiennej (minimalny rozmiar = -10^1000)";
         public static final String notInitializedValue = "Niezainiclizowano zmiennej %s";
         public static final String notInitializedArrayValue = "Niezainiclizowano zmiennej %s[%d]";
     }

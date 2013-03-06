@@ -142,23 +142,8 @@ class TextFrame {
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
-        public static final String frameTitle = "Scalanie posortowanych ciągów";
+        public static final String frameTitle = "Treść zadania";
         public static final String frameMenuDescription = "Treść zadania";
-        
-        public static final String part1TextTabName = "Treść zadania";
-        public static final String part1FunctionsTabName = "Funkcje specjalne";
-        public static final String part1PseudocodeTabName = "Pseudokod";
-        
-        public static final String part2TextTabName = "Treść zadania";
-        public static final String part2FunctionsTabName = "Funkcje specjalne";
-        public static final String part2HintTabName = "Wskazówki";
-        
-        public static final String part3TextTabName = "Treść zadania";
-        public static final String part3FunctionsTabName = "Funkcje specjalne";
-        public static final String part3HintTabName = "Wskazówki";
-        public static final String part3SummaryTabName = "Podsumowanie";
-        
-        public static final String loadTabPaneError = "Nie można załadować tej zakładki.";
     }
     //</editor-fold>
     

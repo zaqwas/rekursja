@@ -1,17 +1,18 @@
-void wczytaj_n(&n){}
+//Funkcja specjalna:
+void start(&n){}
 
 int silnia(n)
 {
-  if (n <= 1)
+  if (n <= 1) {
     return 1;
-  
+  }
   return n * silnia(n-1);
 }
 
 void main()
 var n, wynik;
 {
-  wczytaj_n(&n);
+  start(n);
   wynik = silnia(n);
   writeln(n,"! = ", wynik);
 }

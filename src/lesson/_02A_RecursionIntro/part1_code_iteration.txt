@@ -1,20 +1,20 @@
-void wczytaj_n(&n){}
+//Funkcja specjalna:
+void start(&n){}
 
 int silnia(n)
 var i, wynik;
 {
   wynik = 1;
-  
-  for (i=2; i&lt;=n; i++)
+  for (i=2; i<=n; i++) {
     wynik *= i;
-  
+  }
   return wynik;
 }
 
 void main()
 var n, wynik;
 {
-  wczytaj_n(&n);
+  start(n);
   wynik = silnia(n);
   writeln(n,"! = ", wynik);
 }
