@@ -1,4 +1,4 @@
-package lesson._02A_RecursionIntro;
+package lesson._02B_ArithmeticSeries;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -6,22 +6,21 @@ import lesson.Lesson;
 import lesson.LessonLoader;
 import mainclass.MainClass;
 
-public class RecursionIntroLessonLoader implements LessonLoader {
+public class ArithmeticSeriesLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Wprowadzenie do rekurencji";
+        return "Suma ciągu arytmetycznego";
     }
 
     @Override
     public String getLessonKey() {
-        return "aFa0gd13i3";
+        return "COC2AntX7X";
     }
 
     @Override
     public Lesson getLesson(MainClass mainClass, DataInputStream dataInputStream) throws IOException {
-        //return new MaxElementLesson(mainClass, dataInputStream, this);
-        return new RecursionIntroLesson(mainClass, dataInputStream, this);
+        return new ArithmeticSeriesLesson(mainClass, dataInputStream, this);
     }
     
 }

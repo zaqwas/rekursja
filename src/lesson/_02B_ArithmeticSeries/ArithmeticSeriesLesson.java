@@ -1,26 +1,18 @@
 package lesson._02B_ArithmeticSeries;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
+import lesson._03A_Exponentiation.*;
+import lesson._07A_PartitionFunction.*;
 import helpers.LessonHelper;
 import interpreter.Instance;
 import interpreter.InterpreterThread;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.control.SelectionModel;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javax.swing.ButtonGroup;
-import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -29,38 +21,58 @@ import javax.swing.JSeparator;
 import lesson.Lesson;
 import lesson.LessonLoader;
 import mainclass.MainClass;
+import parser.SpecialFunctions;
 import syntax.SyntaxNode;
 //</editor-fold>
 
-public class ArithmeticSeriesLesson implements Lesson {
-
-    @Override
-    public LessonLoader getLessonLoader() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    @Override
-    public void save(DataOutputStream stream) throws IOException {
-        mainClass.saveFramesPositionAndSettnings(stream);
-    }
+class ArithmeticSeriesLesson implements Lesson {
     
     //<editor-fold defaultstate="collapsed" desc="Enums">
-    private static enum State 
-    {
-        NothingShown(0), Pseudocode1Shown(1), 
-        RecursionShown(2), IterationShown(3), BothShown(4), 
-        Part2Shown(6), Hint1Shown(7), Hint2Shown(8), Hint3Shown(9), 
-        SolutionShown(10), SummaryShown(11);
+    public static enum State {
+        NothingShown(0), 
+        Part1PseudocodeShown(1), 
+        Part1RecursionSolutionShown(2), Part1IterationSolutionShown(3), 
+        Part1BothSolutionShown(4), 
+        Part2Shown(5),
+        Part2Hint1Shown(6), Part2Hint2Shown(7), Part2PseudocodeShown(8),
+        Part2SolutionShown(9),
+        SummaryShown(10);
         
-        public final byte Id;
+        public final byte id;
+        public final byte part;
+        public final byte hint;
 
         State(int id) {
-            Id = (byte) id;
+            this.id = (byte) id;
+
+            part = (byte) (id < 5 ? 1 : 2);
+
+            if (id < 5) {
+                hint = (byte) (id == 0 ? 0 : 1);
+            } else if (id >= 8) {
+                hint = 3;
+            } else {
+                hint = (byte) (id - 5);
+            }
+        }
+        
+        public static State getById(int id) {
+            assert 0 <= id && id <= 13;
+            
+            State[] values = values();
+            if ( values[id].id == id ) {
+                return values[id];
+            }
+            for (State state : values) {
+                if ( state.id == id ) {
+                    return state;
+                }
+            }
+            return null;
         }
     }
     
-    private static enum Part1ChosenCode
-    {
+    private static enum Part1ChosenCode {
         UserRecursion(0),
         UserIteration(1),
         SolutionRecursion(2),
@@ -71,37 +83,40 @@ public class ArithmeticSeriesLesson implements Lesson {
         Part1ChosenCode(int id) {
             Id = (byte) id;
         }
+        
+        public static Part1ChosenCode getById(int id) {
+            assert 0 <= id && id <= 3;
+            return id < 2 ? (id == 0 ? UserRecursion : UserIteration)
+                    : (id == 2 ? SolutionRecursion : SolutionIteration);
+        }
     }
     
-    private static enum Part2ChosenCode
-    {
-        User(0),
-        Solution(1);
+    private static enum Part2ChosenCode {
+        User(0), Solution(1);
         
         public final byte Id;
 
         Part2ChosenCode(int id) {
             Id = (byte) id;
         }
+        
+        public static Part2ChosenCode getById(int id) {
+            assert id == 0 || id == 1;
+            return id == 0 ? User : Solution;
+        }
     }
     //</editor-fold>
     
+    //<editor-fold defaultstate="collapsed" desc="Variables and components">
     private State state = State.NothingShown;
     private Part1ChosenCode part1ChosenCode = Part1ChosenCode.UserRecursion;
     private Part2ChosenCode part2ChosenCode = Part2ChosenCode.User;
-    private int chosenPart;
-    
+    private byte selectedPart = 1;
     
     private MainClass mainClass;
+    private ArithmeticSeriesLessonLoader loader;
     
-    private JInternalFrame part1TextFrame;
-    private SelectionModel<Tab> part1TabSelectionModel;
-    private BooleanProperty part1PseudocodeTabDisabledProperty;
-    
-    private JInternalFrame part2TextFrame;
-    private SelectionModel<Tab> part2TabSelectionModel;
-    private BooleanProperty part2HintTabDisabledProperty;
-    private WebEngine part2HintTabWebEngine;
+    private TextFrame textFrame;
     
     private JMenuItem part1TextMenuItem;
     private JMenuItem part1PseudocodeMenuItem;
@@ -109,15 +124,18 @@ public class ArithmeticSeriesLesson implements Lesson {
     private JRadioButtonMenuItem part1UserIterationCodeMenuItem;
     private JRadioButtonMenuItem part1SolutionRecursionCodeMenuItem;
     private JRadioButtonMenuItem part1SolutionIterationCodeMenuItem;
-    private JMenuItem part1gotoPart2MenuItem;
+    private JMenuItem part1GotoPart2MenuItem;
     
     private JMenuItem part2TextMenuItem;
     private JMenuItem part2Hint1MenuItem;
     private JMenuItem part2Hint2MenuItem;
-    private JMenuItem part2Hint3MenuItem;
+    private JMenuItem part2PseudocodeMenuItem;
     private JRadioButtonMenuItem part2UserCodeMenuItem;
     private JRadioButtonMenuItem part2SolutionCodeMenuItem;
-    private JMenuItem part2gotoPart1MenuItem;
+    private JMenuItem part2SummaryMenuItem;
+    private JMenuItem part2GotoPart1MenuItem;
+    
+    
     
     private String oldCode;
     private String part1UserRecursionCode;
@@ -127,23 +145,87 @@ public class ArithmeticSeriesLesson implements Lesson {
     private String part2UserCode;
     private String part2SolutionCode;
     
-    public ArithmeticSeriesLesson(MainClass mainClass) {
-        this.mainClass = mainClass;
-    }
+//    private StartSpecialFunction startSpecialFunction;
+//    private CheckSpecialFunction checkSpecialFunction;
+//    private CompareOneSpecialFunction compareOneSpecialFunction;
+//    private CompareTwoSpecialFunction compareTwoSpecialFunction;
+//    private MoveSpecialFunction moveSpecialFunction;
+//    private SwapSpecialFunction swapSpecialFunction;
+    //</editor-fold>
     
-    private void MemorizeCode() {
-        if (chosenPart == 0) {
-            if (part1ChosenCode == Part1ChosenCode.UserRecursion) {
-                part1UserRecursionCode = mainClass.getEditor().getCode();
-            } else if (part1ChosenCode == Part1ChosenCode.UserIteration) {
-                part1UserIterationCode = mainClass.getEditor().getCode();
-            }
+    
+    //<editor-fold defaultstate="collapsed" desc="Constructor">
+    public ArithmeticSeriesLesson(MainClass mainClass, DataInputStream stream,
+            ArithmeticSeriesLessonLoader loader) throws IOException {
+        this.mainClass = mainClass;
+        this.loader = loader;
+        
+        textFrame = new TextFrame(mainClass);
+        
+        initSpecialFunctions();
+        
+        initPart1MenuItems();
+        initPart2MenuItems();
+        
+        if (stream == null) {
+            initCodes(true);
+            initPart1();
+            textFrame.gotoText();
         } else {
-            if (part2ChosenCode == Part2ChosenCode.User) {
-                part2UserCode = mainClass.getEditor().getCode();
+            initCodes(false);
+            mainClass.loadFramesPositionAndSettnings(stream);
+            
+            selectedPart = stream.readByte();
+            state = State.getById(stream.readByte());
+            
+            part1ChosenCode = Part1ChosenCode.getById(stream.readByte());
+            part2ChosenCode = Part2ChosenCode.getById(stream.readByte());
+            
+            part1UserRecursionCode = stream.readUTF();
+            part1UserIterationCode = stream.readUTF();
+            part2UserCode = stream.readUTF();
+            
+            if (selectedPart == 1) {
+                initPart1();
+            } else {
+                initPart2();
             }
+            
+            textFrame.initialize(selectedPart, state);
+            textFrame.gotoText();
         }
     }
+    //</editor-fold>
+    
+    
+    //private fucntions:
+    
+    //<editor-fold defaultstate="collapsed" desc="part1RememberCode">
+    private void part1RememberCode() {
+        if (part1ChosenCode == Part1ChosenCode.UserRecursion) {
+            part1UserRecursionCode = mainClass.getEditor().getCode();
+        } else if (part1ChosenCode == Part1ChosenCode.UserIteration) {
+            part1UserIterationCode = mainClass.getEditor().getCode();
+        }
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="setButtonsEnabled">
+    private void setButtonsEnabled(boolean enabled) {
+        if ( selectedPart == 1) {
+            part1GotoPart2MenuItem.setEnabled(enabled);
+            part1UserRecursionCodeMenuItem.setEnabled(enabled);
+            part1UserIterationCodeMenuItem.setEnabled(enabled);
+            part1SolutionRecursionCodeMenuItem.setEnabled(enabled);
+            part1SolutionIterationCodeMenuItem.setEnabled(enabled);
+        } else if (selectedPart == 2) {
+            part2GotoPart1MenuItem.setEnabled(enabled);
+            part2UserCodeMenuItem.setEnabled(enabled);
+            part2SolutionCodeMenuItem.setEnabled(enabled);
+            part2SummaryMenuItem.setEnabled(enabled);
+        }
+    }
+    //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="part1ShowSolutionConifrm">
     private boolean part1ShowSolutionConifrm() {
@@ -166,14 +248,14 @@ public class ArithmeticSeriesLesson implements Lesson {
             }
             return false;
         }
-        part1PseudocodeTabDisabledProperty.set(false);
+        textFrame.showAllHints();
         return true;
     }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="part2ShowSolutionConifrm">
     private boolean part2ShowSolutionConifrm() {
-        if (state.Id >= State.Hint3Shown.Id) {
+        if (state.id >= State.Part2PseudocodeShown.id) {
             return true;
         }
         int option = JOptionPane.showOptionDialog(
@@ -184,9 +266,9 @@ public class ArithmeticSeriesLesson implements Lesson {
         if (option != 0) {
             part2UserCodeMenuItem.setSelected(true);
             if (option == 1) {
-                if (state == State.Hint2Shown ) {
-                    part2Hint3MenuItem.doClick();
-                } else if (state == State.Hint1Shown) {
+                if (state == State.Part2Hint2Shown ) {
+                    part2PseudocodeMenuItem.doClick();
+                } else if (state == State.Part2Hint1Shown) {
                     part2Hint2MenuItem.doClick();
                 } else {
                     part2Hint1MenuItem.doClick();
@@ -194,301 +276,95 @@ public class ArithmeticSeriesLesson implements Lesson {
             }
             return false;
         }
-        part2showHint(3);
+        textFrame.showAllHints();
         return true;
     }
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="part1GotoPart2Conifrm">
-    private boolean part1GotoPart2Conifrm() {
-        if (state.Id >= State.BothShown.Id) {
+    //<editor-fold defaultstate="collapsed" desc="showConifrmDialog">
+    private boolean showConifrmDialog(String message, State state) {
+        if (this.state.id >= state.id) {
             return true;
         }
         int option = JOptionPane.showOptionDialog(
-                null, Lang.part1GotoPart2Conifrm, Lang.question,
+                null, message, Lang.question,
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                new Object[]{Lang.yes, Lang.no},
-                Lang.no);
+                new Object[]{Lang.yes, Lang.no}, Lang.no);
         return option == 0;
     }
     //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="part2ShowHintConifrm">
-    private boolean part2ShowHintConifrm(int nr) {
-        if (state.Id >= State.Hint1Shown.Id + nr - 2) {
-            return true;
-        }
-        int option = JOptionPane.showOptionDialog(
-                null, Lang.part2ShowHintConifrm, Lang.question,
-                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                new Object[]{Lang.yes, Lang.no},
-                Lang.no);
-        
-        return option == 0;
-    }
-    //</editor-fold>
-    
-    
-    //<editor-fold defaultstate="collapsed" desc="initPart1TextFrame">
-    private void initPart1TextFrame()
-    {
-        part1TextFrame = new JInternalFrame(Lang.part1TextFrameTitle);
-        final JFXPanel fxPanel = new JFXPanel();
-        
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                TabPane tabPane = new TabPane();
-                tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-                tabPane.tabMinHeightProperty().set(0d);
-                part1TabSelectionModel = tabPane.getSelectionModel();
-                
-                Tab tab = new Tab(Lang.part1TextTabName);
-                WebView web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("part1_text.html").toString());
-                tab.setContent(web);
-                tabPane.getTabs().add(tab);
 
-                tab = new Tab(Lang.part1PseudocodeTabName);
-                web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("part1_pseudocode.html").toString());
-                tab.setContent(web);
-                tab.disableProperty().set(true);
-                part1PseudocodeTabDisabledProperty = tab.disableProperty();
-                tabPane.getTabs().add(tab);
-                
-                Scene scene = new Scene(tabPane);
-                fxPanel.setScene(scene);
-            }
-        });
-        
-        part1TextFrame.setContentPane(fxPanel);
-        part1TextFrame.setPreferredSize(new Dimension(700, 500));
-        part1TextFrame.setResizable(true);
-        part1TextFrame.setVisible(false);
-        mainClass.getDesktop().add(part1TextFrame);
-        part1TextFrame.pack();
-    }
-    //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="initPart2TextFrame">
-    private void initPart2TextFrame()
-    {
-        part2TextFrame = new JInternalFrame(Lang.part2TextFrameTitle);
-        final JFXPanel fxPanel = new JFXPanel();
-        
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                TabPane tabPane = new TabPane();
-                tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-                tabPane.tabMinHeightProperty().set(0d);
-                part2TabSelectionModel = tabPane.getSelectionModel();
-                
-                Tab tab = new Tab(Lang.part2TextTabName);
-                WebView web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("part2_text.html").toString());
-                tab.setContent(web);
-                tabPane.getTabs().add(tab);
-
-                tab = new Tab(Lang.part2HintTabName);
-                web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("part2_hint.html").toString());
-                tab.setContent(web);
-                tab.disableProperty().set(true);
-                part2HintTabWebEngine = web.getEngine();
-                part2HintTabDisabledProperty = tab.disableProperty();
-                tabPane.getTabs().add(tab);
-                
-                Scene scene = new Scene(tabPane);
-                fxPanel.setScene(scene);
-            }
-        });
-        
-        part2TextFrame.setContentPane(fxPanel);
-        part2TextFrame.setPreferredSize(new Dimension(700, 500));
-        part2TextFrame.setResizable(true);
-        part2TextFrame.setVisible(false);
-        mainClass.getDesktop().add(part2TextFrame);
-        part2TextFrame.pack();
-    }
-    //</editor-fold>
-    
-    
-    //<editor-fold defaultstate="collapsed" desc="part1GotoPart2">
-    private void part1GotoPart2()
-    {
-        part1TextFrame.setVisible(false);
-        JMenu lessonMenu = mainClass.getLessonMenu();
-        lessonMenu.removeAll();
-
-        lessonMenu.add(part2TextMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part2Hint1MenuItem);
-        lessonMenu.add(part2Hint2MenuItem);
-        lessonMenu.add(part2Hint3MenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part2UserCodeMenuItem);
-        lessonMenu.add(part2SolutionCodeMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part2gotoPart1MenuItem);
-        
-        if ( part2ChosenCode == Part2ChosenCode.User ) {
-            mainClass.getEditor().setCode(part2UserCode);
-            part2UserCodeMenuItem.setSelected(true);
-        } else {
-            mainClass.getEditor().setCode(part2SolutionCode);
-            part2SolutionCodeMenuItem.setSelected(true);
-        }
-        
-        if ( state.Id <= State.Part2Shown.Id ) {
-            state = State.Part2Shown;
-            part1PseudocodeTabDisabledProperty.set(false);
-        }
-        part2TextFrame.setVisible(true);
-    }
-    
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="part2GotoPart1">
-    private void part2GotoPart1()
-    {
-        part2TextFrame.setVisible(false);
-        JMenu lessonMenu = mainClass.getLessonMenu();
-        lessonMenu.removeAll();
-
-        lessonMenu.add(part1TextMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part1PseudocodeMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part1UserRecursionCodeMenuItem);
-        lessonMenu.add(part1UserIterationCodeMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part1SolutionRecursionCodeMenuItem);
-        lessonMenu.add(part1SolutionIterationCodeMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part1gotoPart2MenuItem);
-        
-        switch (part1ChosenCode) {
-            case UserIteration:
-                mainClass.getEditor().setCode(part1UserIterationCode);
-                part1UserIterationCodeMenuItem.setSelected(true);
-                break;
-            case UserRecursion:
-                mainClass.getEditor().setCode(part1UserRecursionCode);
-                part1UserRecursionCodeMenuItem.setSelected(true);
-                break;
-            case SolutionIteration:
-                mainClass.getEditor().setCode(part1SolutionIterationCode);
-                part1SolutionIterationCodeMenuItem.setSelected(true);
-                break;
-            case SolutionRecursion:
-                mainClass.getEditor().setCode(part1SolutionRecursionCode);
-                part1SolutionRecursionCodeMenuItem.setSelected(true);
-                break;
-        }
-        
-        part1TextFrame.setVisible(true);
-    }
-    
-    //</editor-fold>
-    
-    
-    //<editor-fold defaultstate="collapsed" desc="part2gotoHint, part2showHint">
-    private void part2gotoHint(final int nr)
-    {
-        if ( nr<1 || nr>3 ) {
-            throw new IllegalArgumentException();
-        }
-        part2TextFrame.setVisible(true);
-        part2TextFrame.toFront();
-        part2TabSelectionModel.select(1);
-        
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                part2HintTabWebEngine.executeScript("gotoHint"+nr+"()");
-            }
-        });
-    }
-    
-    private void part2showHint(final int nr)
-    {
-        if ( nr<2 || nr>3 ) {
-            throw new IllegalArgumentException();
-        }
-        part2HintTabDisabledProperty.set(false);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                part2HintTabWebEngine.executeScript("showHint"+nr+"()");
-            }
-        });
-    }
-    //</editor-fold>
-    
-    public void start() {
-        
-        initPart1TextFrame();
-        
-        initPart2TextFrame();
-        
-        //<editor-fold defaultstate="collapsed" desc="Init codes">
+    //<editor-fold defaultstate="collapsed" desc="initCodes">
+    private void initCodes(boolean initUserCodes) {
         InputStream stream;
+        
         stream = getClass().getResourceAsStream("part1_solution_recursion_code.txt");
         part1SolutionRecursionCode = LessonHelper.readFile(stream);
+        
         stream = getClass().getResourceAsStream("part1_solution_iteration_code.txt");
         part1SolutionIterationCode = LessonHelper.readFile(stream);
+
         stream = getClass().getResourceAsStream("part2_solution_code.txt");
         part2SolutionCode = LessonHelper.readFile(stream);
-        
-        stream = getClass().getResourceAsStream("part1_user_recursion_code.txt");
-        part1UserRecursionCode = LessonHelper.readFile(stream);
-        stream = getClass().getResourceAsStream("part1_user_iteration_code.txt");
-        part1UserIterationCode = LessonHelper.readFile(stream);
-        stream = getClass().getResourceAsStream("part2_user_code.txt");
-        part2UserCode = LessonHelper.readFile(stream);
-        
+
+        if (initUserCodes) {
+            stream = getClass().getResourceAsStream("part1_user_recursion_code.txt");
+            part1UserRecursionCode = LessonHelper.readFile(stream);
+            
+            stream = getClass().getResourceAsStream("part1_user_iteration_code.txt");
+            part1UserIterationCode = LessonHelper.readFile(stream);
+
+            stream = getClass().getResourceAsStream("part2_user_code.txt");
+            part2UserCode = LessonHelper.readFile(stream);
+        }
         oldCode = mainClass.getEditor().getCode();
-        //</editor-fold>
-        
-        
-        //<editor-fold defaultstate="collapsed" desc="Init part1 menuItems">
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="initSpecialFunctions">
+    private void initSpecialFunctions() {
+//        startSpecialFunction = new StartSpecialFunction(arrayFrame);
+//        checkSpecialFunction = new CheckSpecialFunction(mainClass, arrayFrame);
+//        compareOneSpecialFunction = new CompareOneSpecialFunction(arrayFrame);
+//        compareTwoSpecialFunction = new CompareTwoSpecialFunction(arrayFrame);
+//        moveSpecialFunction = new MoveSpecialFunction(arrayFrame);
+//        swapSpecialFunction = new SwapSpecialFunction(arrayFrame);
+    }
+    //</editor-fold>
+    
+    
+    //<editor-fold defaultstate="collapsed" desc="initPart1MenuItems">
+    private void initPart1MenuItems() {
         part1TextMenuItem = new JMenuItem(Lang.part1TextMenuItem);
         part1TextMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                part1TextFrame.setVisible(true);
-                part1TextFrame.toFront();
-                part1TabSelectionModel.select(0);
+                textFrame.gotoText();
             }
         });
+        
         part1PseudocodeMenuItem = new JMenuItem(Lang.part1PseudocodeMenuItem);
         part1PseudocodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( state == State.NothingShown ) {
-                    state = State.Pseudocode1Shown;
-                    part1PseudocodeTabDisabledProperty.set(false);
+                if ( state.id < State.Part1PseudocodeShown.id ) {
+                    state = State.Part1PseudocodeShown;
                 }
-                part1TextFrame.setVisible(true);
-                part1TextFrame.toFront();
-                part1TabSelectionModel.select(1);
+                textFrame.gotoHint(1);
             }
         });
         
+
         part1UserRecursionCodeMenuItem = new JRadioButtonMenuItem(Lang.part1UserRecursionCodeMenuItem);
         part1UserRecursionCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( part1ChosenCode == Part1ChosenCode.UserRecursion ) {
+                mainClass.getEditor().frameToFront();
+                if (part1ChosenCode == Part1ChosenCode.UserRecursion) {
                     return;
                 }
-                MemorizeCode();
+                part1RememberCode();
                 mainClass.getEditor().setCode(part1UserRecursionCode);
                 part1ChosenCode = Part1ChosenCode.UserRecursion;
             }
@@ -498,10 +374,11 @@ public class ArithmeticSeriesLesson implements Lesson {
         part1UserIterationCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( part1ChosenCode == Part1ChosenCode.UserIteration ) {
+                mainClass.getEditor().frameToFront();
+                if (part1ChosenCode == Part1ChosenCode.UserIteration) {
                     return;
                 }
-                MemorizeCode();
+                part1RememberCode();
                 mainClass.getEditor().setCode(part1UserIterationCode);
                 part1ChosenCode = Part1ChosenCode.UserIteration;
             }
@@ -511,21 +388,22 @@ public class ArithmeticSeriesLesson implements Lesson {
         part1SolutionRecursionCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !part1ShowSolutionConifrm() ) {
+                if (!part1ShowSolutionConifrm()) {
                     return;
                 }
-                //editor to front
+                mainClass.getEditor().frameToFront();
                 if (part1ChosenCode == Part1ChosenCode.SolutionRecursion) {
                     return;
                 }
-                MemorizeCode();
+                
+                part1RememberCode();
                 mainClass.getEditor().setCode(part1SolutionRecursionCode);
                 part1ChosenCode = Part1ChosenCode.SolutionRecursion;
 
-                if (state.Id <= State.Pseudocode1Shown.Id) {
-                    state = State.RecursionShown;
-                } else if (state == State.IterationShown) {
-                    state = State.BothShown;
+                if (state.id <= State.Part1PseudocodeShown.id) {
+                    state = State.Part1RecursionSolutionShown;
+                } else if (state == State.Part1IterationSolutionShown) {
+                    state = State.Part1BothSolutionShown;
                 }
             }
         });
@@ -534,34 +412,40 @@ public class ArithmeticSeriesLesson implements Lesson {
         part1SolutionIterationCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !part1ShowSolutionConifrm() ) {
+                if (!part1ShowSolutionConifrm()) {
                     return;
                 }
-                //editor to front
-                if ( part1ChosenCode == Part1ChosenCode.SolutionIteration ) {
+                mainClass.getEditor().frameToFront();
+                if (part1ChosenCode == Part1ChosenCode.SolutionIteration) {
                     return;
                 }
-                MemorizeCode();
+                
+                part1RememberCode();
                 mainClass.getEditor().setCode(part1SolutionIterationCode);
                 part1ChosenCode = Part1ChosenCode.SolutionIteration;
-                
-                if (state.Id <= State.Pseudocode1Shown.Id) {
-                    state = State.IterationShown;
-                } else if (state == State.RecursionShown) {
-                    state = State.BothShown;
+
+                if (state.id <= State.Part1PseudocodeShown.id) {
+                    state = State.Part1IterationSolutionShown;
+                } else if (state == State.Part1RecursionSolutionShown) {
+                    state = State.Part1BothSolutionShown;
                 }
             }
         });
         
-        part1gotoPart2MenuItem = new JMenuItem(Lang.part1gotoPart2MenuItem);
-        part1gotoPart2MenuItem.addActionListener(new ActionListener() {
+        part1GotoPart2MenuItem = new JMenuItem(Lang.part1GotoPart2MenuItem);
+        part1GotoPart2MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !part1GotoPart2Conifrm() ) {
+                if (!showConifrmDialog(Lang.showNextPartConifrm, State.Part1BothSolutionShown)) {
                     return;
                 }
-                MemorizeCode();
-                part1GotoPart2();
+                part1RememberCode();
+                textFrame.gotoPart(2);
+                initPart2();
+                if (state.id < State.Part2Shown.id) {
+                    state = State.Part2Shown;
+                    textFrame.gotoText();
+                }
             }
         });
         
@@ -570,16 +454,16 @@ public class ArithmeticSeriesLesson implements Lesson {
         group.add(part1UserIterationCodeMenuItem);
         group.add(part1SolutionRecursionCodeMenuItem);
         group.add(part1SolutionIterationCodeMenuItem);
-        //</editor-fold>
-        
-        //<editor-fold defaultstate="collapsed" desc="Init part2 menuItems">
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="initPart2MenuItems">
+    private void initPart2MenuItems() {
         part2TextMenuItem = new JMenuItem(Lang.part2TextMenuItem);
         part2TextMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                part2TextFrame.setVisible(true);
-                part2TextFrame.toFront();
-                part2TabSelectionModel.select(0);
+                textFrame.gotoText();
             }
         });
         
@@ -587,11 +471,10 @@ public class ArithmeticSeriesLesson implements Lesson {
         part2Hint1MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( state.Id < State.Hint1Shown.Id ) {
-                    part2HintTabDisabledProperty.set(false);
-                    state = State.Hint1Shown;
+                if ( state.id < State.Part2Hint1Shown.id ) {
+                    state = State.Part2Hint1Shown;
                 }
-                part2gotoHint(1);
+                textFrame.gotoHint(1);
             }
         });
         
@@ -599,29 +482,27 @@ public class ArithmeticSeriesLesson implements Lesson {
         part2Hint2MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !part2ShowHintConifrm(2) ) {
+                if (!showConifrmDialog(Lang.showHintConifrm, State.Part2Hint1Shown)) {
                     return;
                 }
-                if ( state.Id < State.Hint2Shown.Id ) {
-                    part2showHint(2);
-                    state = State.Hint2Shown;
+                if ( state.id < State.Part2Hint2Shown.id ) {
+                    state = State.Part2Hint2Shown;
                 }
-                part2gotoHint(2);
+                textFrame.gotoHint(2);
             }
         });
         
-        part2Hint3MenuItem = new JMenuItem(Lang.part2Hint3MenuItem);
-        part2Hint3MenuItem.addActionListener(new ActionListener() {
+        part2PseudocodeMenuItem = new JMenuItem(Lang.part2PseudocodeMenuItem);
+        part2PseudocodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !part2ShowHintConifrm(3) ) {
+                if (!showConifrmDialog(Lang.showHintConifrm, State.Part2Hint2Shown)) {
                     return;
                 }
-                if ( state.Id < State.Hint3Shown.Id ) {
-                    part2showHint(3);
-                    state = State.Hint3Shown;
+                if ( state.id < State.Part2PseudocodeShown.id ) {
+                    state = State.Part2PseudocodeShown;
                 }
-                part2gotoHint(3);
+                textFrame.gotoHint(3);
             }
         });
         
@@ -629,7 +510,7 @@ public class ArithmeticSeriesLesson implements Lesson {
         part2UserCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //editor to front
+                mainClass.getEditor().frameToFront();
                 if ( part2ChosenCode == Part2ChosenCode.User ) {
                     return;
                 }
@@ -642,89 +523,224 @@ public class ArithmeticSeriesLesson implements Lesson {
         part2SolutionCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !part2ShowSolutionConifrm() ) {
+                if (!part2ShowSolutionConifrm()) {
                     return;
                 }
-                //editor to front
+                mainClass.getEditor().frameToFront();
                 if (part2ChosenCode == Part2ChosenCode.Solution) {
                     return;
                 }
-                MemorizeCode();
+                part2UserCode = mainClass.getEditor().getCode();
                 mainClass.getEditor().setCode(part2SolutionCode);
                 part2ChosenCode = Part2ChosenCode.Solution;
-                if ( state.Id < State.SolutionShown.Id ) {
-                    state = State.SolutionShown;
+                if (state.id < State.Part2SolutionShown.id) {
+                    state = State.Part2SolutionShown;
                 }
             }
         });
         
-        part2gotoPart1MenuItem = new JMenuItem(Lang.part2gotoPart1MenuItem);
-        part2gotoPart1MenuItem.addActionListener(new ActionListener() {
+        part2SummaryMenuItem = new JMenuItem(Lang.part2SummaryMenuItem);
+        part2SummaryMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MemorizeCode();
-                part2GotoPart1();
+                if (!showConifrmDialog(Lang.showSummaryConifrm, State.Part2SolutionShown)) {
+                    return;
+                }
+                textFrame.gotoSummary();
+                if (state.id < State.SummaryShown.id) {
+                    state = State.SummaryShown;
+                }
             }
         });
         
-        group = new ButtonGroup();
+        part2GotoPart1MenuItem = new JMenuItem(Lang.part2GotoPart1MenuItem);
+        part2GotoPart1MenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if ( part2ChosenCode == Part2ChosenCode.User ) {
+                    part2UserCode = mainClass.getEditor().getCode();
+                }
+                textFrame.gotoPart(1);
+                initPart1();
+            }
+        });
+        
+        ButtonGroup group = new ButtonGroup();
         group.add(part2UserCodeMenuItem);
         group.add(part2SolutionCodeMenuItem);
-        //</editor-fold>
+    }
+    //</editor-fold>
+    
+    
+    //<editor-fold defaultstate="collapsed" desc="initPart1">
+    private void initPart1() {
+        selectedPart = 1;
         
-        mainClass.getLessonMenu().setEnabled(true);
-        part2GotoPart1();
+        JMenu lessonMenu = mainClass.getLessonMenu();
+        lessonMenu.removeAll();
+
+        lessonMenu.add(part1TextMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part1PseudocodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part1UserIterationCodeMenuItem);
+        lessonMenu.add(part1UserRecursionCodeMenuItem);
+        lessonMenu.add(part1SolutionIterationCodeMenuItem);
+        lessonMenu.add(part1SolutionRecursionCodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part1GotoPart2MenuItem);
+
+        lessonMenu.setEnabled(true);
         
+        if (part1ChosenCode == Part1ChosenCode.UserRecursion) {
+            mainClass.getEditor().setCode(part1UserRecursionCode);
+            part1UserRecursionCodeMenuItem.setSelected(true);
+        } else if (part1ChosenCode == Part1ChosenCode.UserIteration) {
+            mainClass.getEditor().setCode(part1UserIterationCode);
+            part1UserIterationCodeMenuItem.setSelected(true);
+        } else if (part1ChosenCode == Part1ChosenCode.SolutionRecursion) {
+            mainClass.getEditor().setCode(part1SolutionRecursionCode);
+            part1SolutionRecursionCodeMenuItem.setSelected(true);
+        } else if (part1ChosenCode == Part1ChosenCode.SolutionIteration) {
+            mainClass.getEditor().setCode(part1SolutionIterationCode);
+            part1SolutionIterationCodeMenuItem.setSelected(true);
+        }
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="initPart2">
+    private void initPart2() {
+        selectedPart = 2;
+        
+        JMenu lessonMenu = mainClass.getLessonMenu();
+        lessonMenu.removeAll();
+
+        lessonMenu.add(part2TextMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part2Hint1MenuItem);
+        lessonMenu.add(part2Hint2MenuItem);
+        lessonMenu.add(part2PseudocodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part2UserCodeMenuItem);
+        lessonMenu.add(part2SolutionCodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part2SummaryMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part2GotoPart1MenuItem);
+
+        lessonMenu.setEnabled(true);
+        
+        if (part2ChosenCode == Part2ChosenCode.User) {
+            mainClass.getEditor().setCode(part2UserCode);
+            part2UserCodeMenuItem.setSelected(true);
+        } else {
+            mainClass.getEditor().setCode(part2SolutionCode);
+            part2SolutionCodeMenuItem.setSelected(true);
+        }
+    }
+    //</editor-fold>    
+    
+    
+    
+    //public fucntions:
+    
+    @Override
+    public LessonLoader getLessonLoader() {
+        return loader;
+    }
+    
+    @Override
+    public void save(DataOutputStream stream) throws IOException {
+        mainClass.saveFramesPositionAndSettnings(stream);
+        stream.writeByte(selectedPart);
+        stream.writeByte(state.id);
+        
+        stream.writeByte(part1ChosenCode.Id);
+        stream.writeByte(part2ChosenCode.Id);
+        
+        if (selectedPart == 1) {
+            if (part1ChosenCode == Part1ChosenCode.UserIteration) {
+                part1UserIterationCode = mainClass.getEditor().getCode();
+            } else if (part1ChosenCode == Part1ChosenCode.UserRecursion) {
+                part1UserRecursionCode = mainClass.getEditor().getCode();
+            }
+        } else if (selectedPart == 2) {
+            if (part2ChosenCode == Part2ChosenCode.User) {
+                part2UserCode = mainClass.getEditor().getCode();
+            }
+        }
+        
+        stream.writeUTF(part1UserRecursionCode);
+        stream.writeUTF(part1UserIterationCode);
+        stream.writeUTF(part2UserCode);
     }
     
     @Override
     public void close() {
+        JMenu lessonMenu = mainClass.getLessonMenu();
+        lessonMenu.removeAll();
+        lessonMenu.setEnabled(false);
+        
+        SpecialFunctions.clear();
+        
+        mainClass.removeAddictionalLessonFrame(textFrame.getFrame());
+        mainClass.getEditor().setCode(oldCode);
     }
     
     @Override
     public void threadStart(InterpreterThread thread) {
-        
+        setButtonsEnabled(false);
     }
     
     @Override
     public void threadStop() {
+        setButtonsEnabled(true);
     }
     
     @Override
     public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, final int delayTime) {
+//        compareTwoSpecialFunction.undo(node);
+//        moveSpecialFunction.undo(node);
+//        compareOneSpecialFunction.undo(node);
+//        swapSpecialFunction.undo(node);
+//        
+//        arrayFrame.updateArrays();
+//        
+//        boolean wait = moveSpecialFunction.pauseStart(node, delayTime);
+//        wait = wait && swapSpecialFunction.pauseStart(node, delayTime);
+//        if ( !wait ) {
+//            return false;
+//        }
+//        compareOneSpecialFunction.pauseStart(node);
+//        compareTwoSpecialFunction.pauseStart(node);
         return true;
     }
 
     @Override
     public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
+//        compareOneSpecialFunction.pauseStop();
+//        compareTwoSpecialFunction.pauseStop();
     }
+    
     
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
-        public static final String part1TextFrameTitle = "Suma ciągu arytmetycznego";
-        public static final String part2TextFrameTitle = "Suma ciągu arytmetycznego - wzór";
-        
-        public static final String part1TextTabName = "Treść zadania";
-        public static final String part1PseudocodeTabName = "Pseudokod";
-        
-        public static final String part2TextTabName = "Treść zadania";
-        public static final String part2HintTabName = "Wskazówki";
-        
         public static final String part1TextMenuItem = "Treść zadania";
         public static final String part1PseudocodeMenuItem = "Wskazówaka: pseudokod";
         public static final String part1UserRecursionCodeMenuItem = "Rekurencyjne rozwiązanie użytkownika";
         public static final String part1UserIterationCodeMenuItem = "Iteracyjne rozwiązanie użytkownika";
         public static final String part1SolutionRecursionCodeMenuItem = "Rekurencyjne rozwiązanie wzorcowe";
         public static final String part1SolutionIterationCodeMenuItem = "Iteracyjne rozwiązanie wzorcowe";
-        public static final String part1gotoPart2MenuItem = ">>> Część II";
+        public static final String part1GotoPart2MenuItem = ">>> Część II";
         
         public static final String part2TextMenuItem = "Treść zadania";
         public static final String part2Hint1MenuItem = "Wskazówka I";
         public static final String part2Hint2MenuItem = "Wskazówka II";
-        public static final String part2Hint3MenuItem = "Wskazówka III";
+        public static final String part2PseudocodeMenuItem = "Pseudokod";
         public static final String part2UserCodeMenuItem = "Rozwiązanie użytkownika";
         public static final String part2SolutionCodeMenuItem = "Rozwiązanie wzorcowe";
-        public static final String part2gotoPart1MenuItem = "<<< Część I";
+        public static final String part2SummaryMenuItem = "Podsumowanie";
+        public static final String part2GotoPart1MenuItem = "<<< Część I";
         
         public static final String part1ShowSolutionConifrm = 
                 "Czy na pewno chesz zobaczyć rozwiązanie?\n"
@@ -734,28 +750,27 @@ public class ArithmeticSeriesLesson implements Lesson {
         public static final String part2ShowSolutionConifrm = 
                 "Czy na pewno chesz zobaczyć rozwiązanie?\n"
                 + "Jeśli nie możesz poradzić sobie z rozwiązaniem tego zadania,\n"
-                + "to najpierw powinieneś zobaczyć wskazówki.";
+                + "to najpierw powinieneś zobaczyć wszystkie wskazówki.";
         
-        public static final String part1GotoPart2Conifrm = 
-                "Nie porównałeś jeszcze swoich rozwiązań z rozwiązaniami wzorcowymi.\n"
-                + "Czy na pewno chcesz przejść do części II?";
-        
-        public static final String part2ShowHintConifrm = 
+        public static final String showHintConifrm = 
                 "Nie wyświetliłeś jeszcze poprzednich wskazówek.\n"
                 + "Czy na pewno chcesz wyświetlić tę wskazówkę?";
         
-        public static final String showPseudocode = "Pokaż pseudokod";
-        public static final String showHint = "Pokaż wskazówkę";
-        public static final String showSolution = "Pokaż rozwiązanie";
-        public static final String cancel = "Anuluj";
+        public static final String showNextPartConifrm =
+                "Nie wyświetliłeś jeszcze wszystkich rozwiązań wzorcowych.\n"
+                + "Czy na pewno chcesz przejść do następnej części?";
         
-        public static final String yes = "Tak";
-        public static final String no = "Nie";
+        public static final String showSummaryConifrm = 
+                "Nie wyświetliłeś jeszcze rozwiązania wzorcowego.\n"
+                + "Czy na pewno chcesz wyświetlić podsumowanie?";
         
         public static final String question = "Pytanie";
-        
-        public static final String loadTabPaneError = "Nie można załadować tej zakładki.";
-        
+        public static final String showHint = "Pokaż wskazówkę";
+        public static final String showPseudocode = "Pokaż pseudokod";
+        public static final String showSolution = "Pokaż rozwiązanie";
+        public static final String cancel = "Anuluj";
+        public static final String yes = "Tak";
+        public static final String no = "Nie";
     }
     //</editor-fold>
     

@@ -4,13 +4,13 @@ void start(&n){}
 var tab_globalna[2];
 
 int silnia(n)
-var i, n2, tablica[2];
+var i, n_kwadrat, tablica[2];
 {
   for (i=0; i<2; i++) {
     tablica[i] = n;
     tab_globalna[i] = n;
   }
-  n2 = n * n;
+  n_kwadrat = n * n;
 
   if (n <= 1) {
     return 1;

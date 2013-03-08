@@ -118,7 +118,7 @@ public class InstanceFrame {
     private boolean arrayIsUpdating;
     
     private int ySpaceBetweenPanels = 10;
-    private int splitPanePrefWidth = 250;
+    private int splitPaneMinWidth = 150;
     private int yGap = 0, xGap = 2;
     private int arrayIndexLabelWidth = 50;
     
@@ -362,14 +362,14 @@ public class InstanceFrame {
                 .addGroup(layout.createParallelGroup()
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(functionNameTextLabel)
-                        .addComponent(functionNameLabel, 100, 100, Short.MAX_VALUE))
+                        .addComponent(functionNameLabel, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(returnedValueTextLabel)
-                        .addComponent(returnedValueLabel))
-                    .addComponent(onStackLabel))
+                        .addComponent(returnedValueLabel, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(onStackLabel, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(2))
             .addComponent(separator, 0, 0, Short.MAX_VALUE)
-            .addComponent(splitPane, splitPanePrefWidth, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(splitPane, splitPaneMinWidth, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createSequentialGroup()

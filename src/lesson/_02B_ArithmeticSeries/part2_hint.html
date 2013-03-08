@@ -1,94 +1,129 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Treść zadania</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script>
-      function gotoHint1()
-      {
-        window.location.href = "#hint1";
-      }
-      function gotoHint2()
-      {
-        window.location.href = "#hint2";
-      }
-      function gotoHint3()
-      {
-        window.location.href = "#hint3";
-      }
-      
-      function showHint2()
-      {
-        hint2.style.display = "inherit";
-      }
-      function showHint3()
-      {
-        hint2.style.display = "inherit";
-        hint3.style.display = "inherit";
-      }
-    </script>
-  </head>
+<head>
+  <title>Wskazówki</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <script type="text/javascript">
+    function gotoHint1() {
+      window.location.href = "#hint1";
+    }
+    function gotoHint2() {
+      window.location.href = "#hint2";
+    }
+    function gotoHint3() {
+      window.location.href = "#hint3";
+    }
+    
+    function showHint2() {
+      hint2.style.display = "inherit";
+    }
+    function showHint3() {
+      hint2.style.display = "inherit";
+      hint3.style.display = "inherit";
+    }
+  </script>
 
-  <body>
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    img {
+      float: left;
+      margin-right: 3px;
+      margin-bottom: 0px;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    div {
+      margin-top: 15px;
+      margin-bottom: 0px;
+    }
+    div.first {
+      margin-top: 5px;
+    }
+    div.clear {
+      margin-top: 0px;
+      clear: both;
+    }
+    div.hidden {
+      margin-top: 0px;
+    }
+    hr {
+      margin-top: 0px;
+      clear:both;
+    }
     
-    <div id="hint1">
-      <h2 style="text-align: center">Wskazówka I</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-    </div>
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      vertical-align: text-top;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <h2 id="hint1">Wskazówka I</h2>
+  <div class="first">
+    <img src="rect2.png" alt="Nie można załadować obrazka"/>
+    Na rysunku widnieje prostokąt o wymiarach 5x6 kratek. Zauważ, że zielone, 
+    jaki i niebieskie, pola zajmują 1+2+3+4+5 kratek (czyli to nasza szukana suma dla n=5).
+    Skoro zielone pole zajmuje połowę pola powierzchni 
+    (pole powierzchni prostokąta to iloczyn dwóch przyległych boków), 
+    to znaczy że nasza suma dla n=5 wynosi (5*6)/2.
+  </div>
+  <div class="clear"></div>
     
-    <div id="hint2" style="display: none;">
-      <h2 style="text-align: center">Wskazówka II</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+  <div id="hint2" class="hidden">
+    <h2>Wskazówka II</h2>
+    <div class="first">
+      <img src="rect3.png" alt="Nie można załadować obrazka"/>
+      W poprzedniej wskazówce skupiliśmy się na <i>n</i>=5, 
+      jednak taki prostokąt można narysować dla każdego <i>n</i>. 
+      Wówczas zielone pole będzie wynosiło: 1+2+...+(<i>n</i>-1)+n 
+      (czyli, dokładnie tyle ile nasza suma S<sub><i>n</i></sub>).
+      Jak wiadomo zielone pole zajmuje połowę pola powierzchni (pole powierzchni to (n+1)*n), czyli
+      Sn = 1/2 * ( (n+1) * n)
     </div>
+    <div class="clear"></div>
+  </div>
     
-    <div id="hint3" style="display: none">
-      <h2 style="text-align: center">Wskazówka III</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-    </div>
+  <div id="hint3" class="hidden">
+    <h2>Pseudokod algorytmu</h2>
+     <table>
+      <tr>
+        <td class="first">
+          Dane:
+        </td>
+        <td>
+          Liczba naturalna <i>n</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">
+          Wynik:
+        </td>
+        <td>
+          Suma ciągu arytmetycznego liczb od 1 do <i>n</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">
+          Krok 1.
+        </td>
+        <td>
+          Pomnóż <i>n</i> oraz <i>n</i>+1, wynik podziel przez 2. Następnie zwróć obliczoną iloraz
+          i zakończ funkcję.
+        </td>
+      </tr>
+    </table>
+  </div>
   </body>
 </html>

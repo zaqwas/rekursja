@@ -1,129 +1,93 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
   <title>Treść zadania</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    img {
+      margin-right: 3px;
+      float: left;
+    }
     h2 {
       margin-top: 0px;
       margin-bottom: 0px;
       text-align: center;
     }
-    h3 {
-      margin-top: 20px;
-      margin-bottom: 0px;
-      text-align: center;
-    }
-    p {
-      margin-top: 20px;
+    div {
+      margin-top: 15px;
       margin-bottom: 0px;
     }
-    p.first {
+    div.first {
       margin-top: 5px;
     }
-    div {
-      margin-top: 20px;
-      margin-bottom: 0px;
-    }
-    
-    td.codes {
-      vertical-align: top;
-      padding-left: 20px;
-      padding-right: 20px;
-    }
-    th {
-      text-align: left;
-      padding-left: 20px;
-    }
-    code {
-      white-space: nowrap;
+    div.clear {
+      margin-top: 0px;
+      clear: both;
     }
   </style>
 </head>
 
 <body>
-  <h2>Wprowadzenie do rekurencji</h2>
-
-  <p class="first">
-    Poprzednie lekcje miały wprowadzić Cię w strukturę systemu, a także zapoznać 
-    z językiem wykorzystywanym w systemie. Mam nadzieję, że dokładnie zapoznałeś się z ww. elementami, 
-    gdyż w tym momencie przejdziemy do głównego tematu tego systemu, czyli do nauki rekurencji.
-  </p>
-
-  <p>
-    Definicja rekurencji brzmi następująco:<br>
-    <b>Rekurencja</b> - sposób definiowania funkcji, polegający na umieszczeniu 
-    w treści funkcji odwołań do samej siebie.
-  </p>
-
-  <h3>Przykład rekurencji: funkcja silnia</h3>
-
-  <p class="first">
-    Silnią liczby naturalnej nazywamy iloczyn wszystkich liczb naturalnych nie większych niż n.
-    Oznaczamy ją wykrzyknikiem, <i>n</i>! Np. 5!=1&sdot;2&sdot;3&sdot;4&sdot;5=120. 
-    Ponadto przyjmuje się, że dla zera silnia wynosi jeden (0! = 1).
-  </p>
+  <h2>Stos wywołań i rekord aktywacji</h2>
+  <div class="first">
+    W poprzedniej części pokazaliśmy podstawowy przykład rekurencji – funkcję silnia. 
+    W tej części zapoznamy się z tym jak realizacja rekurencji jest wykonywana w pamięci komputera.
+  </div>
+  
+  <div>
+    <img src="instanceStack.png" alt="Nie można załadować obrazka"/>
+    Analizując funkcję silnia pewnie zauważyłeś, iż program wywołując funkcję zatrzymywał się, 
+    a w opisie programu wyświetlił się napis: „Połóż na stosie: silnia(10)”. 
+    W tym momencie zapisują się informacje o nowej funkcji. Miejsce pamięci, 
+    w którym te informacje są zapisywane, nazwane jest stosem wywołań. Zauważ, 
+    że komputer może wykonywać na raz tyko jedną funkcję i wykonuje tylko tą, 
+    która jest na szczycie (na wierzchu) stosu. W systemie rekurencja stos jest wizualizowany 
+    w specjalnym oknie, którego obrazek widnieje po lewej stronie.
+  </div>
+  <div class="clear"></div>
 
   <div>
-    Funkcję silnia można zdefiniować na dwa sposoby:
-  
-    <table>
-      <tr>
-        <td>1. &nbsp;&nbsp;</td>
-        <td><img src="factorial_iteration.png"></td>
-      </tr>
-      <tr>
-        <td>2. &nbsp;&nbsp;</td>
-        <td><img src="factorial_recursion.png"></td>
-      </tr>
-    </table>
-    
-    Zauważmy, że ta druga definicja zawiera właśnie rekurencję, 
-    gdyż w opisie problemu użyty jest element, który właśnie opisujemy.
-    Na podstawie tych dwóch wzorów można napisać dwie funkcje:
-    <table>
-    <tr>
-      <th>
-        Wersja iteracyjna
-      </th>
-      <th>
-        Wersja rekurencyjna
-      </th>
-    </tr>
-    <tr>
-      <td class="codes">
-        <code>
-          int silnia(n)<br>
-          var i, wynik;<br>
-          {<br>
-          &nbsp;&nbsp;wynik = 1;<br>
-          &nbsp;&nbsp;for (i=2; i&lt;=n; i++) {<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;wynik *= i;<br>
-          &nbsp;&nbsp;}<br>
-          &nbsp;&nbsp;return wynik;<br>
-          }
-        </code>
-      </td>
-      <td class="codes">
-        <code>
-          int silnia(n)<br>
-          {<br>
-          &nbsp;&nbsp;if (n &lt;= 1) {<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
-          &nbsp;&nbsp;}<br>
-          &nbsp;&nbsp;return n * silnia(n-1);<br>
-          }
-        </code>
-      </td>
-    </tr>
-  </table>
+    <img src="instanceFrame.png" alt="Nie można załadować obrazka"/>
+    W momencie wywoływania funkcji, na stosie zapamiętujemy wszystkie parametry wywołania, 
+    a także zmienne lokalne (łącznie z lokalnymi tablicami) nowej funkcji.  
+    Struktura, która jest zapamiętywana na stosie nazywa się rekordem aktywacji. 
+    W systemie rekurencja argumenty i zmienne lokalne poszczególnych wywołań funkcji (instancji funkcji) 
+    można zobaczyć w specjalnym oknie „instancja funkcji”, którego obraz wyświetlony jest po lewej stronie.
+  </div>
+  <div class="clear"></div>
+
+  <div>
+    Kluczowy jest też moment zakończenia funkcji. Wówczas ze szczytu stosu usuwany 
+    jest rekord aktywacji bieżącej funkcji, a następnie jest wykonywana funkcja, 
+    której rekord znajdował się tuż pod spodem wierzchu stosu. Oczywiście komputer musi wiedzieć 
+    do której linijki kodu ma powrócić po zakończeniu wywoływania funkcji, 
+    dlatego w rekordzie aktywacji zapisywane jest także miejsce powrotu.
   </div>
 
-  <p>
-    Twoim zadaniem w tej części lekcji jest włączyć program 
-    i krok po kroku (za pomocą klawisza F7) przeanalizować te dwie funkcje.
-    Kiedy to zrobisz przejdź do drugiej części lekcji, w której skupimy 
-    się na przeanalizowaniu funkcji rekurencyjnej.
-  </p>
+  <div>
+    <img src="instanceTree.png" alt="Nie można załadować obrazka"/>
+    Wyżej powiedzieliśmy, że w momencie zakończenia funkcji ze stosu usuwany 
+    jest rekord aktywacji  bieżącej funkcji. Normalnie w pamięci komputera 
+    taki rekord aktywacji jest kasowany i nie ma śladu, że taka funkcja została wywołana. 
+    Jednak w systemie rekurencja usuwamy rekord aktywacji jedynie ze stosu. 
+    Nie kasujemy go, w ten sposób możemy dokładnie prześledzić historię wywołań 
+    poszczególnych funkcji. W specjalnym oknie, zwanym drzewie wywołań funkcji, 
+    możemy przejrzeć, jakie funkcje zostały wywołane. 
+    Obraz tego okna został wyświetlony po prawej stronie.
+  </div>
+  <div class="clear"></div>
+
+  <div>
+    W tej części funkcja silnia została odrobinę zmodyfikowana, 
+    zostało dodanych kilka (niepotrzebnych) zmiennych lokalnych. 
+    Uruchom funkcję silnia krok po kroku, a następnie gdy na stosie będzie już parę instancji, 
+    kliknij prawym przyciskiem w niektóre z nich. Wówczas w oknie instancji funkcji 
+    zostanie wyświetlona informacja o danej instancji. Zobacz, że zmienne lokalne, 
+    a także tablice lokalne się od siebie różnią. Kiedy to zrobisz, przejdź do kolejnej części lekcji.
+  </div>
+
 </body>
-</html>
+</html> 
