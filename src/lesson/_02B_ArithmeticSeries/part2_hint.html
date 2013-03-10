@@ -33,9 +33,12 @@
       margin-bottom: 0px;
     }
     h2 {
-      margin-top: 0px;
+      margin-top: 15px;
       margin-bottom: 0px;
       text-align: center;
+    }
+    h2.first {
+      margin-top: 0px;
     }
     div {
       margin-top: 15px;
@@ -50,12 +53,8 @@
     }
     div.hidden {
       margin-top: 0px;
+      display: none;
     }
-    hr {
-      margin-top: 0px;
-      clear:both;
-    }
-    
     table {
       margin-top: 5px;
       margin-bottom: 0px;
@@ -70,11 +69,11 @@
 
 <body>
   
-  <h2 id="hint1">Wskazówka I</h2>
+  <h2 id="hint1" class="first">Wskazówka I</h2>
   <div class="first">
     <img src="rect2.png" alt="Nie można załadować obrazka"/>
     Na rysunku widnieje prostokąt o wymiarach 5x6 kratek. Zauważ, że zielone, 
-    jaki i niebieskie, pola zajmują 1+2+3+4+5 kratek (czyli to nasza szukana suma dla n=5).
+    jaki i niebieskie pola zajmują 1+2+3+4+5 kratek (czyli to nasza szukana suma dla n=5).
     Skoro zielone pole zajmuje połowę pola powierzchni 
     (pole powierzchni prostokąta to iloczyn dwóch przyległych boków), 
     to znaczy że nasza suma dla n=5 wynosi (5*6)/2.

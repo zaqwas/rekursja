@@ -1,101 +1,103 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Treść zadania</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <style>
-      td.first {
-        color: green;
-        white-space: nowrap;
-      }
-    </style>
-  </head>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h2.first {
+      margin-top: 0px;
+    }
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      vertical-align: text-top;
+      white-space: nowrap;
+    }
+    div {
+      margin-left: 20px;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Pseudokod funkcji rekurencyjnej</h2>
+<body>
+  <h2>Pseudokod funkcji rekurencyjnej</h2>
 
-    <table>
-      <tr>
-        <td class="first" valign="top">
-          Dane:
-        </td>
-        <td>
-          Liczba naturalna <i>n</i>.
-        </td>
-      </tr>
-      <tr>
-        <td class="first" valign="top">
-          Wynik:
-        </td>
-        <td>
-          Suma ciągu arytmetycznego liczb od 1 do <i>n</i>.
-        </td>
-      </tr>
-      <tr>
-        <td class="first" valign="top">
-          Krok 1.
-        </td>
-        <td>
-          Jeśli <i>n</i> &le; 0 zwróć 0 i zakończ funkcję.
-        </td>
-      </tr>
-      <tr>
-        <td class="first" valign="top">
-          Krok 2.
-        </td>
-        <td>
-          W przeciwnym wypadku wywołaj funkcję rekurencyjnie dla <i>n</i> - 1,
-          do wyniku dodaj liczbę <i>n</i>. Następnie zwróć obliczoną sumę 
-          i zakończ funkcję.
-        </td>
-      </tr>
-    </table>
-    
-    
-    <h2>Pseudokod funkcji iteracyjnej</h2>
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczba naturalna <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Suma ciągu arytmetycznego liczb od 1 do <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Jeśli <i>n</i> &le; 0 zwróć 0 i zakończ funkcję.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        W przeciwnym wypadku wywołaj funkcję rekurencyjnie dla <i>n</i> - 1,
+        do wyniku dodaj liczbę <i>n</i>. Następnie zwróć obliczoną sumę 
+        i zakończ funkcję.
+      </td>
+    </tr>
+  </table>
 
-    <table>
-      <tr>
-        <td class="first" valign="top">
-          Dane:
-        </td>
-        <td>
-          Liczba naturalna <i>n</i>
-        </td>
-      </tr>
-      <tr>
-        <td class="first" valign="top">
-          Wynik:
-        </td>
-        <td>
-          Suma ciągu arytmetycznego liczb od 1 do <i>n</i>.
-        </td>
-      </tr>
-      <tr>
-        <td class="first" valign="top">
-          Krok 1.
-        </td>
-        <td>
-          Przyjmij za <i>suma</i> := 0.
-        </td>
-      </tr>
-      <tr>
-        <td class="first" valign="top">
-          Krok 2.
-        </td>
-        <td>
-          Dla <i>k</i> = 1, 2, 3,..., <i>n</i> wykonaj:<br/> 
-          przypisz <i>suma</i> := <i>suma</i> + <i>k</i>
-        </td>
-      </tr>
-      <tr>
-        <td class="first" valign="top">
-          Krok 3.
-        </td>
-        <td>
-          Zwróć wartość zmiennej <i>suma</i> i zakończ funkcję.
-        </td>
-      </tr>
-    </table>
-  </body>
+  
+  <h2>Pseudokod funkcji iteracyjnej</h2>
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczba naturalna <i>n</i>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Suma ciągu arytmetycznego liczb od 1 do <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Przyjmij za <i>suma</i> := 0.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">
+        Krok 2.
+      </td>
+      <td>
+        Dla <i>i</i> = 1, 2, 3,..., <i>n</i> wykonaj:<br/> 
+        <div>przypisz <i>suma</i> := <i>suma</i> + <i>i</i></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 3.</td>
+      <td>
+        Zwróć wartość zmiennej <i>suma</i> i zakończ funkcję.
+      </td>
+    </tr>
+  </table>
+</body>
 </html>

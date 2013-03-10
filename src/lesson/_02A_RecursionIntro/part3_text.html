@@ -37,14 +37,14 @@
   <h2>Przepełnienie stosu i warunek stopu</h2>
   <div class="first">
     Rekurencyjna funkcja silnia wywołuje się dla coraz mniejszych liczb, 
-    aż dojdzie do wywołania funkcji silna z argumentem zero.  
+    aż dojdzie do wywołania funkcji silna z argumentem jeden.  
     Wówczas program od razu zwraca wynik, a następnie poprzednie wywołania 
     funkcji wykonują mnożenie, zwracają wynik i także kończą swoje działanie.
   </div>
   
   <div>
-    Zastanów się teraz co by się stało jeśli byśmy usunęli z kodu linijkę: „<code>if (n<=1) return 1;</code>”.
-    Wówczas program wyglądałby tak:<br />
+    Zastanów się teraz co by się stało, jeśli byśmy usunęli z kodu linijkę: „<code>if (n<=1) return 1;</code>”.
+    Wówczas program wyglądałby następująco:<br />
     <code>
       int silnia(n)<br />
       {<br />
@@ -61,23 +61,24 @@
 
   <div>
     Uruchomiony program wywołuje funkcję dla coraz mniejszych liczb, jednak teraz funkcja 
-    wywołuje się także dla liczb ujemnych. W teorii funkcja silnia mogła by się 
-    wywoływać bez końca (w końcu ujemnych liczb naturalnych jest nieskończenie wiele). 
+    wywołuje się także dla liczb ujemnych. W teorii funkcja silnia mogłaby 
+    wywoływać się bez końca (w końcu ujemnych liczb naturalnych jest nieskończenie wiele). 
     W praktyce jednak takiej możliwości nie ma. Program odkłada na stosie kolejne rekordy aktywacji. 
-    Jak wiemy wywołania funkcji zajmują miejsca w pamięci komputer, 
-    wiemy również, że pamięć komputera jest ograniczona. Wobec tego kiedyś musi dojść do tego momentu, 
-    iż na nowy rekord aktywacji zabraknie miejsca. Ten moment nazywa się przepełnieniem stosu (ang. stackoverflow). 
-    Jest on częstym błędem występujących w programach młodych programistów. 
+    Jak wiemy wywołania funkcji zajmują miejsca w pamięci komputera.
+    Wiemy również, że pamięć komputera jest ograniczona. Wobec tego kiedyś musi dojść do tego momentu, 
+    iż na nowy rekord aktywacji zabraknie miejsca. 
+    Ten moment nazywa się <b>przepełnieniem stosu</b> (ang. stackoverflow). 
+    Jest on częstym błędem występującym w programach niedoświadczonych informatyków. 
     W systemie rekurencja wielkość stosu została ograniczona do stu wywołań funkcji.
   </div>
 
   <div>
     Z powyższych obserwacji wynika, iż funkcja rekurencyjna nie może być wywoływana bez końca. 
-    W funkcji musi znaleźć odpowiedni fragment kodu, który będzie odpowiedzialny 
-    za zatrzymywanie się wywoływania rekurencji. Ten fragment kodu nazywa się warunkiem stopu. 
-    W przypadku funkcji silnia była to linijka „<code>if (n<=1) return 1;</code>”. 
+    W funkcji musi znaleźć się odpowiedni fragment kodu, który będzie odpowiedzialny 
+    za zatrzymanie wywoływania się rekurencjnie funkcji. Ten fragment kodu nazywa się <b>warunkiem stopu</b>. 
+    W przypadku funkcji silnia jest to linijka „<code>if (n<=1) return 1;</code>”. 
     Zapamiętaj, że poprawnie napisana funkcja rekurencyjna powinna się 
-    zawsze zatrzymywać dla wszystkich danych uwzględnionych w specyfikacji.
+    zawsze zatrzymywać dla wszystkich danych uwzględnionych w specyfikacji zadania.
   </div>
 
 </body>

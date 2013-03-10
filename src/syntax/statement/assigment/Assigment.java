@@ -7,7 +7,6 @@ import java.math.BigInteger;
 import parser.ProgramError;
 import stringcreator.FlexibleStringCreator;
 import stringcreator.StringCreator;
-import sun.security.util.BigInt;
 import syntax.SyntaxNode;
 import syntax.SyntaxNodeIdx;
 import syntax.expression.SyntaxNodeExpr;

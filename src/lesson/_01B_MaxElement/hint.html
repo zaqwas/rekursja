@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Treść zadania</title>
+  <title>Wskazówki</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <script type="text/javascript">
     function gotoHint1() {
@@ -55,13 +55,13 @@
     nie zajmujmy się liczbami tylko, powiedzmy patykami. Wyobraźmy sobie, 
     iż mamy ogromny stos patyków różnej długości i chcemy znaleźć najdłuższy. 
     Oczywiście w jednej chwili możemy porównywać tylko dwa patyki. 
-    Zastanówmy się jak może wyglądać algorytm rozwiązania tego problemu. 
+    Zastanówmy się jak może wyglądać algorytm rozwiązujący ten problem. 
     Najpierw powinniśmy wziąć do prawej ręki dowolny patyk. 
     Następnie do lewej ręki bierzemy kolejny dowolny patyk i porównujemy je ze sobą. 
-    Jeśli patyk w lewej dłoni jest większy wyrzucamy patyk z prawej dłoni 
+    Jeśli patyk w lewej dłoni jest większy, to wyrzucamy patyk z prawej dłoni 
     (odkładamy patyk na inny stos) i przekładamy patyk z lewej dłoni do prawej. 
-    Jeśli jednak patyk z lewej dłonie jest mniejszy albo równy wówczas wyrzucamy 
-    patyk z lewej dłoni. Następnie znowu dobieramy kolejny patyk do lewej dłoni, 
+    Jeśli jednak patyk z lewej dłoni jest mniejszy albo równy wówczas wyrzucamy 
+    (odkładamy na inny stos) ten patyk. Następnie znowu dobieramy kolejny patyk do lewej dłoni, 
     porównujemy patyki i wyrzucamy odpowiedni z nich, ten krok powtarzamy 
     aż na pierwotnym stosie nie będzie już żadnego patyka, 
     wówczas w prawej dłoni będziemy dzierżyć najdłuższy patyk.
