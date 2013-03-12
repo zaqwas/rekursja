@@ -36,6 +36,7 @@ import lesson._01A_Introduction.IntroductionLessonLoader;
 import lesson._01B_MaxElement.MaxElementLessonLoader;
 import lesson._02A_RecursionIntro.RecursionIntroLessonLoader;
 import lesson._02B_ArithmeticSeries.ArithmeticSeriesLessonLoader;
+import lesson._03A_Exponentiation.ExponentiationLessonLoader;
 import lesson._06A_MergeFunction.MergeFunctionLessonLoader;
 import lesson._06B_MergeSort.MergeSortLessonLoader;
 import lesson._07A_PartitionFunction.PartitionFunctionLessonLoader;
@@ -745,6 +746,10 @@ public class MainClass {
         
         addLessonLoader(new RecursionIntroLessonLoader());
         addLessonLoader(new ArithmeticSeriesLessonLoader());
+        
+        chooseLessonMenu.add(new JSeparator());
+        
+        addLessonLoader(new ExponentiationLessonLoader());
         
         chooseLessonMenu.add(new JSeparator());
         

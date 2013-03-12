@@ -1,18 +1,21 @@
-void wczytaj_xn(&x,&n){}
+//Funkcje specjalne:
+void start(&a,&n){}
 
-//Rozwiązanie rekurencyjne:
-int potega(x,n)
+//Potęga a^n
+//Rekurencyjne rozwiązanie
+//wzorcowe:
+int potega(a,n)
 {
-  if (n <= 0)
+  if (n == 0) {
     return 1;
-  
-  return x * potega(x, n-1);
+  }
+  return a * potega(a,n-1);
 }
 
 void main()
-var x, n, wynik;
+var a, n, potega;
 {
-  wczytaj_xn(&x, &n);
-  wynik = potega(x,n);
-  writeln(x,"^",n," = ",wynik);
+  start(a,n);
+  potega = potega(a,n);
+  writeln(a,"^",n," = ",potega);
 }

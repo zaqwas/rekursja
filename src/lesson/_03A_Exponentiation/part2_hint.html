@@ -1,94 +1,214 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Treść zadania</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script>
-      function gotoHint1()
-      {
-        window.location.href = "#hint1";
-      }
-      function gotoHint2()
-      {
-        window.location.href = "#hint2";
-      }
-      function gotoHint3()
-      {
-        window.location.href = "#hint3";
-      }
+<head>
+  <title>Wskazówki</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <script type="text/javascript">
+    function gotoHint1() {
+      window.location.href = "#hint1";
+    }
+    function gotoHint2() {
+      window.location.href = "#hint2";
+    }
+    function gotoHint3() {
+      window.location.href = "#hint3";
+    }
+    
+    function showHint2() {
+      hint2.style.display = "inherit";
+    }
+    function showHint3() {
+      hint2.style.display = "inherit";
+      hint3.style.display = "inherit";
+    }
+  </script>
+    
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h2.first {
+      padding-top: 0px;
+    }
       
-      function showHint2()
-      {
-        hint2.style.display = "inherit";
-      }
-      function showHint3()
-      {
-        hint2.style.display = "inherit";
-        hint3.style.display = "inherit";
-      }
-    </script>
-  </head>
+    div {
+      margin-top: 15px;
+      margin-bottom: 0px;
+    }
+    div.first {
+      margin-top: 5px;
+    }
+    div.hidden {
+      display: none;
+    }
+    div.indent {
+      margin-top: 0px;
+      margin-left: 20px;
+    }
+     
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    
+    ul {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-left: 25px;
+    }
+    code {
+      white-space: nowrap;
+    }
+  </style>
+</head>
 
-  <body>
-    
-    <div id="hint1">
-      <h2 style="text-align: center">Wskazówka I</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+<body>
+  <h2 id="hint1" class="first">Wskazówka I</h2>
+
+  <div class="first">
+    Jak pewnie zauważyłeś najważniejszym czynnikiem jest wykładnik potęgi. 
+    Podstawa potęgi nie ma znaczenia dla algorytmu i będziemy ją oznaczać jako liczba <i>a</i>. 
+    Skupmy uwagę na wykładniku. Wykładnik <i>n</i> jest liczbą naturalną i może być 
+    albo liczbą parzystą albo nieparzystą. Rozważmy każdy przypadek z osobna:
+    <ul>
+    <li>
+      Załóżmy, że <i>n</i> jest liczbą parzystą. 
+      Wówczas możemy zapisać liczbę <i>n</i> jako <i>n</i>=2<i>m</i>, 
+      natomiast potęge <i>a<sup>n</sup></i> możemy rozpisać w następujący sposób:
+      <i>a<sup>n</sup></i> = <i>a</i><sup>2<i>m</i></sup> = (<i>a<sup>m</sup></i>)<sup>2</sup>
+    </li>
+    <li>
+      Załóżmy, że <i>n</i> jest liczbą nieparzystą. 
+      Wówczas liczbę <i>n</i> możemy zapisać jako <i>n</i>=2<i>m</i>+1, 
+      natomiast potęge <i>a<sup>n</sup></i> możemy rozpisać w następujący sposób:
+      <i>a<sup>n</sup></i> = <i>a</i><sup>2<i>m</i>+1</sup> = (<i>a<sup>m</sup></i>)<sup>2</sup>⋅<i>a</i>
+    </li>
+    </ul>
+  </div>
+
+  
+
+  <div id="hint2" class="hidden">
+    <h2>Wskazówka II</h2>
+    <div class="first">
+      Zauważ, że na podstawie powyższych rozważań łatwo jest napisać definicję rerurencyjną:<br />
+      <img src="exponentiation_fast.png" alt="Nie udało załadować się obrazka"/>
     </div>
-    
-    <div id="hint2" style="display: none;">
-      <h2 style="text-align: center">Wskazówka II</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+
+    <div>
+      W powyższym wzorze, w przypadku <i>n</i> nieparzystego użyliśmy symbolu ⌊⋅⌋, który oznacza część całkowitą. 
+      W naszym języku programowania, aby wziąć część całkowitą wystarczy tylko <i>n</i> podzielić przez 2,
+      gdyż dzielenie w naszym języku jest całkowite. 
+      Ponadto parzystość liczby można sprawdzić używając warunku: "<code>n % 2 == 0</code>".
     </div>
+  </div>
+
+  <div id="hint3"  class="hidden">
+    <h2>Pseudokod funkcji rekurencyjnej</h2>
+    <table>
+      <tr>
+        <td class="first">Dane:</td>
+        <td>
+          Liczba całkowita <i>a</i> oraz liczba naturalna <i>n</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Wynik:</td>
+        <td>
+          Liczba <i>x</i> podniesiona do <i>n</i>-tej potęgi: <i>a<sup>n</sup></i>
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 1.</td>
+        <td>
+          Jeśli <i>n</i> &le; 0, to zwróć 1 i zakończ funkcję.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 2.</td>
+        <td>
+          W przeciwnym wypadku wywołaj funkcję rekurencyjnie dla <i>a</i> oraz ⌊<i>n</i>/2⌋ 
+          i obliczoną wartość zapamiętaj w zmiennej <i>potega</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 3.</td>
+        <td>
+          Przypisz <i>potega</i> := <i>potega</i> * <i>potega</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 4.</td>
+        <td>
+          Jeśli <i>n</i> jest nieparzyste, to przypisz <i>potega</i> := <i>potega</i> * <i>a</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 5.</td>
+        <td>
+          Zwróć wartość zmiennej <i>potega</i> i zakończ funkcję.
+        </td>
+      </tr>
+    </table>
     
-    <div id="hint3" style="display: none">
-      <h2 style="text-align: center">Wskazówka III</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-    </div>
-  </body>
+    
+    <h2>Pseudokod funkcji iteracyjnej</h2>
+
+    <table>
+      <tr>
+        <td class="first">
+          Dane:
+        </td>
+        <td>
+          Liczba całkowita <i>a</i> oraz liczba naturalna <i>n</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">
+          Wynik:
+        </td>
+        <td>
+          Liczba <i>x</i> podniesiona do <i>n</i>-tej potęgi: <i>x<sup>n</sup></i>
+        </td>
+      </tr>
+      <tr>
+        <td class="first">
+          Krok 1.
+        </td>
+        <td>
+          Przyjmij za <i>potega</i> := 1.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">
+          Krok 2.
+        </td>
+        <td>
+          Dla <i>i</i> := 1, 2,..., <i>n</i> wykonaj:
+          <div class="indent">
+            przypisz <i>potega</i> := <i>potega</i> * <i>x</i><br/>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="first">
+          Krok 3.
+        </td>
+        <td>
+          Zwróć wartość zmiennej <i>potega</i> i zakończ funkcję.
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
 </html>

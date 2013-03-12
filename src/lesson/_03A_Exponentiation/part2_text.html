@@ -1,29 +1,65 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    div {
+      margin-top: 15px;
+      margin-bottom: 0px;
+    }
+    div.first {
+      margin-top: 5px;
+    }
+    ul {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-left: 25px;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Suma ciągu arytmetycznego - wzór</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Szybki algorytm potęgowania</h2>
+  <div class="first">
+    W poprzedniej części napisaliśmy dwie funkcje, które obliczały potęgę <i>a<sup>n</sup></i>. 
+    W obu przypadkach funkcje potrzebowały wykonać <i>n</i>-1 mnożeń. W tej części lekcji zajmiemy się zmniejszeniem tej liczby mnożeń.
+  </div>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
+  <div>
+    Na początek zapoznajmy się lub przypomnijmy sobie podstawowy fakt odnośnie potęgowania:
+    <img src="exponentiation_equation.png" alt="Nie udało się załadować obrazka" />
+  </div>
+  
+  <div>
+    Pod spodem znajduję się kilka przykładów użycia tego wzoru:
+    <ul>
+      <li>
+        <i>a</i><sup>6</sup> możemy zapisać jako (<i>a</i><sup>3</sup>)<sup>2</sup>. 
+        W tym przypadku możemy najpierw obliczyć <i>a</i><sup>3</sup> (dwa mnożenia), 
+        a następnie wynik pomnożyć przez siebie (kolejne mnożenie). W sumie wykonując trzy mnożenia, a nie pięć.
+      </li>
+      <li>
+        <i>a</i><sup>16</sup> możemy zapisać jako (((<i>a</i><sup>2</sup>)<sup>2</sup>)<sup>2</sup>)<sup>2</sup>. 
+        Wówczas należy liczbę <i>a</i> podnieść do kwadratu, a następnie kolejne wyniki podnosić do kwadratu. 
+        W ten sposób możemy wykonać tylko 4 mnożenia zamiast 15.
+      </li>
+    </ul>
+  </div>
 
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
-
-  </body>
+  <div>
+    Wykorzystując powyższy fakt oraz dwa przykłady użycia, spróbuj zastanowić się nad szybkim algorytmie obliczającym potęgę. 
+    Zadaniem jest wykonać dwie funkcje jedną rekurencją i drugą iteracyjną. 
+    Oczywiście, jeśli powyższa informacja jest zbyt mała zawsze możesz skorzystać ze wskazówki.
+  </div>
+  
+</body>
 </html> 

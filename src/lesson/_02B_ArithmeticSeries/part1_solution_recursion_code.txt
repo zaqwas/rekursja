@@ -1,18 +1,21 @@
-void wczytaj_n(&n){}
+//Funkcje specjalne:
+void start(&n){}
 
-//Rozwiązanie rekurencyjne
-int suma_ciagu_arytmetycznego(n)
+//Suma liczb od 1 do n
+//Rekurencyjne rozwiązanie
+//wzorcowe:
+int sumaCiagu(n)
 {
-  if (n <= 0)
+  if (n <= 0) {
     return 0;
-  
-  return n + suma_ciagu_arytmetycznego(n-1);
+  }
+  return n + sumaCiagu(n-1);
 }
 
 void main()
-var n, wynik;
+var n, suma;
 {
-  wczytaj_n(&n);
-  wynik = suma_ciagu_arytmetycznego(n);
-  writeln("S(",n,") = ",wynik);
+  start(n);
+  suma = sumaCiagu(n);
+  writeln("sumaCiagu(",n,") = ",suma);
 }

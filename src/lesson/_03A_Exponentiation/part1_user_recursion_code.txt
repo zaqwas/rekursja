@@ -1,20 +1,21 @@
-void wczytaj_xn(&x,&n){}
-void wypisz_rozwiazanie(x,n){}
+//Funkcje specjalne:
+void start(&a,&n){}
+void sprawdz(potega){}
 
-//Rozwiązanie rekurencyjne
-int potega(x,n)
+//Potęga a^n
+//Rekurencyjne rozwiązanie
+//użytkownika:
+int potega(a,n)
 ~var i;
 ~{
-~  //Napisz funkcję, która oblicza
-  //potęge x^n
+~  //Zaimplementuj tę funkcję
+  //zgodnie z treścią zadania
 ~}
 
 void main()
-var x, n, wynik;
+var a, n, potega;
 {
-  wczytaj_xn(&x,&n);
-  wypisz_rozwiazanie(x,n);
-  wynik = potega(n);
-  write("Twoje rozwiazanie: ")
-  writeln(x,"^",n," = ",wynik);
+  start(a,n);
+  potega = potega(a,n);
+  sprawdz(potega);
 }

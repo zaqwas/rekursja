@@ -1,15 +1,17 @@
-void wczytaj_n(&n){}
+//Funkcje specjalne:
+void start(&n){}
 
-//Szybkie rozwiązanie
-int suma_ciagu_arytmetycznego(n)
+//Suma liczb od 1 do n
+//Rozwiązanie wzorcowe:
+int sumaCiagu(n)
 {
-  return n * (n + 1) / 2;
+  return (n * (n + 1)) / 2;
 }
 
 void main()
-var n, wynik;
+var n, suma;
 {
-  wczytaj_n(&n);
-  wynik = suma_ciagu_arytmetycznego(n);
-  writeln("S(",n,") = ",wynik);
+  start(n);
+  suma = sumaCiagu(n);
+  writeln("sumaCiagu(",n,") = ",suma);
 }

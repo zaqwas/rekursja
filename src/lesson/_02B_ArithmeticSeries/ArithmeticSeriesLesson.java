@@ -136,7 +136,6 @@ class ArithmeticSeriesLesson implements Lesson {
     private JMenuItem part2GotoPart1MenuItem;
     
     
-    
     private String oldCode;
     private String part1UserRecursionCode;
     private String part1UserIterationCode;
@@ -145,6 +144,8 @@ class ArithmeticSeriesLesson implements Lesson {
     private String part2UserCode;
     private String part2SolutionCode;
     
+    private StartSpecialFunction startSpecialFunction;
+    private ArithmeticSeriesSpecialFunction arithmeticSeriesSpecialFunction;
 //    private StartSpecialFunction startSpecialFunction;
 //    private CheckSpecialFunction checkSpecialFunction;
 //    private CompareOneSpecialFunction compareOneSpecialFunction;
@@ -162,7 +163,12 @@ class ArithmeticSeriesLesson implements Lesson {
         
         textFrame = new TextFrame(mainClass);
         
-        initSpecialFunctions();
+        startSpecialFunction = new StartSpecialFunction();
+        SpecialFunctions.addSpecialFunction(startSpecialFunction);
+        arithmeticSeriesSpecialFunction = new ArithmeticSeriesSpecialFunction();
+        SpecialFunctions.addSpecialFunction(arithmeticSeriesSpecialFunction);
+        SpecialFunctions.addSpecialFunction(
+                new CheckSpecialFunction(startSpecialFunction, mainClass.getConsole()));
         
         initPart1MenuItems();
         initPart2MenuItems();
@@ -294,7 +300,6 @@ class ArithmeticSeriesLesson implements Lesson {
     }
     //</editor-fold>
 
-    
     //<editor-fold defaultstate="collapsed" desc="initCodes">
     private void initCodes(boolean initUserCodes) {
         InputStream stream;
@@ -319,17 +324,6 @@ class ArithmeticSeriesLesson implements Lesson {
             part2UserCode = LessonHelper.readFile(stream);
         }
         oldCode = mainClass.getEditor().getCode();
-    }
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="initSpecialFunctions">
-    private void initSpecialFunctions() {
-//        startSpecialFunction = new StartSpecialFunction(arrayFrame);
-//        checkSpecialFunction = new CheckSpecialFunction(mainClass, arrayFrame);
-//        compareOneSpecialFunction = new CompareOneSpecialFunction(arrayFrame);
-//        compareTwoSpecialFunction = new CompareTwoSpecialFunction(arrayFrame);
-//        moveSpecialFunction = new MoveSpecialFunction(arrayFrame);
-//        swapSpecialFunction = new SwapSpecialFunction(arrayFrame);
     }
     //</editor-fold>
     
@@ -605,6 +599,11 @@ class ArithmeticSeriesLesson implements Lesson {
             mainClass.getEditor().setCode(part1SolutionIterationCode);
             part1SolutionIterationCodeMenuItem.setSelected(true);
         }
+        
+        startSpecialFunction.setSelectedPart((byte)1);
+        arithmeticSeriesSpecialFunction.setSelectedPart((byte)1);
+        
+        mainClass.getTreeOfInstances().setTreeNodeMaxLetters(9);
     }
     //</editor-fold>
     
@@ -637,6 +636,11 @@ class ArithmeticSeriesLesson implements Lesson {
             mainClass.getEditor().setCode(part2SolutionCode);
             part2SolutionCodeMenuItem.setSelected(true);
         }
+        
+        startSpecialFunction.setSelectedPart((byte)2);
+        arithmeticSeriesSpecialFunction.setSelectedPart((byte)2);
+        
+        mainClass.getTreeOfInstances().setTreeNodeMaxLetters(17);
     }
     //</editor-fold>    
     
@@ -682,6 +686,7 @@ class ArithmeticSeriesLesson implements Lesson {
         lessonMenu.setEnabled(false);
         
         SpecialFunctions.clear();
+        mainClass.getTreeOfInstances().setDefaultTreeNodeMaxLetters();
         
         mainClass.removeAddictionalLessonFrame(textFrame.getFrame());
         mainClass.getEditor().setCode(oldCode);
@@ -690,6 +695,7 @@ class ArithmeticSeriesLesson implements Lesson {
     @Override
     public void threadStart(InterpreterThread thread) {
         setButtonsEnabled(false);
+        startSpecialFunction.threadStart();
     }
     
     @Override
@@ -699,27 +705,11 @@ class ArithmeticSeriesLesson implements Lesson {
     
     @Override
     public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, final int delayTime) {
-//        compareTwoSpecialFunction.undo(node);
-//        moveSpecialFunction.undo(node);
-//        compareOneSpecialFunction.undo(node);
-//        swapSpecialFunction.undo(node);
-//        
-//        arrayFrame.updateArrays();
-//        
-//        boolean wait = moveSpecialFunction.pauseStart(node, delayTime);
-//        wait = wait && swapSpecialFunction.pauseStart(node, delayTime);
-//        if ( !wait ) {
-//            return false;
-//        }
-//        compareOneSpecialFunction.pauseStart(node);
-//        compareTwoSpecialFunction.pauseStart(node);
         return true;
     }
 
     @Override
     public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
-//        compareOneSpecialFunction.pauseStop();
-//        compareTwoSpecialFunction.pauseStop();
     }
     
     

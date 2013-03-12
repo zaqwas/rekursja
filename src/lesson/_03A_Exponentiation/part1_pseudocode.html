@@ -1,111 +1,104 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Pseudokod funkcji</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <style>
-      td.first {
-        color: green;
-        white-space: nowrap;
-        vertical-align: top;
-      }
-    </style>
-  </head>
+<head>
+  <title>Pseudokod</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    } 
+    h2.first {
+      margin-top: 0px;
+    }
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    div.indent {
+      margin-left: 20px;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Pseudokod funkcji rekurencyjnej</h2>
+<body>
+  <h2 class="first">Pseudokod funkcji rekurencyjnej</h2>
 
-    <table>
-      <tr>
-        <td class="first">
-          Dane:
-        </td>
-        <td>
-          Liczba całkowita <i>x</i> oraz liczba naturalna <i>n</i>.
-        </td>
-      </tr>
-      <tr>
-        <td class="first">
-          Wynik:
-        </td>
-        <td>
-          Liczba <i>x</i> podniesiona do <i>n</i>-tej potęgi: <i>x<sup>n</sup></i>
-        </td>
-      </tr>
-      <tr>
-        <td class="first">
-          Krok 1.
-        </td>
-        <td>
-          Jeśli <i>n</i> &le; 0 zwróć 1 i zakończ funkcję.
-        </td>
-      </tr>
-      <tr>
-        <td class="first">
-          Krok 2.
-        </td>
-        <td>
-          W przeciwnym wypadku wywołaj funkcję rekurencyjnie dla <i>n</i> - 1 oraz <i>x</i>,
-          Wynik pomnóż przez <i>x</i>. Następnie zwróć obliczony iloraz
-          i zakończ funkcję.
-        </td>
-      </tr>
-    </table>
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczba całkowita <i>a</i> oraz liczba naturalna <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Liczba <i>a</i> podniesiona do <i>n</i>-tej potęgi: <i>a<sup>n</sup></i>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Jeśli <i>n</i> &le; 0 zwróć 1 i zakończ funkcję.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        W przeciwnym wypadku wywołaj funkcję rekurencyjnie dla <i>a</i> oraz <i>n</i>-1,
+        wynik pomnóż przez <i>a</i>. Następnie zwróć obliczony iloczyn
+        i zakończ funkcję.
+      </td>
+    </tr>
+  </table>
     
     
-    <h2>Pseudokod funkcji iteracyjnej</h2>
+  <h2>Pseudokod funkcji iteracyjnej</h2>
 
-    <table>
-      <tr>
-        <td class="first" valign="top">
-          Dane:
-        </td>
-        <td>
-          Liczba całkowita <i>x</i> oraz liczba naturalna <i>n</i>.
-        </td>
-      </tr>
-      <tr>
-        <td class="first" valign="top">
-          Wynik:
-        </td>
-        <td>
-          Liczba <i>x</i> podniesiona do <i>n</i>-tej potęgi: <i>x<sup>n</sup></i>
-        </td>
-      </tr>
-      <tr>
-        <td class="first">
-          Krok 1.
-        </td>
-        <td>
-          Przyjmij za <i>iterator</i> := 1.
-        </td>
-      </tr>
-      <tr>
-        <td class="first">
-          Krok 2.
-        </td>
-        <td>
-          Przyjmij za <i>potega</i> := 1.
-        </td>
-      </tr>
-      <tr>
-        <td class="first">
-          Krok 3.
-        </td>
-        <td>
-          Dopóki <i>iterator</i> &le; <i>n</i> wykonaj:<br/> 
-          przypisz <i>potega</i> := <i>potega</i> * <i>x</i><br/>
-          przypisz <i>iterator</i> := <i>iterator</i> + <i>1</i><br/>
-        </td>
-      </tr>
-      <tr>
-        <td class="first" valign="top">
-          Krok 4.
-        </td>
-        <td>
-          Zwróć wartość zmiennej <i>potega</i> i zakończ funkcję.
-        </td>
-      </tr>
-    </table>
-  </body>
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczba całkowita <i>a</i> oraz liczba naturalna <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Liczba <i>a</i> podniesiona do <i>n</i>-tej potęgi: <i>a<sup>n</sup></i>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Przyjmij za <i>potega</i> := 1.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        Dla <i>i</i> := 1, 2,..., <i>n</i> wykonaj:
+        <div class="indent">
+          przypisz <i>potega</i> := <i>potega</i> * <i>a</i><br/>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 3.</td>
+      <td>
+        Zwróć wartość zmiennej <i>potega</i> i zakończ funkcję.
+      </td>
+    </tr>
+  </table>
+</body>
 </html>
