@@ -683,10 +683,10 @@ class PartitionFunctionLesson implements Lesson {
         
         SpecialFunctions.clear();
         compareOneSpecialFunction.setSelectedPart(1);
-        SpecialFunctions.addSpecialFunction(startSpecialFunction);
-        SpecialFunctions.addSpecialFunction(checkSpecialFunction);
-        SpecialFunctions.addSpecialFunction(compareOneSpecialFunction);
-        SpecialFunctions.addSpecialFunction(moveSpecialFunction);
+        SpecialFunctions.add(startSpecialFunction);
+        SpecialFunctions.add(checkSpecialFunction);
+        SpecialFunctions.add(compareOneSpecialFunction);
+        SpecialFunctions.add(moveSpecialFunction);
     }
     //</editor-fold>
     
@@ -724,11 +724,11 @@ class PartitionFunctionLesson implements Lesson {
         
         SpecialFunctions.clear();
         compareOneSpecialFunction.setSelectedPart(2);
-        SpecialFunctions.addSpecialFunction(startSpecialFunction);
-        SpecialFunctions.addSpecialFunction(checkSpecialFunction);
-        SpecialFunctions.addSpecialFunction(compareOneSpecialFunction);
-        SpecialFunctions.addSpecialFunction(moveSpecialFunction);
-        SpecialFunctions.addSpecialFunction(swapSpecialFunction);
+        SpecialFunctions.add(startSpecialFunction);
+        SpecialFunctions.add(checkSpecialFunction);
+        SpecialFunctions.add(compareOneSpecialFunction);
+        SpecialFunctions.add(moveSpecialFunction);
+        SpecialFunctions.add(swapSpecialFunction);
     }
     //</editor-fold>    
     
@@ -766,10 +766,10 @@ class PartitionFunctionLesson implements Lesson {
         arrayFrame.setSelectedPart(3);
         
         SpecialFunctions.clear();
-        SpecialFunctions.addSpecialFunction(startSpecialFunction);
-        SpecialFunctions.addSpecialFunction(checkSpecialFunction);
-        SpecialFunctions.addSpecialFunction(compareTwoSpecialFunction);
-        SpecialFunctions.addSpecialFunction(swapSpecialFunction);
+        SpecialFunctions.add(startSpecialFunction);
+        SpecialFunctions.add(checkSpecialFunction);
+        SpecialFunctions.add(compareTwoSpecialFunction);
+        SpecialFunctions.add(swapSpecialFunction);
     }
     //</editor-fold>    
     

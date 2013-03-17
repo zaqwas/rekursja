@@ -1,9 +1,10 @@
-package lesson._03A_Exponentiation;
+package lesson._03C_BinarySearch;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
 import helpers.LessonHelper;
 import interpreter.Instance;
 import interpreter.InterpreterThread;
+import interpreter.arguments.ArgInteger;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
@@ -21,21 +22,26 @@ import lesson.LessonLoader;
 import mainclass.MainClass;
 import parser.SpecialFunctions;
 import syntax.SyntaxNode;
+import syntax.expression.Call;
+import syntax.function.FunctionBehavior;
+import syntax.statement.If;
+import syntax.statement.While;
+import syntax.statement.assigment.Assigment;
+import syntax.statement.other.Return;
 //</editor-fold>
 
-class ExponentiationLesson implements Lesson {
+class BinarySearchLesson implements Lesson {
     
     //<editor-fold defaultstate="collapsed" desc="Enums">
     public static enum State {
         NothingShown(0), 
         Part1PseudocodeShown(1), 
-        Part1RecursionSolutionShown(2), Part1IterationSolutionShown(3), 
-        Part1BothSolutionShown(4), 
-        Part2Shown(5),
-        Part2Hint1Shown(6), Part2Hint2Shown(7), Part2PseudocodeShown(8),
-        Part2RecursionSolutionShown(9), Part2IterationSolutionShown(10),
-        Part2BothSolutionShown(11), 
-        SummaryShown(12);
+        Part1SolutionShown(2), 
+        Part2Shown(3),
+        Part2Hint1Shown(4), Part2Hint2Shown(5), Part2PseudocodeShown(6),
+        Part2RecursionSolutionShown(7), Part2IterationSolutionShown(8),
+        Part2BothSolutionShown(9), 
+        SummaryShown(10);
         
         public final byte id;
         public final byte part;
@@ -44,19 +50,19 @@ class ExponentiationLesson implements Lesson {
         State(int id) {
             this.id = (byte) id;
 
-            part = (byte) (id < 5 ? 1 : 2);
+            part = (byte) (id < 3 ? 1 : 2);
 
-            if (id < 5) {
+            if (id <= 2) {
                 hint = (byte) (id == 0 ? 0 : 1);
-            } else if (id >= 8) {
-                hint = 3;
+            } else if (id >= 7) {
+                hint = 2;
             } else {
-                hint = (byte) (id - 5);
+                hint = (byte) (id - 3);
             }
         }
         
         public static State getById(int id) {
-            assert 0 <= id && id <= 12;
+            assert 0 <= id && id <= 10;
             
             State[] values = values();
             if ( values[id].id == id ) {
@@ -71,19 +77,38 @@ class ExponentiationLesson implements Lesson {
         }
     }
     
-    private static enum ChosenCode {
+    private static enum Part1ChosenCode {
+        User(0), Solution(1);
+        
+        public final byte id;
+        public final boolean userCode;
+
+        Part1ChosenCode(int id) {
+            this.id = (byte) id;
+            userCode = id == 0;
+        }
+        
+        public static Part1ChosenCode getById(int id) {
+            assert id == 0 || id == 1;
+            return id == 0 ? User : Solution;
+        }
+    }
+    
+    private static enum Part2ChosenCode {
         UserRecursion(0),
         UserIteration(1),
         SolutionRecursion(2),
         SolutionIteration(3);
         
-        public final byte Id;
+        public final byte id;
+        public final boolean userCode;
 
-        ChosenCode(int id) {
-            Id = (byte) id;
+        Part2ChosenCode(int id) {
+            this.id = (byte) id;
+            userCode = id < 2;
         }
         
-        public static ChosenCode getById(int id) {
+        public static Part2ChosenCode getById(int id) {
             assert 0 <= id && id <= 3;
             return id < 2 ? (id == 0 ? UserRecursion : UserIteration)
                     : (id == 2 ? SolutionRecursion : SolutionIteration);
@@ -93,21 +118,20 @@ class ExponentiationLesson implements Lesson {
     
     //<editor-fold defaultstate="collapsed" desc="Variables and components">
     private State state = State.NothingShown;
-    private ChosenCode part1ChosenCode = ChosenCode.UserRecursion;
-    private ChosenCode part2ChosenCode = ChosenCode.UserRecursion;
+    private Part1ChosenCode part1ChosenCode = Part1ChosenCode.User;
+    private Part2ChosenCode part2ChosenCode = Part2ChosenCode.UserRecursion;
     private byte selectedPart = 1;
     
     private MainClass mainClass;
-    private ExponentiationLessonLoader loader;
+    private BinarySearchLessonLoader loader;
     
     private TextFrame textFrame;
+    private ArrayFrame arrayFrame;
     
     private JMenuItem part1TextMenuItem;
     private JMenuItem part1PseudocodeMenuItem;
-    private JRadioButtonMenuItem part1UserRecursionCodeMenuItem;
-    private JRadioButtonMenuItem part1UserIterationCodeMenuItem;
-    private JRadioButtonMenuItem part1SolutionRecursionCodeMenuItem;
-    private JRadioButtonMenuItem part1SolutionIterationCodeMenuItem;
+    private JRadioButtonMenuItem part1UserCodeMenuItem;
+    private JRadioButtonMenuItem part1SolutionCodeMenuItem;
     private JMenuItem part1GotoPart2MenuItem;
     
     private JMenuItem part2TextMenuItem;
@@ -123,34 +147,37 @@ class ExponentiationLesson implements Lesson {
     
     
     private String oldCode;
-    private String part1UserRecursionCode;
-    private String part1UserIterationCode;
-    private String part1SolutionRecursionCode;
-    private String part1SolutionIterationCode;
+    private String part1UserCode;
+    private String part1SolutionCode;
     private String part2UserRecursionCode;
     private String part2UserIterationCode;
     private String part2SolutionRecursionCode;
     private String part2SolutionIterationCode;
     
     private StartSpecialFunction startSpecialFunction;
-    private ExponentiationSpecialFunction exponentiationSpecialFunction;
+    private CheckSpecialFunction checkSpecialFunction;
+    private CompareSpecialFunction compareSpecialFunction;
+    private SearchSpecialFunction searchSpecialFunction;
     //</editor-fold>
     
     
     //<editor-fold defaultstate="collapsed" desc="Constructor">
-    public ExponentiationLesson(MainClass mainClass, DataInputStream stream,
-            ExponentiationLessonLoader loader) throws IOException {
+    public BinarySearchLesson(MainClass mainClass, DataInputStream stream,
+            BinarySearchLessonLoader loader) throws IOException {
         this.mainClass = mainClass;
         this.loader = loader;
         
         textFrame = new TextFrame(mainClass);
+        arrayFrame = new ArrayFrame(mainClass);
         
-        startSpecialFunction = new StartSpecialFunction();
+        startSpecialFunction = new StartSpecialFunction(arrayFrame);
         SpecialFunctions.add(startSpecialFunction);
-        exponentiationSpecialFunction = new ExponentiationSpecialFunction();
-        SpecialFunctions.add(exponentiationSpecialFunction);
-        SpecialFunctions.add(
-                new CheckSpecialFunction(startSpecialFunction, mainClass.getConsole()));
+        checkSpecialFunction = new CheckSpecialFunction(arrayFrame, mainClass.getConsole());
+        SpecialFunctions.add(checkSpecialFunction);
+        searchSpecialFunction = new SearchSpecialFunction();
+        SpecialFunctions.add(searchSpecialFunction);
+        compareSpecialFunction = new CompareSpecialFunction(arrayFrame);
+        SpecialFunctions.add(compareSpecialFunction);
         
         initPart1MenuItems();
         initPart2MenuItems();
@@ -166,11 +193,10 @@ class ExponentiationLesson implements Lesson {
             selectedPart = stream.readByte();
             state = State.getById(stream.readByte());
             
-            part1ChosenCode = ChosenCode.getById(stream.readByte());
-            part2ChosenCode = ChosenCode.getById(stream.readByte());
+            part1ChosenCode = Part1ChosenCode.getById(stream.readByte());
+            part2ChosenCode = Part2ChosenCode.getById(stream.readByte());
             
-            part1UserRecursionCode = stream.readUTF();
-            part1UserIterationCode = stream.readUTF();
+            part1UserCode = stream.readUTF();
             part2UserRecursionCode = stream.readUTF();
             part2UserIterationCode = stream.readUTF();
             
@@ -189,21 +215,11 @@ class ExponentiationLesson implements Lesson {
     
     //private fucntions:
     
-    //<editor-fold defaultstate="collapsed" desc="part1RememberCode">
-    private void part1RememberCode() {
-        if (part1ChosenCode == ChosenCode.UserRecursion) {
-            part1UserRecursionCode = mainClass.getEditor().getCode();
-        } else if (part1ChosenCode == ChosenCode.UserIteration) {
-            part1UserIterationCode = mainClass.getEditor().getCode();
-        }
-    }
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="part1RememberCode">
+    //<editor-fold defaultstate="collapsed" desc="part2RememberCode">
     private void part2RememberCode() {
-        if (part2ChosenCode == ChosenCode.UserRecursion) {
+        if (part2ChosenCode == Part2ChosenCode.UserRecursion) {
             part2UserRecursionCode = mainClass.getEditor().getCode();
-        } else if (part2ChosenCode == ChosenCode.UserIteration) {
+        } else if (part2ChosenCode == Part2ChosenCode.UserIteration) {
             part2UserIterationCode = mainClass.getEditor().getCode();
         }
     }
@@ -213,10 +229,8 @@ class ExponentiationLesson implements Lesson {
     private void setButtonsEnabled(boolean enabled) {
         if (selectedPart == 1) {
             part1GotoPart2MenuItem.setEnabled(enabled);
-            part1UserRecursionCodeMenuItem.setEnabled(enabled);
-            part1UserIterationCodeMenuItem.setEnabled(enabled);
-            part1SolutionRecursionCodeMenuItem.setEnabled(enabled);
-            part1SolutionIterationCodeMenuItem.setEnabled(enabled);
+            part1UserCodeMenuItem.setEnabled(enabled);
+            part1SolutionCodeMenuItem.setEnabled(enabled);
         } else {
             part2GotoPart1MenuItem.setEnabled(enabled);
             part2UserRecursionCodeMenuItem.setEnabled(enabled);
@@ -239,11 +253,7 @@ class ExponentiationLesson implements Lesson {
                 new Object[]{Lang.showSolution, Lang.showPseudocode, Lang.cancel},
                 Lang.showPseudocode);
         if (option != 0) {
-            if (part1ChosenCode == ChosenCode.UserIteration) {
-                part1UserIterationCodeMenuItem.setSelected(true);
-            } else {
-                part1UserRecursionCodeMenuItem.setSelected(true);
-            }
+            part1UserCodeMenuItem.setSelected(true);
             if (option == 1) {
                 part1PseudocodeMenuItem.doClick();
             }
@@ -265,7 +275,7 @@ class ExponentiationLesson implements Lesson {
                 new Object[]{Lang.showSolution, Lang.showHint, Lang.cancel},
                 Lang.showHint);
         if (option != 0) {
-            if (part2ChosenCode == ChosenCode.UserIteration) {
+            if (part2ChosenCode == Part2ChosenCode.UserIteration) {
                 part2UserIterationCodeMenuItem.setSelected(true);
             } else {
                 part2UserRecursionCodeMenuItem.setSelected(true);
@@ -273,7 +283,7 @@ class ExponentiationLesson implements Lesson {
             if (option == 1) {
                 if (state == State.Part2Hint2Shown ) {
                     part2PseudocodeMenuItem.doClick();
-                } else if (state == State.Part2Hint1Shown) {
+                } else if (state == State.Part2Hint1Shown ) {
                     part2Hint2MenuItem.doClick();
                 } else {
                     part2Hint1MenuItem.doClick();
@@ -303,11 +313,8 @@ class ExponentiationLesson implements Lesson {
     private void initCodes(boolean initUserCodes) {
         InputStream stream;
         
-        stream = getClass().getResourceAsStream("part1_solution_recursion_code.txt");
-        part1SolutionRecursionCode = LessonHelper.readFile(stream);
-        
-        stream = getClass().getResourceAsStream("part1_solution_iteration_code.txt");
-        part1SolutionIterationCode = LessonHelper.readFile(stream);
+        stream = getClass().getResourceAsStream("part1_solution_code.txt");
+        part1SolutionCode = LessonHelper.readFile(stream);
 
         stream = getClass().getResourceAsStream("part2_solution_recursion_code.txt");
         part2SolutionRecursionCode = LessonHelper.readFile(stream);
@@ -316,11 +323,8 @@ class ExponentiationLesson implements Lesson {
         part2SolutionIterationCode = LessonHelper.readFile(stream);
 
         if (initUserCodes) {
-            stream = getClass().getResourceAsStream("part1_user_recursion_code.txt");
-            part1UserRecursionCode = LessonHelper.readFile(stream);
-            
-            stream = getClass().getResourceAsStream("part1_user_iteration_code.txt");
-            part1UserIterationCode = LessonHelper.readFile(stream);
+            stream = getClass().getResourceAsStream("part1_user_code.txt");
+            part1UserCode = LessonHelper.readFile(stream);
 
             stream = getClass().getResourceAsStream("part2_user_recursion_code.txt");
             part2UserRecursionCode = LessonHelper.readFile(stream);
@@ -354,78 +358,37 @@ class ExponentiationLesson implements Lesson {
             }
         });
         
-        part1UserRecursionCodeMenuItem = new JRadioButtonMenuItem(Lang.part1UserRecursionCodeMenuItem);
-        part1UserRecursionCodeMenuItem.addActionListener(new ActionListener() {
+        part1UserCodeMenuItem = new JRadioButtonMenuItem(Lang.part1UserCodeMenuItem);
+        part1UserCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mainClass.getEditor().frameToFront();
-                if (part1ChosenCode == ChosenCode.UserRecursion) {
+                if (part1ChosenCode == Part1ChosenCode.User) {
                     return;
                 }
-                part1RememberCode();
-                mainClass.getEditor().setCode(part1UserRecursionCode);
-                part1ChosenCode = ChosenCode.UserRecursion;
+                mainClass.getEditor().setCode(part1UserCode);
+                part1ChosenCode = Part1ChosenCode.User;
             }
         });
         
-        part1UserIterationCodeMenuItem = new JRadioButtonMenuItem(Lang.part1UserIterationCodeMenuItem);
-        part1UserIterationCodeMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainClass.getEditor().frameToFront();
-                if (part1ChosenCode == ChosenCode.UserIteration) {
-                    return;
-                }
-                part1RememberCode();
-                mainClass.getEditor().setCode(part1UserIterationCode);
-                part1ChosenCode = ChosenCode.UserIteration;
-            }
-        });
-        
-        part1SolutionRecursionCodeMenuItem = new JRadioButtonMenuItem(Lang.part1SolutionRecursionCodeMenuItem);
-        part1SolutionRecursionCodeMenuItem.addActionListener(new ActionListener() {
+        part1SolutionCodeMenuItem = new JRadioButtonMenuItem(Lang.part1SolutionCodeMenuItem);
+        part1SolutionCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!part1ShowSolutionConifrm()) {
                     return;
                 }
                 mainClass.getEditor().frameToFront();
-                if (part1ChosenCode == ChosenCode.SolutionRecursion) {
+                if (part1ChosenCode == Part1ChosenCode.Solution) {
                     return;
                 }
                 
-                part1RememberCode();
-                mainClass.getEditor().setCode(part1SolutionRecursionCode);
-                part1ChosenCode = ChosenCode.SolutionRecursion;
+                part1UserCode = mainClass.getEditor().getCode();
+                mainClass.getEditor().setCode(part1SolutionCode);
+                part1ChosenCode = Part1ChosenCode.Solution;
 
-                if (state.id <= State.Part1PseudocodeShown.id) {
-                    state = State.Part1RecursionSolutionShown;
-                } else if (state == State.Part1IterationSolutionShown) {
-                    state = State.Part1BothSolutionShown;
-                }
-            }
-        });
-        
-        part1SolutionIterationCodeMenuItem = new JRadioButtonMenuItem(Lang.part1SolutionIterationCodeMenuItem);
-        part1SolutionIterationCodeMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!part1ShowSolutionConifrm()) {
-                    return;
-                }
-                mainClass.getEditor().frameToFront();
-                if (part1ChosenCode == ChosenCode.SolutionIteration) {
-                    return;
-                }
-                
-                part1RememberCode();
-                mainClass.getEditor().setCode(part1SolutionIterationCode);
-                part1ChosenCode = ChosenCode.SolutionIteration;
-
-                if (state.id <= State.Part1PseudocodeShown.id) {
-                    state = State.Part1IterationSolutionShown;
-                } else if (state == State.Part1RecursionSolutionShown) {
-                    state = State.Part1BothSolutionShown;
+                if (state.id < State.Part1SolutionShown.id) {
+                    state = State.Part1SolutionShown;
                 }
             }
         });
@@ -434,10 +397,12 @@ class ExponentiationLesson implements Lesson {
         part1GotoPart2MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!showConifrmDialog(Lang.showNextPartConifrm, State.Part1BothSolutionShown)) {
+                if (!showConifrmDialog(Lang.showNextPartConifrm, State.Part1SolutionShown)) {
                     return;
                 }
-                part1RememberCode();
+                if (part1ChosenCode == Part1ChosenCode.User) {
+                    part1UserCode = mainClass.getEditor().getCode();
+                }
                 textFrame.gotoPart(2);
                 initPart2();
                 if (state.id < State.Part2Shown.id) {
@@ -448,10 +413,8 @@ class ExponentiationLesson implements Lesson {
         });
         
         ButtonGroup group = new ButtonGroup();
-        group.add(part1UserRecursionCodeMenuItem);
-        group.add(part1UserIterationCodeMenuItem);
-        group.add(part1SolutionRecursionCodeMenuItem);
-        group.add(part1SolutionIterationCodeMenuItem);
+        group.add(part1UserCodeMenuItem);
+        group.add(part1SolutionCodeMenuItem);
     }
     //</editor-fold>
     
@@ -510,12 +473,12 @@ class ExponentiationLesson implements Lesson {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mainClass.getEditor().frameToFront();
-                if (part2ChosenCode == ChosenCode.UserRecursion) {
+                if (part2ChosenCode == Part2ChosenCode.UserRecursion) {
                     return;
                 }
                 part2RememberCode();
                 mainClass.getEditor().setCode(part2UserRecursionCode);
-                part2ChosenCode = ChosenCode.UserRecursion;
+                part2ChosenCode = Part2ChosenCode.UserRecursion;
             }
         });
         
@@ -524,12 +487,12 @@ class ExponentiationLesson implements Lesson {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mainClass.getEditor().frameToFront();
-                if (part2ChosenCode == ChosenCode.UserIteration) {
+                if (part2ChosenCode == Part2ChosenCode.UserIteration) {
                     return;
                 }
                 part2RememberCode();
                 mainClass.getEditor().setCode(part2UserIterationCode);
-                part2ChosenCode = ChosenCode.UserIteration;
+                part2ChosenCode = Part2ChosenCode.UserIteration;
             }
         });
         
@@ -541,13 +504,13 @@ class ExponentiationLesson implements Lesson {
                     return;
                 }
                 mainClass.getEditor().frameToFront();
-                if (part2ChosenCode == ChosenCode.SolutionRecursion) {
+                if (part2ChosenCode == Part2ChosenCode.SolutionRecursion) {
                     return;
                 }
                 
                 part2RememberCode();
                 mainClass.getEditor().setCode(part2SolutionRecursionCode);
-                part2ChosenCode = ChosenCode.SolutionRecursion;
+                part2ChosenCode = Part2ChosenCode.SolutionRecursion;
 
                 if (state.id <= State.Part2PseudocodeShown.id) {
                     state = State.Part2RecursionSolutionShown;
@@ -565,13 +528,13 @@ class ExponentiationLesson implements Lesson {
                     return;
                 }
                 mainClass.getEditor().frameToFront();
-                if (part2ChosenCode == ChosenCode.SolutionIteration) {
+                if (part2ChosenCode == Part2ChosenCode.SolutionIteration) {
                     return;
                 }
                 
                 part2RememberCode();
                 mainClass.getEditor().setCode(part2SolutionIterationCode);
-                part2ChosenCode = ChosenCode.SolutionIteration;
+                part2ChosenCode = Part2ChosenCode.SolutionIteration;
 
                 if (state.id <= State.Part2PseudocodeShown.id) {
                     state = State.Part2IterationSolutionShown;
@@ -626,33 +589,27 @@ class ExponentiationLesson implements Lesson {
         lessonMenu.add(new JSeparator());
         lessonMenu.add(part1PseudocodeMenuItem);
         lessonMenu.add(new JSeparator());
-        lessonMenu.add(part1UserRecursionCodeMenuItem);        
-        lessonMenu.add(part1UserIterationCodeMenuItem);
-        lessonMenu.add(part1SolutionRecursionCodeMenuItem);
-        lessonMenu.add(part1SolutionIterationCodeMenuItem);
+        lessonMenu.add(part1UserCodeMenuItem);
+        lessonMenu.add(part1SolutionCodeMenuItem);
         lessonMenu.add(new JSeparator());
         lessonMenu.add(part1GotoPart2MenuItem);
 
         lessonMenu.setEnabled(true);
         
-        if (part1ChosenCode == ChosenCode.UserRecursion) {
-            mainClass.getEditor().setCode(part1UserRecursionCode);
-            part1UserRecursionCodeMenuItem.setSelected(true);
-        } else if (part1ChosenCode == ChosenCode.UserIteration) {
-            mainClass.getEditor().setCode(part1UserIterationCode);
-            part1UserIterationCodeMenuItem.setSelected(true);
-        } else if (part1ChosenCode == ChosenCode.SolutionRecursion) {
-            mainClass.getEditor().setCode(part1SolutionRecursionCode);
-            part1SolutionRecursionCodeMenuItem.setSelected(true);
-        } else if (part1ChosenCode == ChosenCode.SolutionIteration) {
-            mainClass.getEditor().setCode(part1SolutionIterationCode);
-            part1SolutionIterationCodeMenuItem.setSelected(true);
+        if (part1ChosenCode == Part1ChosenCode.User) {
+            mainClass.getEditor().setCode(part1UserCode);
+            part1UserCodeMenuItem.setSelected(true);
+        } else if (part1ChosenCode == Part1ChosenCode.Solution) {
+            mainClass.getEditor().setCode(part1SolutionCode);
+            part1SolutionCodeMenuItem.setSelected(true);
         }
         
-        startSpecialFunction.setSelectedPart((byte)1);
-        exponentiationSpecialFunction.setSelectedPart((byte)1);
+        checkSpecialFunction.setSelectedPart(1);
+        searchSpecialFunction.setSelectedPart(1);
         
-        mainClass.getTreeOfInstances().setTreeNodeMaxLetters(13);
+        arrayFrame.setSelectedPart(1);
+        
+        mainClass.getTreeOfInstances().setTreeNodeMaxLetters(7);
     }
     //</editor-fold>
     
@@ -680,28 +637,133 @@ class ExponentiationLesson implements Lesson {
         
         lessonMenu.setEnabled(true);
         
-        if (part2ChosenCode == ChosenCode.UserRecursion) {
+        if (part2ChosenCode == Part2ChosenCode.UserRecursion) {
             mainClass.getEditor().setCode(part2UserRecursionCode);
             part2UserRecursionCodeMenuItem.setSelected(true);
-        } else if (part2ChosenCode == ChosenCode.UserIteration) {
+        } else if (part2ChosenCode == Part2ChosenCode.UserIteration) {
             mainClass.getEditor().setCode(part2UserIterationCode);
             part2UserIterationCodeMenuItem.setSelected(true);
-        } else if (part2ChosenCode == ChosenCode.SolutionRecursion) {
+        } else if (part2ChosenCode == Part2ChosenCode.SolutionRecursion) {
             mainClass.getEditor().setCode(part2SolutionRecursionCode);
             part2SolutionRecursionCodeMenuItem.setSelected(true);
-        } else if (part2ChosenCode == ChosenCode.SolutionIteration) {
+        } else if (part2ChosenCode == Part2ChosenCode.SolutionIteration) {
             mainClass.getEditor().setCode(part2SolutionIterationCode);
             part2SolutionIterationCodeMenuItem.setSelected(true);
         }
         
-        startSpecialFunction.setSelectedPart((byte)2);
-        exponentiationSpecialFunction.setSelectedPart((byte)2);
+        checkSpecialFunction.setSelectedPart(2);
+        searchSpecialFunction.setSelectedPart(2);
         
-        mainClass.getTreeOfInstances().setTreeNodeMaxLetters(14);
+        arrayFrame.setSelectedPart(2);
+        
+        mainClass.getTreeOfInstances().setTreeNodeMaxLetters(8);
     }
     //</editor-fold>    
     
     
+    //<editor-fold defaultstate="collapsed" desc="updateArrayPart2Recursion">
+    private void updateArrayPart2Recursion(Instance instance, SyntaxNode node, boolean afterCall,
+            FunctionBehavior functionBehavior, int idxLastCompared, boolean found) {
+        
+        if (functionBehavior == compareSpecialFunction) {
+            instance = instance.getParentInstance();
+            int idx1 = ((ArgInteger)instance.getArgument(0)).getValue().intValue();
+            int idx2 = ((ArgInteger)instance.getArgument(1)).getValue().intValue();
+            arrayFrame.paintRange(idx1, idx2, ArrayFrame.COMPARING);
+            return;
+        }
+        if (found) {
+            if (functionBehavior == searchSpecialFunction) {
+                int idx1 = ((ArgInteger) instance.getArgument(0)).getValueAtTheBeginning().intValue();
+                int idx2 = ((ArgInteger) instance.getArgument(1)).getValueAtTheBeginning().intValue();
+                arrayFrame.paintFoundAndMark(idx1, idx2, idxLastCompared);
+            } else {
+                arrayFrame.paintFound(idxLastCompared);
+            }
+            return;
+        }
+        if (functionBehavior != searchSpecialFunction) {
+            arrayFrame.paintAllRejected();
+            return;
+        }
+        
+        int idxBegin1 = ((ArgInteger) instance.getArgument(0)).getValueAtTheBeginning().intValue();
+        int idxBegin2 = ((ArgInteger) instance.getArgument(1)).getValueAtTheBeginning().intValue();
+        
+        if (node instanceof Call) {
+            if (afterCall) {
+                arrayFrame.paintAllRejectedAndMark(idxBegin1, idxBegin2);
+            } else {
+                arrayFrame.paintRange(idxBegin1, idxBegin2, ArrayFrame.NOTHING);
+            }
+            return;
+        }
+        if (node instanceof Return) {
+            arrayFrame.paintAllRejectedAndMark(idxBegin1, idxBegin2);
+            return;
+        }
+        
+        int idx1 = ((ArgInteger) instance.getArgument(0)).getValue().intValue();
+        int idx2 = ((ArgInteger) instance.getArgument(1)).getValue().intValue();
+        if (node instanceof Assigment){ 
+            String name = ((Assigment)node).getVariable().getName();
+            int middle = name.equals("idx1") || name.equals("idx2")
+                    ? ArrayFrame.NOTHING : ArrayFrame.MARK;
+            arrayFrame.paintRange(idx1, idx2, middle);
+            return;
+        }
+        
+        int middle = instance.getFunction().getStatement(0) == node ? ArrayFrame.NOTHING : ArrayFrame.MARK;
+        arrayFrame.paintRange(idx1, idx2, middle);
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="updateArrayPart2Iteration">
+    private void updateArrayPart2Iteration(Instance instance, SyntaxNode node, boolean afterCall,
+            FunctionBehavior functionBehavior, int idxLastCompared, boolean found) {
+        
+        if (functionBehavior == compareSpecialFunction) {
+            instance = instance.getParentInstance();
+            int idx1 = ((ArgInteger)instance.getArgument(0)).getValue().intValue();
+            int idx2 = ((ArgInteger)instance.getArgument(1)).getValue().intValue();
+            arrayFrame.paintRange(idx1, idx2, ArrayFrame.COMPARING);
+            return;
+        }
+        if (found) {
+            arrayFrame.paintFound(idxLastCompared);
+            return;
+        }
+        if (functionBehavior != searchSpecialFunction) {
+            arrayFrame.paintAllRejected();
+            return;
+        }
+        if (node instanceof Call) {
+            if (afterCall) {
+                arrayFrame.paintAllRejected();
+            } else {
+                arrayFrame.paintRange(0, arrayFrame.getArraySize(), ArrayFrame.NOTHING);
+            }
+            return;
+        }
+        if (node instanceof Return) {
+            arrayFrame.paintAllRejected();
+            return;
+        }
+
+        int idx1 = ((ArgInteger) instance.getArgument(0)).getValue().intValue();
+        int idx2 = ((ArgInteger) instance.getArgument(1)).getValue().intValue();
+        if (node instanceof Assigment){ 
+            String name = ((Assigment)node).getVariable().getName();
+            int middle = name.equals("idx1") || name.equals("idx2")
+                    ? ArrayFrame.NOTHING : ArrayFrame.MARK;
+            arrayFrame.paintRange(idx1, idx2, middle);
+            return;
+        }
+        
+        int middle = node instanceof While ? ArrayFrame.NOTHING : ArrayFrame.MARK;
+        arrayFrame.paintRange(idx1, idx2, middle);
+    }
+    //</editor-fold>
     
     //public fucntions:
     
@@ -716,17 +778,18 @@ class ExponentiationLesson implements Lesson {
         stream.writeByte(selectedPart);
         stream.writeByte(state.id);
         
-        stream.writeByte(part1ChosenCode.Id);
-        stream.writeByte(part2ChosenCode.Id);
+        stream.writeByte(part1ChosenCode.id);
+        stream.writeByte(part2ChosenCode.id);
         
         if (selectedPart == 1) {
-            part1RememberCode();
+            if (part1ChosenCode == Part1ChosenCode.User) {
+                part1UserCode = mainClass.getEditor().getCode();
+            }
         } else if (selectedPart == 2) {
             part2RememberCode();
         }
         
-        stream.writeUTF(part1UserRecursionCode);
-        stream.writeUTF(part1UserIterationCode);
+        stream.writeUTF(part1UserCode);
         stream.writeUTF(part2UserRecursionCode);
         stream.writeUTF(part2UserIterationCode);
     }
@@ -748,20 +811,58 @@ class ExponentiationLesson implements Lesson {
     public void threadStart(InterpreterThread thread) {
         setButtonsEnabled(false);
         startSpecialFunction.threadStart();
+        compareSpecialFunction.threadStart();
+        arrayFrame.threadStart();
     }
     
     @Override
     public void threadStop() {
         setButtonsEnabled(true);
+        arrayFrame.threadStop();
     }
     
     @Override
     public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, final int delayTime) {
+        boolean userCode = selectedPart == 1 ? part1ChosenCode.userCode : part2ChosenCode.userCode;
+        FunctionBehavior functionBehavior = instance.getFunction().getFunctionBehavior();
+        if (userCode) {
+            if (instance.getFunction().getFunctionBehavior() == compareSpecialFunction) {
+                compareSpecialFunction.pauseStart(true);
+            }
+            return true;
+        }
+        
+        boolean found = compareSpecialFunction.isValueFound();
+        int idxLastCompared = compareSpecialFunction.getIdxLastCompared();
+        
+        if (selectedPart == 1) {    
+            if (functionBehavior == compareSpecialFunction) {
+                arrayFrame.paintRejectedArrayBeginning(idxLastCompared, true);
+            } else {
+                if (found) {
+                    arrayFrame.paintFound(idxLastCompared);
+                } else {
+                    arrayFrame.paintRejectedArrayBeginning(idxLastCompared, false);
+                }
+            }
+            return true;
+        }
+        
+        if (part2ChosenCode == Part2ChosenCode.SolutionIteration) {
+            updateArrayPart2Iteration(instance, node, afterCall, 
+                    functionBehavior, idxLastCompared, found);
+            
+        } else {
+            updateArrayPart2Recursion(instance, node, afterCall, 
+                    functionBehavior, idxLastCompared, found);
+        }
+        
         return true;
     }
 
     @Override
     public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
+        compareSpecialFunction.pauseStop();
     }
     
     
@@ -769,10 +870,8 @@ class ExponentiationLesson implements Lesson {
     private static class Lang {
         public static final String part1TextMenuItem = "Treść zadania";
         public static final String part1PseudocodeMenuItem = "Wskazówaka: pseudokod";
-        public static final String part1UserRecursionCodeMenuItem = "Rekurencyjne rozwiązanie użytkownika";
-        public static final String part1UserIterationCodeMenuItem = "Iteracyjne rozwiązanie użytkownika";
-        public static final String part1SolutionRecursionCodeMenuItem = "Rekurencyjne rozwiązanie wzorcowe";
-        public static final String part1SolutionIterationCodeMenuItem = "Iteracyjne rozwiązanie wzorcowe";
+        public static final String part1UserCodeMenuItem = "Rozwiązanie użytkownika";
+        public static final String part1SolutionCodeMenuItem = "Rozwiązanie wzorcowe";
         public static final String part1GotoPart2MenuItem = ">>> Część II";
         
         public static final String part2TextMenuItem = "Treść zadania";
@@ -801,7 +900,7 @@ class ExponentiationLesson implements Lesson {
                 + "Czy na pewno chcesz wyświetlić tę wskazówkę?";
         
         public static final String showNextPartConifrm =
-                "Nie wyświetliłeś jeszcze wszystkich rozwiązań wzorcowych.\n"
+                "Nie wyświetliłeś jeszcze rozwiązania wzorcowego.\n"
                 + "Czy na pewno chcesz przejść do następnej części?";
         
         public static final String showSummaryConifrm = 

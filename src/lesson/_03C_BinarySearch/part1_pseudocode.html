@@ -28,46 +28,36 @@
 </head>
 
 <body>
-  <h2>Pseudokod algorytmu</h2>
   
+  <h2>Pseudokod algorytmu</h2>
   <table>
     <tr>
       <td class="first">Dane:</td>
       <td>
-        Liczby naturalne <i>n</i> oraz <i>m</i>.
+        Liczba naturalna <i>n</i>, liczba całkowita <i>x</i> i ciąg liczb 
+        <i>y</i><sub>0</sub>, <i>y</i><sub>1</sub>,..., <i>y</i><sub><i>n</i>-1</sub>
       </td>
     </tr>
     <tr>
       <td class="first">Wynik:</td>
       <td>
-        Największy wspólny dzielnik <i>n</i> oraz <i>m</i>.
+        Najmniejszy indeks <i>idx</i>, który spełnia warunek <i>x</i> = <i>y</i><sub><i>idx</i></sub>
+        lub -1, jeżeli w ciągu liczb nie ma żadnego elementu równego liczbie <i>x</i>.
       </td>
     </tr>
     <tr>
       <td class="first">Krok 1.</td>
       <td>
-        Przyjmij za <i>nwd</i> := 1.
+        Dla <i>i</i> := 0, 1,..., <i>n</i>-1 wykonaj:
+        <div class="indent">
+          Jeżeli <i>x</i> = <i>y<sub>i</sub></i>, to zwróć wartość zmiennej <i>i</i> i zakończ działanie funkcji.
+        </div>
       </td>
     </tr>
     <tr>
       <td class="first">Krok 2.</td>
       <td>
-        Przyjmij za <i>min</i> mniejszą wartość z liczb <i>n</i> oraz <i>m</i>.
-      </td>
-    </tr>
-    <tr>
-      <td class="first">Krok 3.</td>
-      <td>
-        Dla <i>i</i> := 2, 3,..., <i>min</i> wykonaj:
-        <div class="indent">
-          Jeśli <i>i</i> dzeli liczby <i>n</i> oraz <i>m</i>, to przypisz <i>nwd</i> := <i>i</i>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class="first">Krok 3.</td>
-      <td>
-        Zwróć wartość zmiennej <i>nwd</i> i zakończ funkcję.
+        Zwróć wartość -1 i zakończ funkcję.
       </td>
     </tr>
   </table>

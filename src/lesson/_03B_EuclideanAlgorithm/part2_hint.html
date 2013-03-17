@@ -1,94 +1,162 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Treść zadania</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script>
-      function gotoHint1()
-      {
-        window.location.href = "#hint1";
-      }
-      function gotoHint2()
-      {
-        window.location.href = "#hint2";
-      }
-      function gotoHint3()
-      {
-        window.location.href = "#hint3";
-      }
+<head>
+  <title>Wskazówki</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <script type="text/javascript">
+    function gotoHint1() {
+      window.location.href = "#hint1";
+    }
+    function gotoHint2() {
+      window.location.href = "#hint2";
+    }
+    
+    function showHint2() {
+      hint2.style.display = "inherit";
+    }
+  </script>
+    
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h2.first {
+      margin-top: 0px;
+    }
       
-      function showHint2()
-      {
-        hint2.style.display = "inherit";
-      }
-      function showHint3()
-      {
-        hint2.style.display = "inherit";
-        hint3.style.display = "inherit";
-      }
-    </script>
-  </head>
+    div {
+      margin-top: 15px;
+      margin-bottom: 0px;
+    }
+    div.first {
+      margin-top: 5px;
+    }
+    div.indent {
+      margin-top: 0px;
+      margin-left: 20px;
+    }
+    div.hidden {
+      margin-top: 0px;
+      display: none;
+    }
+    
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    ul {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-left: 25px;
+    }
+    span.equation {
+      white-space: nowrap;
+      font-size: 18px;
+    }
+  </style>
+</head>
 
-  <body>
+<body>
+  <h2 id="hint1" class="first">Wskazówka</h2>
+
+  <div class="first">
+    Przypomnijmy sobie dwie równości, które pojawiły się w końcówce treści zadania:
+    <span class="equation">NWD(<i>n</i>, <i>m</i>) = NWD(<i>r</i>, <i>n</i>)</span>
+    (liczba <i>r</i> oznacza resztę dzielenia <i>m</i> prze <i>n</i>) oraz
+    <span class="equation">NWD(0, <i>n</i>) = <i>n</i></span>.
+    Zauważ, że te dwie równości mają charakter rekurencjny 
+    i na ich podstawie można wyciągnąć następującą definicję:<br />
+    <img src="equation.png" alt="Nie udało załadować się obrazka"/>
+  </div>
+  
+  <div>
+    W powyższej równości mod oznacza resztę z dzielenia. 
+    W języku C++, a także w naszym języku resztę 
+    z dzielenia możemy obliczyć pomocą operatora %.
+  </div>
+  
+  <div>
+    Zastanówmy się jeszcze przez chwilę czy program napisany według powyższej definicji, 
+    zawsze się zatrzyma. Zauważmy, że w kolejnych wywołaniach funkcji NWD, 
+    pierwszy argument maleje (<i>m</i> mod <i>n</i> &lt; <i>n</i>). 
+    Zatem skoro w obliczeniach występują tylko liczby naturalne, 
+    to w końcu pierwszy argument osiągnie wartość zero.
+  </div>
+  
+  <div id="hint2" class="hidden">
+    <h2>Pseudokod funkcji rekurencyjnej</h2>
+    <table>
+      <tr>
+        <td class="first">Dane:</td>
+        <td>
+          Liczby naturalne <i>n</i> oraz <i>m</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Wynik:</td>
+        <td>
+          Największy wspólny dzielnik <i>n</i> oraz <i>m</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 1.</td>
+        <td>
+          Jeśli <i>n</i> = 0, to zwróć <i>m</i> i zakończ funkcję.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 2.</td>
+        <td>
+          W przeciwnym wypadku wywołaj funkcję rekurencyjnie 
+          dla <i>m</i> mod <i>n</i> oraz <i>n</i>,
+          zwróć obliczoną wartość i zakończ działanie funkcji
+        </td>
+      </tr>
+    </table>
     
-    <div id="hint1">
-      <h2 style="text-align: center">Wskazówka I</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-    </div>
     
-    <div id="hint2" style="display: none;">
-      <h2 style="text-align: center">Wskazówka II</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-    </div>
-    
-    <div id="hint3" style="display: none">
-      <h2 style="text-align: center">Wskazówka III</h2>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-    </div>
-  </body>
+    <h2>Pseudokod funkcji iteracyjnej</h2>
+    <table>
+      <tr>
+        <td class="first">Dane:</td>
+        <td>
+          Liczby naturalne <i>n</i> oraz <i>m</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Wynik:</td>
+        <td>
+          Największy wspólny dzielnik <i>n</i> oraz <i>m</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 1.</td>
+        <td>
+          Dopóki <i>n</i> &ne; 0 wykonuj:
+          <div class="indent">
+            przypisz <i>t</i> := (<i>m</i> mod <i>n</i>)<br/>
+            przypisz <i>m</i> := <i>n</i><br/>
+            przypisz <i>n</i> := <i>t</i>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 2.</td>
+        <td>
+          Zwróć wartość zmiennej <i>m</i> i zakończ funkcję.
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
 </html>

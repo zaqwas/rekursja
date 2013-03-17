@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    div {
+      margin-top: 15px;
+      margin-bottom: 0px;
+    }
+    div.first {
+      margin-top: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Wyszukiwanie binarne</h2>
+
+  <div class="first">
+    W poprzedniej części lekcji przeszukiwaliśmy dowolną tablicę liczb. 
+    W tej części załóżmy, że elementy w tablicy liczb są już uporządkowane 
+    od najmniejszego do największego. Zadanie jest takie same - mamy mamy 
+    odpowiedzieć czy w danym zbiorze jest poszukiwany element.
+  </div>
+
+  <div>
+    Oczywiście zadanie można rozwiązać za pomocą metody z pierwszej części lekcji, 
+    jednak teraz elementy są uporządkowane i warto wykorzystać ten fakt 
+    do zmniejszenia operacji (zwłaszcza porównań) wykonywanych  przez algorytm.
+  </div>
+
+  <div>
+    Twoim zadaniem w tej części jest zaimplementować funkcję „int wyszukaj(idx1, idx2)”.
+    Funkcja „main” będzie wywoływała funkcję „wyszukaj” z parametrami 
+    0 jako <i>idx1</i> oraz <i>n</i> jako <i>idx2</i> (liczba <i>n</i> oznacza rozmiar tablicy). 
+    Podobnie jak w pierwszej części funkcja powinna zwracać indeks elementu, 
+    który jest równy poszukiwanemu elementowi. 
+    Jednak w tej części funkcja może zwrócić dowolny indeks, 
+    jeśli będzie więcej elementów równych poszukiwanemu elementowi.
+    Oczywiście, tak jak w poprzedniej części, funkcja powinna zwrócić -1, 
+    jeśli w tablicy nie będzie żadnego elementu, który jest równy poszukiwanemu elementowi. 
+    Spróbuj zaimplementować powyższą funkcje w dwóch postaciach rekurencyjnej i iteracyjnej. 
+    Implementując swoje funkcje spróbuj ograniczyć liczbę porównań, 
+    jeśli nie będziesz miał pomysłu jak tego dokonać to możesz skorzystać ze wskazówek, 
+    które powoli przybliżą cię do prawidłowego rozwiązania. 
+    Po skończeniu implementacji porównaj swoje funkcje z funkcjami wzorcowymi, 
+    a także przeczytaj podsumowanie o złożoności algorytmów występujących w tej lekcji.
+  </div>
+  
+</body>
+</html>

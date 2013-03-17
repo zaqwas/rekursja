@@ -552,10 +552,10 @@ public class SortTaskLesson implements Lesson {
                 + "   sprawdz();\n"
                 + "}");
         
-        SpecialFunctions.addSpecialFunction(new Check());
-        SpecialFunctions.addSpecialFunction(new Compare());
-        SpecialFunctions.addSpecialFunction(new Start());
-        SpecialFunctions.addSpecialFunction(new Swap());
+        SpecialFunctions.add(new Check());
+        SpecialFunctions.add(new Compare());
+        SpecialFunctions.add(new Start());
+        SpecialFunctions.add(new Swap());
     }
     
     @Override

@@ -117,8 +117,8 @@ class RecursionIntroLesson implements Lesson {
         
         mainClass.getTreeOfInstances().setTreeNodeMaxLetters(11);
         
-        SpecialFunctions.addSpecialFunction(new StartSpecialFunction());
-        SpecialFunctions.addSpecialFunction(new FactorialSpecialFunction());
+        SpecialFunctions.add(new StartSpecialFunction());
+        SpecialFunctions.add(new FactorialSpecialFunction());
         
         initPart1MenuItems();
         initPart2MenuItems();

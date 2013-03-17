@@ -31,6 +31,14 @@ public class Assigment extends SyntaxNodeIdx {
     public OperationType getOperationType() {
         return operationType;
     }
+
+    public Variable getVariable() {
+        return variable;
+    }
+
+    public SyntaxNodeExpr getExpresion() {
+        return expresion;
+    }
     
     @Override
     public SyntaxNode commit(Instance instance) throws ProgramError {

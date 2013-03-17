@@ -120,11 +120,11 @@ class MergeSortLesson implements Lesson {
         
         initMenuItems();
         
-        SpecialFunctions.addSpecialFunction(new StartSpecialFunction(arrayFrame));
-        SpecialFunctions.addSpecialFunction(new CheckSpecialFunction(mainClass.getConsole(), arrayFrame));
-        SpecialFunctions.addSpecialFunction(new SortSpecialFunction());
+        SpecialFunctions.add(new StartSpecialFunction(arrayFrame));
+        SpecialFunctions.add(new CheckSpecialFunction(mainClass.getConsole(), arrayFrame));
+        SpecialFunctions.add(new SortSpecialFunction());
         moveSpecialFunction = new MergeSpecialFunction(arrayFrame);
-        SpecialFunctions.addSpecialFunction(moveSpecialFunction);
+        SpecialFunctions.add(moveSpecialFunction);
         
         if (stream == null) {
             initCodes(true);

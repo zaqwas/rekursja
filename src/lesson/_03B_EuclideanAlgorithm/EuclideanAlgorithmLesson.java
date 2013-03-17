@@ -4,23 +4,13 @@ package lesson._03B_EuclideanAlgorithm;
 import helpers.LessonHelper;
 import interpreter.Instance;
 import interpreter.InterpreterThread;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.control.SelectionModel;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javax.swing.ButtonGroup;
-import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -29,96 +19,119 @@ import javax.swing.JSeparator;
 import lesson.Lesson;
 import lesson.LessonLoader;
 import mainclass.MainClass;
+import parser.SpecialFunctions;
 import syntax.SyntaxNode;
 //</editor-fold>
 
-public class EuclideanAlgorithmLesson implements Lesson {
-
-    @Override
-    public LessonLoader getLessonLoader() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    @Override
-    public void save(DataOutputStream stream) throws IOException {
-        mainClass.saveFramesPositionAndSettnings(stream);
-    }
+class EuclideanAlgorithmLesson implements Lesson {
     
     //<editor-fold defaultstate="collapsed" desc="Enums">
-    private static enum State 
-    {
-        NothingShown(0), PseudocodeShown(1), 
-        SolutionShown(4), Part2Shown(6), 
-        Hint1Shown(7), Hint2Shown(8), 
-        Recursion2Shown(10), Iteration2Shown(11), Both2Shown(12), 
-        SummaryShown(13);
+    public static enum State {
+        NothingShown(0), 
+        Part1PseudocodeShown(1), 
+        Part1SolutionShown(2), 
+        Part2Shown(3),
+        Part2Hint1Shown(4), Part2PseudocodeShown(5),
+        Part2RecursionSolutionShown(6), Part2IterationSolutionShown(7),
+        Part2BothSolutionShown(8), 
+        SummaryShown(9);
         
-        public final byte Id;
+        public final byte id;
+        public final byte part;
+        public final byte hint;
 
         State(int id) {
-            Id = (byte) id;
+            this.id = (byte) id;
+
+            part = (byte) (id < 3 ? 1 : 2);
+
+            if (id < 3) {
+                hint = (byte) (id == 0 ? 0 : 1);
+            } else if (id >= 6) {
+                hint = 2;
+            } else {
+                hint = (byte) (id - 3);
+            }
+        }
+        
+        public static State getById(int id) {
+            assert 0 <= id && id <= 9;
+            
+            State[] values = values();
+            if ( values[id].id == id ) {
+                return values[id];
+            }
+            for (State state : values) {
+                if ( state.id == id ) {
+                    return state;
+                }
+            }
+            return null;
         }
     }
     
-    private static enum Part1ChosenCode
-    {
-        User(0),
-        Solution(1);
+    private static enum Part1ChosenCode {
+        User(0), Solution(1);
         
-        public final byte Id;
+        public final byte id;
 
         Part1ChosenCode(int id) {
-            Id = (byte) id;
+            this.id = (byte) id;
+        }
+        
+        public static Part1ChosenCode getById(int id) {
+            assert id == 0 || id == 1;
+            return id == 0 ? User : Solution;
         }
     }
     
-    private static enum Part2ChosenCode
-    {
+    private static enum Part2ChosenCode {
         UserRecursion(0),
         UserIteration(1),
         SolutionRecursion(2),
         SolutionIteration(3);
         
-        public final byte Id;
+        public final byte id;
 
         Part2ChosenCode(int id) {
-            Id = (byte) id;
+            this.id = (byte) id;
+        }
+        
+        public static Part2ChosenCode getById(int id) {
+            assert 0 <= id && id <= 3;
+            return id < 2 ? (id == 0 ? UserRecursion : UserIteration)
+                    : (id == 2 ? SolutionRecursion : SolutionIteration);
         }
     }
     //</editor-fold>
     
+    //<editor-fold defaultstate="collapsed" desc="Variables and components">
     private State state = State.NothingShown;
     private Part1ChosenCode part1ChosenCode = Part1ChosenCode.User;
     private Part2ChosenCode part2ChosenCode = Part2ChosenCode.UserRecursion;
-    private byte chosenPart;
-    
+    private byte selectedPart = 1;
     
     private MainClass mainClass;
+    private EuclideanAlgorithmLessonLoader loader;
     
-    private JInternalFrame part1TextFrame;
-    private SelectionModel<Tab> part1TabSelectionModel;
-    private BooleanProperty part1PseudocodeTabDisabledProperty;
-    
-    private JInternalFrame part2TextFrame;
-    private SelectionModel<Tab> part2TabSelectionModel;
-    private BooleanProperty part2HintTabDisabledProperty;
-    private BooleanProperty part2SummaryTabDisabledProperty;
-    private WebEngine part2HintTabWebEngine;
+    private TextFrame textFrame;
     
     private JMenuItem part1TextMenuItem;
     private JMenuItem part1PseudocodeMenuItem;
     private JRadioButtonMenuItem part1UserCodeMenuItem;
     private JRadioButtonMenuItem part1SolutionCodeMenuItem;
-    private JMenuItem part1gotoPart2MenuItem;
+    private JMenuItem part1GotoPart2MenuItem;
     
     private JMenuItem part2TextMenuItem;
     private JMenuItem part2Hint1MenuItem;
-    private JMenuItem part2Hint2MenuItem;
+    private JMenuItem part2PseudocodeMenuItem;
     private JRadioButtonMenuItem part2UserRecursionCodeMenuItem;
     private JRadioButtonMenuItem part2UserIterationCodeMenuItem;
     private JRadioButtonMenuItem part2SolutionRecursionCodeMenuItem;
     private JRadioButtonMenuItem part2SolutionIterationCodeMenuItem;
     private JMenuItem part2SummaryMenuItem;
-    private JMenuItem part2gotoPart1MenuItem;
+    private JMenuItem part2GotoPart1MenuItem;
+    
     
     private String oldCode;
     private String part1UserCode;
@@ -128,23 +141,88 @@ public class EuclideanAlgorithmLesson implements Lesson {
     private String part2SolutionRecursionCode;
     private String part2SolutionIterationCode;
     
-    public EuclideanAlgorithmLesson(MainClass mainClass) {
-        this.mainClass = mainClass;
-    }
+    private StartSpecialFunction startSpecialFunction;
+    private GcdSpecialFunction gcdSpecialFunction;
+    //</editor-fold>
     
-    private void MemorizeCode() {
-        if (chosenPart == 0) {
-            if (part1ChosenCode == Part1ChosenCode.User) {
-                part1UserCode = mainClass.getEditor().getCode();
-            }
+    
+    //<editor-fold defaultstate="collapsed" desc="Constructor">
+    public EuclideanAlgorithmLesson(MainClass mainClass, DataInputStream stream,
+            EuclideanAlgorithmLessonLoader loader) throws IOException {
+        this.mainClass = mainClass;
+        this.loader = loader;
+        
+        textFrame = new TextFrame(mainClass);
+        
+        startSpecialFunction = new StartSpecialFunction();
+        SpecialFunctions.add(startSpecialFunction);
+        gcdSpecialFunction = new GcdSpecialFunction();
+        SpecialFunctions.add(gcdSpecialFunction);
+        SpecialFunctions.add(
+                new CheckSpecialFunction(startSpecialFunction, mainClass.getConsole()));
+        
+        initPart1MenuItems();
+        initPart2MenuItems();
+        
+        if (stream == null) {
+            initCodes(true);
+            initPart1();
+            textFrame.gotoText();
         } else {
-            if (part2ChosenCode == Part2ChosenCode.UserRecursion) {
-                part2UserRecursionCode = mainClass.getEditor().getCode();
-            } else if (part2ChosenCode == Part2ChosenCode.UserIteration) {
-                part2UserIterationCode = mainClass.getEditor().getCode();
+            initCodes(false);
+            mainClass.loadFramesPositionAndSettnings(stream);
+            
+            selectedPart = stream.readByte();
+            state = State.getById(stream.readByte());
+            
+            part1ChosenCode = Part1ChosenCode.getById(stream.readByte());
+            part2ChosenCode = Part2ChosenCode.getById(stream.readByte());
+            
+            part1UserCode = stream.readUTF();
+            part2UserRecursionCode = stream.readUTF();
+            part2UserIterationCode = stream.readUTF();
+            
+            if (selectedPart == 1) {
+                initPart1();
+            } else {
+                initPart2();
             }
+            
+            textFrame.initialize(selectedPart, state);
+            textFrame.gotoText();
         }
     }
+    //</editor-fold>
+    
+    
+    //private fucntions:
+    
+    //<editor-fold defaultstate="collapsed" desc="part2RememberCode">
+    private void part2RememberCode() {
+        if (part2ChosenCode == Part2ChosenCode.UserRecursion) {
+            part2UserRecursionCode = mainClass.getEditor().getCode();
+        } else if (part2ChosenCode == Part2ChosenCode.UserIteration) {
+            part2UserIterationCode = mainClass.getEditor().getCode();
+        }
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="setButtonsEnabled">
+    private void setButtonsEnabled(boolean enabled) {
+        if (selectedPart == 1) {
+            part1GotoPart2MenuItem.setEnabled(enabled);
+            part1UserCodeMenuItem.setEnabled(enabled);
+            part1SolutionCodeMenuItem.setEnabled(enabled);
+        } else {
+            part2GotoPart1MenuItem.setEnabled(enabled);
+            part2UserRecursionCodeMenuItem.setEnabled(enabled);
+            part2UserIterationCodeMenuItem.setEnabled(enabled);
+            part2SolutionRecursionCodeMenuItem.setEnabled(enabled);
+            part2SolutionIterationCodeMenuItem.setEnabled(enabled);
+            part2SummaryMenuItem.setEnabled(enabled);
+        }
+    }
+    //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="part1ShowSolutionConifrm">
     private boolean part1ShowSolutionConifrm() {
@@ -163,14 +241,14 @@ public class EuclideanAlgorithmLesson implements Lesson {
             }
             return false;
         }
-        part1PseudocodeTabDisabledProperty.set(false);
+        textFrame.showAllHints();
         return true;
     }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="part2ShowSolutionConifrm">
     private boolean part2ShowSolutionConifrm() {
-        if (state.Id >= State.Hint2Shown.Id) {
+        if (state.id >= State.Part2PseudocodeShown.id) {
             return true;
         }
         int option = JOptionPane.showOptionDialog(
@@ -185,22 +263,22 @@ public class EuclideanAlgorithmLesson implements Lesson {
                 part2UserRecursionCodeMenuItem.setSelected(true);
             }
             if (option == 1) {
-                if (state == State.Hint1Shown) {
-                    part2Hint2MenuItem.doClick();
+                if (state == State.Part2Hint1Shown ) {
+                    part2PseudocodeMenuItem.doClick();
                 } else {
                     part2Hint1MenuItem.doClick();
                 }
             }
             return false;
         }
-        part2showHint2();
+        textFrame.showAllHints();
         return true;
     }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="showConifrmDialog">
     private boolean showConifrmDialog(String message, State state) {
-        if (this.state.Id >= state.Id) {
+        if (this.state.id >= state.id) {
             return true;
         }
         int option = JOptionPane.showOptionDialog(
@@ -210,265 +288,53 @@ public class EuclideanAlgorithmLesson implements Lesson {
         return option == 0;
     }
     //</editor-fold>
-    
-    
-    //<editor-fold defaultstate="collapsed" desc="initPart1TextFrame">
-    private void initPart1TextFrame()
-    {
-        part1TextFrame = new JInternalFrame(Lang.part1TextFrameTitle);
-        final JFXPanel fxPanel = new JFXPanel();
-        
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                TabPane tabPane = new TabPane();
-                tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-                tabPane.tabMinHeightProperty().set(0d);
-                part1TabSelectionModel = tabPane.getSelectionModel();
-                
-                Tab tab = new Tab(Lang.part1TextTabName);
-                WebView web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("part1_text.html").toString());
-                tab.setContent(web);
-                tabPane.getTabs().add(tab);
 
-                tab = new Tab(Lang.part1PseudocodeTabName);
-                web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("part1_pseudocode.html").toString());
-                tab.setContent(web);
-                tab.disableProperty().set(true);
-                part1PseudocodeTabDisabledProperty = tab.disableProperty();
-                tabPane.getTabs().add(tab);
-                
-                Scene scene = new Scene(tabPane);
-                fxPanel.setScene(scene);
-            }
-        });
-        
-        part1TextFrame.setContentPane(fxPanel);
-        part1TextFrame.setPreferredSize(new Dimension(700, 500));
-        part1TextFrame.setResizable(true);
-        part1TextFrame.setVisible(false);
-        mainClass.getDesktop().add(part1TextFrame);
-        part1TextFrame.pack();
-    }
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="initPart2TextFrame">
-    private void initPart2TextFrame()
-    {
-        part2TextFrame = new JInternalFrame(Lang.part2TextFrameTitle);
-        final JFXPanel fxPanel = new JFXPanel();
-        
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                TabPane tabPane = new TabPane();
-                tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-                tabPane.tabMinHeightProperty().set(0d);
-                part2TabSelectionModel = tabPane.getSelectionModel();
-                
-                Tab tab = new Tab(Lang.part2TextTabName);
-                WebView web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("part2_text.html").toString());
-                tab.setContent(web);
-                tabPane.getTabs().add(tab);
-
-                tab = new Tab(Lang.part2HintTabName);
-                web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("part2_hint.html").toString());
-                tab.setContent(web);
-                tab.disableProperty().set(true);
-                part2HintTabWebEngine = web.getEngine();
-                part2HintTabDisabledProperty = tab.disableProperty();
-                tabPane.getTabs().add(tab);
-                
-                tab = new Tab(Lang.part2SummaryTabName);
-                web = new WebView();
-                web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("part2_summary.html").toString());
-                tab.setContent(web);
-                tab.disableProperty().set(true);
-                part2SummaryTabDisabledProperty = tab.disableProperty();
-                tabPane.getTabs().add(tab);
-                
-                Scene scene = new Scene(tabPane);
-                fxPanel.setScene(scene);
-            }
-        });
-        
-        part2TextFrame.setContentPane(fxPanel);
-        part2TextFrame.setPreferredSize(new Dimension(700, 500));
-        part2TextFrame.setResizable(true);
-        part2TextFrame.setVisible(false);
-        mainClass.getDesktop().add(part2TextFrame);
-        part2TextFrame.pack();
-    }
-    //</editor-fold>
-    
-    
-    //<editor-fold defaultstate="collapsed" desc="part1GotoPart2">
-    private void part1GotoPart2()
-    {
-        part1TextFrame.setVisible(false);
-        JMenu lessonMenu = mainClass.getLessonMenu();
-        lessonMenu.removeAll();
-
-        lessonMenu.add(part2TextMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part2Hint1MenuItem);
-        lessonMenu.add(part2Hint2MenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part2UserRecursionCodeMenuItem);
-        lessonMenu.add(part2UserIterationCodeMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part2SolutionRecursionCodeMenuItem);
-        lessonMenu.add(part2SolutionIterationCodeMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part2SummaryMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part2gotoPart1MenuItem);
-        
-        switch (part2ChosenCode) {
-            case UserIteration:
-                mainClass.getEditor().setCode(part2UserIterationCode);
-                part2UserIterationCodeMenuItem.setSelected(true);
-                break;
-            case UserRecursion:
-                mainClass.getEditor().setCode(part2UserRecursionCode);
-                part2UserRecursionCodeMenuItem.setSelected(true);
-                break;
-            case SolutionIteration:
-                mainClass.getEditor().setCode(part2SolutionIterationCode);
-                part2SolutionIterationCodeMenuItem.setSelected(true);
-                break;
-            case SolutionRecursion:
-                mainClass.getEditor().setCode(part2SolutionRecursionCode);
-                part2SolutionRecursionCodeMenuItem.setSelected(true);
-                break;
-        }
-        
-        if ( state.Id <= State.Part2Shown.Id ) {
-            state = State.Part2Shown;
-            part1PseudocodeTabDisabledProperty.set(false);
-        }
-        part2TextFrame.setVisible(true);
-    }
-    
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="part2GotoPart1">
-    private void part2GotoPart1()
-    {
-        part2TextFrame.setVisible(false);
-        JMenu lessonMenu = mainClass.getLessonMenu();
-        lessonMenu.removeAll();
-
-        lessonMenu.add(part1TextMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part1PseudocodeMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part1UserCodeMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part1SolutionCodeMenuItem);
-        lessonMenu.add(new JSeparator());
-        lessonMenu.add(part1gotoPart2MenuItem);
-        
-        switch (part1ChosenCode) {
-            case User:
-                mainClass.getEditor().setCode(part1UserCode);
-                part1UserCodeMenuItem.setSelected(true);
-                break;
-            case Solution:
-                mainClass.getEditor().setCode(part1SolutionCode);
-                part1SolutionCodeMenuItem.setSelected(true);
-                break;
-        }
-        
-        part1TextFrame.setVisible(true);
-    }
-    
-    //</editor-fold>
-    
-    
-    //<editor-fold defaultstate="collapsed" desc="part2gotoHint, part2showHint">
-    private void part2gotoHint(final int nr) {
-        if (nr < 1 || nr > 2) {
-            throw new IllegalArgumentException();
-        }
-        part2TextFrame.setVisible(true);
-        part2TextFrame.toFront();
-        part2TabSelectionModel.select(1);
-
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                part2HintTabWebEngine.executeScript("gotoHint" + nr + "()");
-            }
-        });
-    }
-    
-    private void part2showHint2() {
-        part2HintTabDisabledProperty.set(false);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                part2HintTabWebEngine.executeScript("showHint2()");
-            }
-        });
-    }
-    //</editor-fold>
-    
-    public void start() {
-        
-        initPart1TextFrame();
-        
-        initPart2TextFrame();
-        
-        //<editor-fold defaultstate="collapsed" desc="Init codes">
+    //<editor-fold defaultstate="collapsed" desc="initCodes">
+    private void initCodes(boolean initUserCodes) {
         InputStream stream;
+        
         stream = getClass().getResourceAsStream("part1_solution_code.txt");
         part1SolutionCode = LessonHelper.readFile(stream);
+
         stream = getClass().getResourceAsStream("part2_solution_recursion_code.txt");
         part2SolutionRecursionCode = LessonHelper.readFile(stream);
+        
         stream = getClass().getResourceAsStream("part2_solution_iteration_code.txt");
         part2SolutionIterationCode = LessonHelper.readFile(stream);
-        
-        stream = getClass().getResourceAsStream("part1_user_code.txt");
-        part1UserCode = LessonHelper.readFile(stream);
-        stream = getClass().getResourceAsStream("part2_user_recursion_code.txt");
-        part2UserRecursionCode = LessonHelper.readFile(stream);
-        stream = getClass().getResourceAsStream("part2_user_iteration_code.txt");
-        part2UserIterationCode = LessonHelper.readFile(stream);
-        
+
+        if (initUserCodes) {
+            stream = getClass().getResourceAsStream("part1_user_code.txt");
+            part1UserCode = LessonHelper.readFile(stream);
+
+            stream = getClass().getResourceAsStream("part2_user_recursion_code.txt");
+            part2UserRecursionCode = LessonHelper.readFile(stream);
+            
+            stream = getClass().getResourceAsStream("part2_user_iteration_code.txt");
+            part2UserIterationCode = LessonHelper.readFile(stream);
+        }
         oldCode = mainClass.getEditor().getCode();
-        //</editor-fold>
-        
-        //<editor-fold defaultstate="collapsed" desc="Init part1 menuItems">
+    }
+    //</editor-fold>
+    
+    
+    //<editor-fold defaultstate="collapsed" desc="initPart1MenuItems">
+    private void initPart1MenuItems() {
         part1TextMenuItem = new JMenuItem(Lang.part1TextMenuItem);
         part1TextMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                part1TextFrame.setVisible(true);
-                part1TextFrame.toFront();
-                part1TabSelectionModel.select(0);
+                textFrame.gotoText();
             }
         });
+        
         part1PseudocodeMenuItem = new JMenuItem(Lang.part1PseudocodeMenuItem);
         part1PseudocodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( state == State.NothingShown ) {
-                    state = State.PseudocodeShown;
-                    part1PseudocodeTabDisabledProperty.set(false);
+                if ( state.id < State.Part1PseudocodeShown.id ) {
+                    state = State.Part1PseudocodeShown;
                 }
-                part1TextFrame.setVisible(true);
-                part1TextFrame.toFront();
-                part1TabSelectionModel.select(1);
+                textFrame.gotoHint(1);
             }
         });
         
@@ -476,10 +342,10 @@ public class EuclideanAlgorithmLesson implements Lesson {
         part1UserCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( part1ChosenCode == Part1ChosenCode.User ) {
+                mainClass.getEditor().frameToFront();
+                if (part1ChosenCode == Part1ChosenCode.User) {
                     return;
                 }
-                MemorizeCode();
                 mainClass.getEditor().setCode(part1UserCode);
                 part1ChosenCode = Part1ChosenCode.User;
             }
@@ -489,48 +355,56 @@ public class EuclideanAlgorithmLesson implements Lesson {
         part1SolutionCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !part1ShowSolutionConifrm() ) {
+                if (!part1ShowSolutionConifrm()) {
                     return;
                 }
-                //editor to front
+                mainClass.getEditor().frameToFront();
                 if (part1ChosenCode == Part1ChosenCode.Solution) {
                     return;
                 }
-                MemorizeCode();
+                
+                part1UserCode = mainClass.getEditor().getCode();
                 mainClass.getEditor().setCode(part1SolutionCode);
                 part1ChosenCode = Part1ChosenCode.Solution;
 
-                if (state.Id < State.SolutionShown.Id) {
-                    state = State.SolutionShown;
+                if (state.id < State.Part1SolutionShown.id) {
+                    state = State.Part1SolutionShown;
                 }
             }
         });
         
-        part1gotoPart2MenuItem = new JMenuItem(Lang.part1gotoPart2MenuItem);
-        part1gotoPart2MenuItem.addActionListener(new ActionListener() {
+        part1GotoPart2MenuItem = new JMenuItem(Lang.part1GotoPart2MenuItem);
+        part1GotoPart2MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !showConifrmDialog(Lang.part1GotoPart2Conifrm, State.SolutionShown) ) {
+                if (!showConifrmDialog(Lang.showNextPartConifrm, State.Part1SolutionShown)) {
                     return;
                 }
-                MemorizeCode();
-                part1GotoPart2();
+                if (part1ChosenCode == Part1ChosenCode.User) {
+                    part1UserCode = mainClass.getEditor().getCode();
+                }
+                textFrame.gotoPart(2);
+                initPart2();
+                if (state.id < State.Part2Shown.id) {
+                    state = State.Part2Shown;
+                    textFrame.gotoText();
+                }
             }
         });
         
         ButtonGroup group = new ButtonGroup();
         group.add(part1UserCodeMenuItem);
         group.add(part1SolutionCodeMenuItem);
-        //</editor-fold>
-        
-        //<editor-fold defaultstate="collapsed" desc="Init part2 menuItems">
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="initPart2MenuItems">
+    private void initPart2MenuItems() {
         part2TextMenuItem = new JMenuItem(Lang.part2TextMenuItem);
         part2TextMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                part2TextFrame.setVisible(true);
-                part2TextFrame.toFront();
-                part2TabSelectionModel.select(0);
+                textFrame.gotoText();
             }
         });
         
@@ -538,38 +412,37 @@ public class EuclideanAlgorithmLesson implements Lesson {
         part2Hint1MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( state.Id < State.Hint1Shown.Id ) {
-                    part2HintTabDisabledProperty.set(false);
-                    state = State.Hint1Shown;
+                if ( state.id < State.Part2Hint1Shown.id ) {
+                    state = State.Part2Hint1Shown;
                 }
-                part2gotoHint(1);
+                textFrame.gotoHint(1);
             }
         });
         
-        part2Hint2MenuItem = new JMenuItem(Lang.part2Hint2MenuItem);
-        part2Hint2MenuItem.addActionListener(new ActionListener() {
+        part2PseudocodeMenuItem = new JMenuItem(Lang.part2PseudocodeMenuItem);
+        part2PseudocodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !showConifrmDialog(Lang.part2ShowHintConifrm, State.Hint1Shown) ) {
+                if (!showConifrmDialog(Lang.showHintConifrm, State.Part2Hint1Shown)) {
                     return;
                 }
-                if ( state.Id < State.Hint2Shown.Id ) {
-                    part2showHint2();
-                    state = State.Hint2Shown;
+                if ( state.id < State.Part2PseudocodeShown.id ) {
+                    state = State.Part2PseudocodeShown;
                 }
-                part2gotoHint(2);
+                textFrame.gotoHint(2);
             }
         });
         
+
         part2UserRecursionCodeMenuItem = new JRadioButtonMenuItem(Lang.part2UserRecursionCodeMenuItem);
         part2UserRecursionCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //editor to front
-                if ( part2ChosenCode == Part2ChosenCode.UserRecursion ) {
+                mainClass.getEditor().frameToFront();
+                if (part2ChosenCode == Part2ChosenCode.UserRecursion) {
                     return;
                 }
-                MemorizeCode();
+                part2RememberCode();
                 mainClass.getEditor().setCode(part2UserRecursionCode);
                 part2ChosenCode = Part2ChosenCode.UserRecursion;
             }
@@ -579,11 +452,11 @@ public class EuclideanAlgorithmLesson implements Lesson {
         part2UserIterationCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //editor to front
-                if ( part2ChosenCode == Part2ChosenCode.UserIteration ) {
+                mainClass.getEditor().frameToFront();
+                if (part2ChosenCode == Part2ChosenCode.UserIteration) {
                     return;
                 }
-                MemorizeCode();
+                part2RememberCode();
                 mainClass.getEditor().setCode(part2UserIterationCode);
                 part2ChosenCode = Part2ChosenCode.UserIteration;
             }
@@ -593,20 +466,22 @@ public class EuclideanAlgorithmLesson implements Lesson {
         part2SolutionRecursionCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !part2ShowSolutionConifrm() ) {
+                if (!part2ShowSolutionConifrm()) {
                     return;
                 }
-                //editor to front
+                mainClass.getEditor().frameToFront();
                 if (part2ChosenCode == Part2ChosenCode.SolutionRecursion) {
                     return;
                 }
-                MemorizeCode();
+                
+                part2RememberCode();
                 mainClass.getEditor().setCode(part2SolutionRecursionCode);
                 part2ChosenCode = Part2ChosenCode.SolutionRecursion;
-                if (state.Id <= State.Hint2Shown.Id) {
-                    state = State.Recursion2Shown;
-                } else if (state == State.Iteration2Shown) {
-                    state = State.Both2Shown;
+
+                if (state.id <= State.Part2PseudocodeShown.id) {
+                    state = State.Part2RecursionSolutionShown;
+                } else if (state == State.Part2IterationSolutionShown) {
+                    state = State.Part2BothSolutionShown;
                 }
             }
         });
@@ -615,76 +490,190 @@ public class EuclideanAlgorithmLesson implements Lesson {
         part2SolutionIterationCodeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !part2ShowSolutionConifrm() ) {
+                if (!part2ShowSolutionConifrm()) {
                     return;
                 }
-                //editor to front
+                mainClass.getEditor().frameToFront();
                 if (part2ChosenCode == Part2ChosenCode.SolutionIteration) {
                     return;
                 }
-                MemorizeCode();
+                
+                part2RememberCode();
                 mainClass.getEditor().setCode(part2SolutionIterationCode);
                 part2ChosenCode = Part2ChosenCode.SolutionIteration;
-                if (state.Id <= State.Hint2Shown.Id) {
-                    state = State.Recursion2Shown;
-                } else if (state == State.Recursion2Shown) {
-                    state = State.Both2Shown;
+
+                if (state.id <= State.Part2PseudocodeShown.id) {
+                    state = State.Part2IterationSolutionShown;
+                } else if (state == State.Part2RecursionSolutionShown) {
+                    state = State.Part2BothSolutionShown;
                 }
             }
         });
+        
+
         
         part2SummaryMenuItem = new JMenuItem(Lang.part2SummaryMenuItem);
         part2SummaryMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !showConifrmDialog(Lang.part2ShowSummaryConifrm, State.Both2Shown) ) {
+                if (!showConifrmDialog(Lang.showSummaryConifrm, State.Part2BothSolutionShown)) {
                     return;
                 }
-                if ( state.Id < State.Hint2Shown.Id ) {
-                    part2showHint2();
-                }
-                if ( state != State.SummaryShown ) {
+                textFrame.gotoSummary();
+                if (state.id < State.SummaryShown.id) {
                     state = State.SummaryShown;
-                    part2SummaryTabDisabledProperty.set(false);
                 }
-                part2TabSelectionModel.select(2);
-                part2TextFrame.setVisible(true);
-                part2TextFrame.toFront();
             }
         });
         
-        part2gotoPart1MenuItem = new JMenuItem(Lang.part2gotoPart1MenuItem);
-        part2gotoPart1MenuItem.addActionListener(new ActionListener() {
+        part2GotoPart1MenuItem = new JMenuItem(Lang.part2GotoPart1MenuItem);
+        part2GotoPart1MenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MemorizeCode();
-                part2GotoPart1();
+                part2RememberCode();
+                textFrame.gotoPart(1);
+                initPart1();
             }
         });
-        
-        group = new ButtonGroup();
+        ButtonGroup group = new ButtonGroup();
         group.add(part2UserRecursionCodeMenuItem);
         group.add(part2UserIterationCodeMenuItem);
         group.add(part2SolutionRecursionCodeMenuItem);
         group.add(part2SolutionIterationCodeMenuItem);
-        //</editor-fold>
+    }
+    //</editor-fold>
+    
+    
+    //<editor-fold defaultstate="collapsed" desc="initPart1">
+    private void initPart1() {
+        selectedPart = 1;
         
-        mainClass.getLessonMenu().setEnabled(true);
-        part2GotoPart1();
+        JMenu lessonMenu = mainClass.getLessonMenu();
+        lessonMenu.removeAll();
+
+        lessonMenu.add(part1TextMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part1PseudocodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part1UserCodeMenuItem);
+        lessonMenu.add(part1SolutionCodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part1GotoPart2MenuItem);
+
+        lessonMenu.setEnabled(true);
         
+        if (part1ChosenCode == Part1ChosenCode.User) {
+            mainClass.getEditor().setCode(part1UserCode);
+            part1UserCodeMenuItem.setSelected(true);
+        } else if (part1ChosenCode == Part1ChosenCode.Solution) {
+            mainClass.getEditor().setCode(part1SolutionCode);
+            part1SolutionCodeMenuItem.setSelected(true);
+        }
+        
+        startSpecialFunction.setSelectedPart((byte)1);
+        gcdSpecialFunction.setSelectedPart((byte)1);
+        
+        mainClass.getTreeOfInstances().setTreeNodeMaxLetters(12);
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="initPart2">
+    private void initPart2() {
+        selectedPart = 2;
+        
+        JMenu lessonMenu = mainClass.getLessonMenu();
+        lessonMenu.removeAll();
+
+        lessonMenu.add(part2TextMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part2Hint1MenuItem);
+        lessonMenu.add(part2PseudocodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part2UserRecursionCodeMenuItem);
+        lessonMenu.add(part2UserIterationCodeMenuItem);
+        lessonMenu.add(part2SolutionRecursionCodeMenuItem);
+        lessonMenu.add(part2SolutionIterationCodeMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part2SummaryMenuItem);
+        lessonMenu.add(new JSeparator());
+        lessonMenu.add(part2GotoPart1MenuItem);
+        
+        lessonMenu.setEnabled(true);
+        
+        if (part2ChosenCode == Part2ChosenCode.UserRecursion) {
+            mainClass.getEditor().setCode(part2UserRecursionCode);
+            part2UserRecursionCodeMenuItem.setSelected(true);
+        } else if (part2ChosenCode == Part2ChosenCode.UserIteration) {
+            mainClass.getEditor().setCode(part2UserIterationCode);
+            part2UserIterationCodeMenuItem.setSelected(true);
+        } else if (part2ChosenCode == Part2ChosenCode.SolutionRecursion) {
+            mainClass.getEditor().setCode(part2SolutionRecursionCode);
+            part2SolutionRecursionCodeMenuItem.setSelected(true);
+        } else if (part2ChosenCode == Part2ChosenCode.SolutionIteration) {
+            mainClass.getEditor().setCode(part2SolutionIterationCode);
+            part2SolutionIterationCodeMenuItem.setSelected(true);
+        }
+        
+        startSpecialFunction.setSelectedPart((byte)2);
+        gcdSpecialFunction.setSelectedPart((byte)2);
+        
+        mainClass.getTreeOfInstances().setTreeNodeMaxLetters(20);
+    }
+    //</editor-fold>    
+    
+    
+    
+    //public fucntions:
+    
+    @Override
+    public LessonLoader getLessonLoader() {
+        return loader;
+    }
+    
+    @Override
+    public void save(DataOutputStream stream) throws IOException {
+        mainClass.saveFramesPositionAndSettnings(stream);
+        stream.writeByte(selectedPart);
+        stream.writeByte(state.id);
+        
+        stream.writeByte(part1ChosenCode.id);
+        stream.writeByte(part2ChosenCode.id);
+        
+        if (selectedPart == 1) {
+            if (part1ChosenCode == Part1ChosenCode.User) {
+                part1UserCode = mainClass.getEditor().getCode();
+            }
+        } else if (selectedPart == 2) {
+            part2RememberCode();
+        }
+        
+        stream.writeUTF(part1UserCode);
+        stream.writeUTF(part2UserRecursionCode);
+        stream.writeUTF(part2UserIterationCode);
     }
     
     @Override
     public void close() {
+        JMenu lessonMenu = mainClass.getLessonMenu();
+        lessonMenu.removeAll();
+        lessonMenu.setEnabled(false);
+        
+        SpecialFunctions.clear();
+        mainClass.getTreeOfInstances().setDefaultTreeNodeMaxLetters();
+        
+        mainClass.removeAddictionalLessonFrame(textFrame.getFrame());
+        mainClass.getEditor().setCode(oldCode);
     }
     
     @Override
     public void threadStart(InterpreterThread thread) {
-        
+        setButtonsEnabled(false);
+        startSpecialFunction.threadStart();
     }
     
     @Override
     public void threadStop() {
+        setButtonsEnabled(true);
     }
     
     @Override
@@ -696,35 +685,24 @@ public class EuclideanAlgorithmLesson implements Lesson {
     public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
     }
     
+    
     //<editor-fold defaultstate="collapsed" desc="Language">
     private static class Lang {
-        public static final String part1TextFrameTitle = "Potęgowanie";
-        public static final String part2TextFrameTitle = "Szybkie obliczanie potęgi";
-        
-        public static final String part1TextTabName = "Treść zadania";
-        public static final String part1PseudocodeTabName = "Pseudokod";
-        
-        public static final String part2TextTabName = "Treść zadania";
-        public static final String part2HintTabName = "Wskazówki";
-        public static final String part2SummaryTabName = "Podsumowanie";
-        
         public static final String part1TextMenuItem = "Treść zadania";
         public static final String part1PseudocodeMenuItem = "Wskazówaka: pseudokod";
         public static final String part1UserCodeMenuItem = "Rozwiązanie użytkownika";
         public static final String part1SolutionCodeMenuItem = "Rozwiązanie wzorcowe";
-        public static final String part1gotoPart2MenuItem = ">>> Część II";
+        public static final String part1GotoPart2MenuItem = ">>> Część II";
         
         public static final String part2TextMenuItem = "Treść zadania";
-        public static final String part2Hint1MenuItem = "Wskazówka I";
-        public static final String part2Hint2MenuItem = "Wskazówka II";
-        public static final String part2Hint3MenuItem = "Wskazówka III";
+        public static final String part2Hint1MenuItem = "Wskazówka";
+        public static final String part2PseudocodeMenuItem = "Pseudokod";
         public static final String part2UserRecursionCodeMenuItem = "Rekurencyjne rozwiązanie użytkownika";
         public static final String part2UserIterationCodeMenuItem = "Iteracyjne rozwiązanie użytkownika";
         public static final String part2SolutionRecursionCodeMenuItem = "Rekurencyjne rozwiązanie wzorcowe";
         public static final String part2SolutionIterationCodeMenuItem = "Iteracyjne rozwiązanie wzorcowe";
-        public static final String part2SolutionConsoleCodeMenuItem = "Rozpisanie obliczanych potęg";
         public static final String part2SummaryMenuItem = "Podsumowanie";
-        public static final String part2gotoPart1MenuItem = "<<< Część I";
+        public static final String part2GotoPart1MenuItem = "<<< Część I";
         
         public static final String part1ShowSolutionConifrm = 
                 "Czy na pewno chesz zobaczyć rozwiązanie?\n"
@@ -734,32 +712,27 @@ public class EuclideanAlgorithmLesson implements Lesson {
         public static final String part2ShowSolutionConifrm = 
                 "Czy na pewno chesz zobaczyć rozwiązanie?\n"
                 + "Jeśli nie możesz poradzić sobie z rozwiązaniem tego zadania,\n"
-                + "to najpierw powinieneś zobaczyć wskazówki.";
+                + "to najpierw powinieneś zobaczyć wszystkie wskazówki.";
         
-        public static final String part1GotoPart2Conifrm = 
-                "Nie porównałeś jeszcze swoich rozwiązań z rozwiązaniami wzorcowymi.\n"
-                + "Czy na pewno chcesz przejść do części II?";
-        
-        public static final String part2ShowHintConifrm = 
+        public static final String showHintConifrm = 
                 "Nie wyświetliłeś jeszcze poprzednich wskazówek.\n"
                 + "Czy na pewno chcesz wyświetlić tę wskazówkę?";
         
-        public static final String part2ShowSummaryConifrm = 
-            "Nie porównałeś jeszcze swoich rozwiązań z rozwiązaniami wzorcowymi.\n"
-            + "Czy na pewno chcesz wyświetlić podsumowanie";
+        public static final String showNextPartConifrm =
+                "Nie wyświetliłeś jeszcze rozwiązania wzorcowego.\n"
+                + "Czy na pewno chcesz przejść do następnej części?";
         
-        public static final String showPseudocode = "Pokaż pseudokod";
-        public static final String showHint = "Pokaż wskazówkę";
-        public static final String showSolution = "Pokaż rozwiązanie";
-        public static final String cancel = "Anuluj";
-        
-        public static final String yes = "Tak";
-        public static final String no = "Nie";
+        public static final String showSummaryConifrm = 
+                "Nie wyświetliłeś jeszcze wszystkich rozwiązań wzorcowych.\n"
+                + "Czy na pewno chcesz wyświetlić podsumowanie?";
         
         public static final String question = "Pytanie";
-        
-        public static final String loadTabPaneError = "Nie można załadować tej zakładki.";
-        
+        public static final String showHint = "Pokaż wskazówkę";
+        public static final String showPseudocode = "Pokaż pseudokod";
+        public static final String showSolution = "Pokaż rozwiązanie";
+        public static final String cancel = "Anuluj";
+        public static final String yes = "Tak";
+        public static final String no = "Nie";
     }
     //</editor-fold>
     

@@ -1,0 +1,104 @@
+.menu-bar {
+  -fx-font-size: 12px;
+  -fx-padding: 0em 0.4em 0em 0.4em;
+}
+.menu-bar *.label {
+  -fx-padding: 0.3em 0.4em 0.3em 0.4em;
+}
+
+
+#empty {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
+  -fx-background-image: null;
+}
+#empty:focused {
+  -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
+  -fx-background-image: null;
+}
+#emptyMarked {
+  -fx-background-color: black, black, -fx-control-inner-background;
+  -fx-background-image: null;
+}
+#emptyMarked:focused {
+  -fx-background-color: black, black, -fx-control-inner-background;
+  -fx-background-image: null;
+}
+
+#comparing {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, orange;
+  -fx-background-image: null;
+}
+#comparing:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, orange;
+  -fx-background-image: null;
+}
+
+
+#found {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00ff80;
+  -fx-background-image: null;
+}
+#found:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00ff80;
+  -fx-background-image: null;
+}
+#foundMarked {
+  -fx-background-color: black, black, #00ff80;
+  -fx-background-image: null;
+}
+#foundMarked:focused {
+  -fx-background-color: black, black, #00ff80;
+  -fx-background-image: null;
+}
+
+
+#potential {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00f0f0;
+  -fx-background-image: null;
+}
+#potential:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00f0f0;
+  -fx-background-image: null;
+}
+
+
+#middle {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00c0ff;
+  -fx-background-image: null;
+}
+#middle:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00c0ff;
+  -fx-background-image: null;
+}
+
+
+#rejected {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+#rejected:focused {
+  -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+
+#rejectedMarked {
+  -fx-background-color: black, black, -fx-control-inner-background;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+#rejectedMarked:focused {
+  -fx-background-color: black, black, -fx-control-inner-background;
+  -fx-background-image: url("delete.png");
+  -fx-background-position: center;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+}
+

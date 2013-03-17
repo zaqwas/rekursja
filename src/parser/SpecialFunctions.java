@@ -1,16 +1,18 @@
 package parser;
 
 import java.util.ArrayList;
-import syntax.function.Function;
 import syntax.SyntaxTree;
 import syntax.function.SpecialFunctionBehavior;
 
 public class SpecialFunctions {
-    private static ArrayList<SpecialFunctionBehavior> specialFunctions 
-            = new ArrayList<SpecialFunctionBehavior>();
+    private static ArrayList<SpecialFunctionBehavior> specialFunctions = new ArrayList<>();
     
-    public static void addSpecialFunction( SpecialFunctionBehavior f ) {
+    public static void add( SpecialFunctionBehavior f ) {
         specialFunctions.add(f);
+    }
+    
+    public static void remove( SpecialFunctionBehavior f ) {
+        specialFunctions.remove(f);
     }
     
     public static void clear() {

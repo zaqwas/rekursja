@@ -27,6 +27,9 @@ public class Function extends SyntaxNodeIdx implements FunctionDeclaration {
     
     protected FunctionBehavior funcitonBehavior;
     
+    public SyntaxNode getStatement(int index) {
+        return statements.get(index);
+    }
     
     //<editor-fold defaultstate="collapsed" desc="Constructors">
     public Function(boolean integer, String name, int indexL) {

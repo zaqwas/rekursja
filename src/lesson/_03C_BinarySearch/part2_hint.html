@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wskazówka</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <script type="text/javascript">
+    function gotoHint1() {
+      window.location.href = "#hint1";
+    }
+    function gotoHint2() {
+      window.location.href = "#hint2";
+    }
+    function gotoHint3() {
+      window.location.href = "#hint3";
+    }
+
+    function showHint2() {
+      hint2.style.display = "inherit";
+    }
+    function showHint3() {
+      hint2.style.display = "inherit";
+      hint3.style.display = "inherit";
+    }
+  </script>
+    
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h2.first {
+      margin-top: 0px;
+    }
+      
+    div {
+      margin-top: 15px;
+      margin-bottom: 0px;
+    }
+    div.first {
+      margin-top: 5px;
+    }
+    div.indent {
+      margin-top: 0px;
+      margin-left: 20px;
+    }
+    div.hidden {
+      margin-top: 0px;
+      display: none;
+    }
+    
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    ul {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-left: 25px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2 id="hint1" class="first">Wskazówka I</h2>
+  
+  <div class="first">
+    Załóżmy, że przeszukujesz jakiś fragment tablicy. Wówczas wystarczy wyznaczyć 
+    środkowy element tej tablicy nazwijmy go <i>s</i>. Rozważmy trzy przypadki:
+    <ul>
+      <li>
+        Jeśli element <i>s</i> jest mniejszy od elementu szukanego, 
+        to wystarczy przeszukać tablicę na prawo od elementu <i>s</i>. 
+        Gdyż element <i>s</i>, a także reszta elementów po 
+        lewej stronie od elementu <i>s</i> jest mniejsza od szukanego elementu.
+      </li>
+      <li>
+        Jeśli element <i>s</i> jest większy niż element szukany, 
+        to trzeba przeszukać lewą stronę tablicy.
+      </li>
+      <li>
+        Jeśli natomiast element <i>s</i> jest równy poszukiwanemu elementowi, 
+        to wystarczy zwrócić indeks elementu <i>s</i>, a następnie zakończyć działanie funkcji.
+      </li>
+    </ul>
+  </div>
+  
+
+  
+  <div id="hint2" class="hidden">
+    <h2>Wskazówka II</h2>
+  
+    <div class="first">
+      Na podstawie rozważania z pierwszej wskazówki łatwo napisać funkcję rekurencyjną.
+      Indeks elementu środkowego (nazwijmy go <i>idxSr</i>) 
+      można obliczć dodając indeksy <i>idx1</i> i <i>idx2</i>, 
+      następnie wstarczy podzielić (całkowicie) tę sumę przez dwa.
+      Następnie należy porównać element środkowy z elementem posukiwanym.
+      Jeśli oba elementy są równe kończymy działanie funkcji i zwracamy <i>idxSr</i>. 
+      W przypadku gdy element środkowy jest mniejszy niż element poszukiwany,
+      wystarczy rekurencyjne wywołać funkcję dla parametrów <i>idxSr</i>+1 oraz <i>idx2</i>
+      i zwrócić obliczony wynik. Jeśli jednak element środkowy jest większy, 
+      to również wystarczy wywołać funkcję rekurencyjnie jednak tym razem 
+      z parametrami <i>idx1</i> oraz <i>idxSr</i>-1.
+      Funkcja należy wowoływać rekurencyjnie, aż fragment wyznaczony przez 
+      parametry <i>idx1</i> i <i>idx2</i> będzie pusty (<i>idx1</i> &ge; <i>idx2</i>)
+      wówczas w tablicy nie ma żadnego elementu równego elementowi poszukiwanemu, 
+      więc wystarcz zwrócić -1.
+    </div>
+
+    <div>
+      Funkcja iteracyjna też powinna być prosta w implementacji, 
+      gdyż w kolejnych iteracjach powinno się pamiętać tylko dwa indeksy lewy oraz prawy, 
+      które w przypadku funkcji rekurencyjnej są przekazywane w kolejnych wywołaniach funkcji.
+    </div>
+  </div>
+
+  <div id="hint3" class="hidden">
+    <h2>Pseudokod funkcji rekurencyjnej</h2>
+    <table>
+      <tr>
+        <td class="first">Dane:</td>
+        <td>
+          Liczba całkowite <i>idx1</i>, <i>idx2</i>, <i>x</i> oraz ciąg liczb 
+          <i>y</i><sub>idx1</sub>, <i>y</i><sub><i>idx1</i>+1</sub>,..., <i>y</i><sub><i>idx2</i>-1</sub>
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Wynik:</td>
+        <td>
+          Dowolny indeks <i>idx</i>, który spełnia warunek <i>x</i> = <i>y</i><sub><i>idx</i></sub>
+          lub -1, jeżeli w ciągu liczb nie ma żadnego elementu równego liczbie <i>x</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 1.</td>
+        <td>
+          Jeśli <i>idx1</i> &ge; <i>idx2</i>, to zwróć -1 i zakończ funkcję.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 2.</td>
+        <td>
+          Oblicz <i>idxSr</i> := (<i>idx1</i> + <i>idx2</i>) / 2.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 3.</td>
+        <td>
+          Jeśli <i>y<sub>idxSr</sub></i> = <i>x</i>, to zwróć wartość zmiennej
+          <i>idxSr</i> i zakończ działanie funkcji.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 4.</td>
+        <td>
+          Jeśli <i>y<sub>idxSr</sub></i> &lt; <i>x</i>, to wywołaj rekrencyjnie funkcje
+          dla <i>idxSr</i>+1 oraz <i>idx2</i>, zwróć obliczony wynik i zakończ działanie funkcji.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 5.</td>
+        <td>
+          Jeśli <i>y<sub>idxSr</sub></i> &gt; <i>x</i>, to wywołaj rekrencyjnie funkcje
+          dla <i>idx1</i> oraz <i>idxSr</i>-1, zwróć obliczony wynik i zakończ działanie funkcji.
+        </td>
+      </tr>
+    </table>
+    
+    
+    <h2>Pseudokod funkcji iteracyjnej</h2>
+    <table>
+      <tr>
+        <td class="first">Dane:</td>
+        <td>
+          Liczba całkowite <i>idx1</i>, <i>idx2</i>, <i>x</i> oraz ciąg liczb 
+          <i>y</i><sub>idx1</sub>, <i>y</i><sub><i>idx1</i>+1</sub>,..., <i>y</i><sub><i>idx2</i>-1</sub>
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Wynik:</td>
+        <td>
+          Dowolny indeks <i>idx</i>, który spełnia warunek <i>x</i> = <i>y</i><sub><i>idx</i></sub>
+          lub -1, jeżeli w ciągu liczb nie ma żadnego elementu równego liczbie <i>x</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 1.</td>
+        <td>
+          Dopóki <i>idx1</i> &lt; <i>idx2</i> wykonuj:
+          <div class="indent">
+            oblicz <i>idxSr</i> := (<i>idx1</i> + <i>idx2</i>) / 2.<br/>
+            jeśli <i>y<sub>idxSr</sub></i> = <i>x</i>, to zwróć wartość zmiennej 
+            <i>idxSr</i> i zakończ działanie funkcji.<br/>
+            jeśli <i>y<sub>idxSr</sub></i> &lt; <i>x</i>, to przypisz 
+            <i>idx1</i> := <i>idxSr</i> + 1<br/>
+            jeśli <i>y<sub>idxSr</sub></i> &gt; <i>x</i>, to przypisz 
+            <i>idx2</i> := <i>idxSr</i> - 1
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 2.</td>
+        <td>
+          Zwróć -1 i zakończ działanie funkcji.
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

@@ -124,13 +124,13 @@ class MergeFunctionLesson implements Lesson {
         
         initMenuItems();
         
-        SpecialFunctions.addSpecialFunction(new StartSpecialFunction(arrayFrame));
-        SpecialFunctions.addSpecialFunction(new CheckSpecialFunction(mainClass, arrayFrame));
+        SpecialFunctions.add(new StartSpecialFunction(arrayFrame));
+        SpecialFunctions.add(new CheckSpecialFunction(mainClass, arrayFrame));
         
         compareSpecialFunction = new CompareSpecialFunction(arrayFrame);
-        SpecialFunctions.addSpecialFunction(compareSpecialFunction);
+        SpecialFunctions.add(compareSpecialFunction);
         moveSpecialFunction = new MoveSpecialFunction(arrayFrame);
-        SpecialFunctions.addSpecialFunction(moveSpecialFunction);
+        SpecialFunctions.add(moveSpecialFunction);
         
         if (stream == null) {
             initCodes(true);

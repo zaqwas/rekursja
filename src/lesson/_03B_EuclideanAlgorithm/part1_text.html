@@ -1,44 +1,59 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Potęgowanie</title>
+  <title>Treść zadania</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    div {
+      margin-top: 15px;
+      margin-bottom: 0px;
+    }
+    div.first {
+      margin-top: 5px;
+    }
+  </style>
 </head>
 
 <body>
-  <h2>Potęgowanie</h2>
-  <p>
-    W tej lekcji tym problemem będzie obliczanie potęgi liczby naturalnej.
-  </p>
+  <h2>Największy wspólny dzielnik</h2>
+  
+  <div class="first">
+    Obecna lekcja poświęcona będzie problemowi 
+    obliczania największego wspólnego dzielnika (<b>NWD</b>).
+    Najpierw zapoznajmy się z definicją NWD: <br />
+    <b>Liczba <i>k</i> jest największym wspólnym dzielnikiem <i>n</i> i <i>m</i>, 
+    jeśli dzieli <i>n</i> oraz <i>m</i> i jest największą liczbą 
+    o tej własności – oznaczamy ją przez NWD(<i>n</i>, <i>m</i>)</b>.
+  </div>
+  
+  <div>
+    W bieżącej lekcji Twoim zadaniem będzie zaimlementowanie funkcji „int nwd(n, m)”.
+    Funkcja będzie przyjmować dwie naturane dodatnie liczby <i>n</i> oraz <i>m</i>.
+    Natomiast jako wynik, funkcja powinna zwracać największy 
+    wspólny dzielnik liczb <i>n</i> oraz <i>m</i>.
+  </div>
 
-  <p>
-    Potęga liczby naturalnej <i>a<sup>n</sup></i> to <i>n</i>-krotne mnożenie liczby <i>a</i>. Innymi słowy:<br />
-  </p>
-  <img src="exponentiation_iteration.png" alt="Nie udało się załadować obrazka" />
-  <p>
-    Dodatkowo przyjmuje, się że <i>a</i><sup>0</sup>=1.
-  </p>
-  <p>
-    W tej lekcji zajmiemy się problemem obliczania potęgi. 
-    Zadaniem będzie napisać funkcję, która przyjmuje liczby <i>a</i> oraz <i>n</i>. Zakładamy, że <i>a</i> jest liczbą dodatnią, a <i>n</i> nieujemną. 
-    Oczywiście jako wynik powinna zwracać potęgę <i>a<sup>n</sup></i>.
-  </p>
+  <div>
+    Zanim przejdziemy do omawiania szybkiego algorytmu rozwiązującego ten problem, 
+    zastanówmy się jak w prosty sposób napisać program, który rozwiąże ten problem.
+    Jedną z pierwszych metod, jaka może przyjść na myśl, gdy chcemy znaleźć największy wspólny dzielnik 
+    dwóch danych liczb m i n, jest sprawdzanie podzielności tych liczb przez kolejne liczby naturalne, 
+    począwszy od 2, a skończywszy na mniejszej z liczb <i>n</i> lub <i>m</i>.
+  </div>
 
-  <p>
-    Jedną z pierwszych metod, jaka może przyjść na myśl, gdy chcemy rozwiązać ten problem, 
-    to napisanie pętli, która wykona się n razy i w każdym kroku pomnoży dotychczasowy wynik przez a.
-  </p>
-
-  <p>
-    Drugą metodą jaka może przyjść na myśl, to rozpisanie tej definicji w postaci rekurencyjnej. Np. tak jak w przypadku silni:
-  </p>
-  <img src="exponentiation_recursion.png" alt="Nie udało się załadować obrazka" />
-
-  <p>
-    Twoim zadaniem jest zaimplementować te dwie funkcje oraz porównać je z funkcjami wzorcowymi. 
-    Kiedy skończysz powyższe zadanie przejdź do kolejnej części lekcji, w której poznasz metodę pozwalającą znacznie szybciej obliczyć potęgi.
-  </p>
+  <div>
+    Spróbuj zaimplementować powyższą metodę. Kiedy skończysz porównaj swoje 
+    rozwiązanie z rozwiązaniem wzorcowym, a także przejdź do dalszej części programu, 
+    w której będzie opisana o wiele bardziej efektywny sposób rozwiązania tego problemu.
+  </div>
 
 </body>
-	
 </html> 

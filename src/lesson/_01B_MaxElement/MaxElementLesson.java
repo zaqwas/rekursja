@@ -122,10 +122,10 @@ class MaxElementLesson implements Lesson {
         
         initMenuItems();
         
-        SpecialFunctions.addSpecialFunction(new StartSpecialFunction(arrayFrame));
-        SpecialFunctions.addSpecialFunction(new CheckSpecialFunction(arrayFrame, mainClass.getConsole()));
+        SpecialFunctions.add(new StartSpecialFunction(arrayFrame));
+        SpecialFunctions.add(new CheckSpecialFunction(arrayFrame, mainClass.getConsole()));
         compareSpecialFunction = new CompareSpecialFunction(arrayFrame);
-        SpecialFunctions.addSpecialFunction(compareSpecialFunction);
+        SpecialFunctions.add(compareSpecialFunction);
         
         if (stream == null) {
             initCodes(true);

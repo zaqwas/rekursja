@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+    body {
+      font-size: 14px;
+    }
+    img {
+      margin-right: 3px;
+      float: left;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    div {
+      padding-top: 15px;
+      margin-bottom: 0px;
+      margin-top: 0px;
+      clear: both;
+    }
+    div.first {
+      padding-top: 5px;
+    }
+    span.nowrap {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Wyszukiwanie elementu</h2>
+
+  <div class="first">
+    Jedno z najprostszych pytań, jakie można postawić w odniesieniu
+    do zbioru danych, brzmi: czy zawiera on poszukiwany przez nas element.
+    Jeśli nie mamy żadnych dodatkowych informacji o elementach rozważanego zbioru,
+    np. czy nie są one uporządkowane od najmniejszego do największego, to najprostszą
+    metodą udzielenia odpowiedzi na to pytanie jest sprawdzenie element po elemencie,
+    czy któryś z nich nie jest równy poszukiwanemu elementowi. W tej części 
+    lekcji postaramy się zrealizować powyższy algorytm.
+  </div>
+  
+  <div>
+    <img src="array.png" alt="Nie udało załadować się obrazka"/>
+    W osobnym oknie pojawiła się tablica liczb oraz jednym 
+    wyróżnionym elementem. Twój program powinien wyszukiwać w tej
+    tablicy tego wyróżnionego elelentu. W tym celu w swoim programie powinieneś 
+    skorzystać funkcji specjalnej: <span class="nowrap">„int <b>porownaj</b>(idx)”</span>.
+    Funkcja „porownaj” jest dokładnie omówiona w zakładce „funkcje specjalne”.
+  </div>
+  
+  <div>
+    W tej lekcji Twoim zadaniem jest zaimplementowanie funkcji: 
+    <span class="nowrap">„int <b>wyszukaj</b>(n)”</span>. 
+    Jako parametr funkcja przyjmuje rozmiar tablicy 
+    (możesz założyć, że <span class="nowrap">1 &le; <i>n</i> &le; 32</span>).
+    Funkcja powinna zwracać <b>indeks</b> elementu, 
+    który jest równy poszukiwanemu elementowi. Jeśli w tablicy 
+    znajduje się <b>więcej takich elementów</b>, to funkcja powinna 
+    zwrócić indeks takiego elementu o <b>najmniejszej wartości</b>.
+    Jeśli jednak w tablicy <b>nie ma żadnego</b> elementu, który byłby
+    równy elementowi wyszukiwanemu, to twoja funkcja powinna zwrócić -1.
+    Na przykład dla tablicy pokazanej na rysunku powyżej
+    element wyszukiwany znajduje się w trzech miejscach: 8, 12 i 23. 
+    Wobec tego funkcja powinna zwrócić 8. W przypadku pojawienia się problemów 
+    z implementacją tej funkcji, możesz wyświetlić wskazówkę w postaci pseudokodu.
+    Po zakończeniu implementowania tej funkcji powinienś 
+    porównać swoje roziązanie z rozwiązaniem wzorcowym, a następnie przejść
+    do drugiej części obecnej lekcji.
+  </div>
+  
+</body>
+</html>

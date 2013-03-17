@@ -1,21 +1,24 @@
-void wczytaj_xn(&x,&n){}
+//Funkcje specjalne:
+void start(&n,&m){}
 
-//Rozwiązanie ireracyjne:
-int potega(x,n)
-var i, wynik;
+//Największy wspólny dzielnik
+//Iteracyjne rozwiązanie
+//wzorcowe:
+int nwd(n,m)
+var t;
 {
-  wynik = 1;
-  
-  for (i=1; i<=n; i++)
-    wynik *= x;
-  
-  return wynik;
+  while(n > 0) {
+    t = m % n;
+    m = n;
+    n = t;
+  }
+  return m;
 }
 
 void main()
-var x, n, wynik;
+var n, m, nwd;
 {
-  wczytaj_xn(&x, &n);
-  wynik = potega(x,n);
-  writeln(x,"^",n," = ",wynik);
+  start(n,m);
+  nwd = nwd(n,m);
+  writeln("nwd(",n,", ",m,") = ",nwd);
 }

@@ -1,29 +1,85 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    div {
+      margin-top: 15px;
+      margin-bottom: 0px;
+    }
+    div.first {
+      margin-top: 5px;
+    }
+    ul {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-left: 25px;
+    }
+    span.equation {
+      white-space: nowrap;
+      font-size: 18px;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Suma ciągu arytmetycznego - wzór</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Algorytm Euklidesa</h2>
+  <div class="first">
+    W poprzedniej części zajeliśmy się problemem obliczania NWD, napisaliśmy program, które je oblicza.
+    Jednak, aby program obliczył wynik, potrzebował wykonać aż <i>n</i> lub <i>m</i> operacji 
+    (w zależności od tego, która z tych liczb jest mniejsza). W tej lekcji zapoznamy się z o wiele szybszą metodą wyliczania NWD.
+    Metoda, o której mowa nosi nazwę algorytmu Euklidesa.
+  </div>
+  
+  <div>
+    Zanim przystąpisz do pisania jakiegokolwiek programu przeczytaj poniższe spostrzeżenie.
+    Niech <i>n</i> oraz <i>m</i> będą liczbami dla których będziemy chcieli obliczyć NWD. 
+    Załóżmy, że <i>m</i> &ge; <i>n</i>. Gdy podzielimy <i>m</i> przez <i>n</i>, otrzymamy następującą równość:
+    <span class="equation"><i>m</i> = <i>q</i>&sdot;<i>n</i> + <i>r</i></span>, 
+    gdzie <span class="equation">0 &le; <i>r</i> &lt; <i>n</i></span>
+  </div>
+  
+  <div>
+    Wielkości <i>q</i> i <i>r</i> są odpowiednio ilorazem i resztą 
+    z dzielenia <i>m</i> przez <i>n</i>. Z tej równości wynikają następujące wnioski:
+    <ul>
+      <li>
+        jeśli <i>r</i> &ne; 0, to powyższą równość możemy zapisać w postaci <i>r</i> = <i>m</i> – <i>qn</i>; 
+        stąd wynika, że każda liczba dzieląca <i>n</i> i <i>m</i> dzieli całe wyrażenie po prawej stronie tej równości, 
+        a więc dzieli również <i>r</i>; zatem największy wspólny dzielnik <i>m</i> i <i>n</i> dzieli również resztę <i>r</i>.
+      </li>
+      <li>
+        jeśli <i>r</i> = 0, to NWD(<i>n</i>, <i>m</i>) = <i>n</i>, czyli jeśli jedna z liczb dzieli drugą bez reszty, 
+        to mniejsza z tych liczb jest ich największym wspólnym dzielnikiem
+      </li>
+    </ul>
+  </div>
+  
+  <div>
+    Te dwa wnioski można zapisać w postaci następującej równości:
+    <span class="equation">NWD(<i>n</i>, <i>m</i>) = NWD(<i>r</i>, <i>n</i>)</span>,
+    w której przyjęliśmy, że 
+    <span class="equation">NWD(0, <i>n</i>) = <i>n</i></span>, 
+    gdyż 0 jest podzielne przez każdą liczbę różną od zera.
+  </div>
+		
+  <div>
+    Na podstawie powyższej równości spróbuj napisać efektywny program obliczania NWD.
+    Spróbuj zaimplementować funkcję NWD na dwa sposoby rekurencyjny i iteracyjny.
+    Twoje funkcje powinny działać poprawinie dla wszystkich liczb dodatnich.
+    Jeśli jednak nie będziesz potrafił tego zrobić wyświetl wskazówkę ułatwiającą rozwiązanie zadania.
+    Wskazówkę warto przeczytać nawet jeśli poprawnie zaimplementowało się funkcję NWD.
+    Oczywiście na końcu porównaj swoje rozwiązanie z tym wzorcowym.
+  </div>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
-
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
-
-  </body>
+</body>
 </html> 

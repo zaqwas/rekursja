@@ -1,0 +1,33 @@
+//Funkcje specjalne:
+void start(&n){}
+//-----------------------
+int porownaj(idx){}
+
+//Wyszukiwanie elementu
+//Iteracyjne rozwiązanie
+//wzorcowe:
+int wyszukaj(idx1,idx2)
+var p, idxSr;
+{
+  while(idx1 < idx2) {
+    idxSr = (idx1 + idx2) / 2;
+    p = porownaj(idxSr);
+    if (p == 0) {
+      return idxSr;
+    }
+    if (p < 0) {
+      idx1 = idxSr + 1;
+    } else {
+      idx2 = idxSr;
+    }
+  }
+  return -1;
+}
+
+void main()
+var n, idx;
+{
+  start(n);
+  idx = wyszukaj(0,n);
+  writeln("wyszukaj(0, ",n,") = ",idx);
+}

@@ -1,18 +1,21 @@
-void wczytaj_xn(&x,&n){}
+//Funkcje specjalne:
+void start(&n,&m){}
 
-//Rozwiązanie rekurencyjne:
-int potega(x,n)
+//Największy wspólny dzielnik
+//Rekurencyjne rozwiązanie
+//wzorcowe:
+int nwd(n,m)
 {
-  if (n <= 0)
-    return 1;
-  
-  return x * potega(x, n-1);
+  if (n == 0) {
+    return m;
+  }
+  return nwd(m%n, n);
 }
 
 void main()
-var x, n, wynik;
+var n, m, nwd;
 {
-  wczytaj_xn(&x, &n);
-  wynik = potega(x,n);
-  writeln(x,"^",n," = ",wynik);
+  start(n,m);
+  nwd = nwd(n,m);
+  writeln("nwd(",n,", ",m,") = ",nwd);
 }

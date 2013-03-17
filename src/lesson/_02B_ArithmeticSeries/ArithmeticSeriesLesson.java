@@ -164,10 +164,10 @@ class ArithmeticSeriesLesson implements Lesson {
         textFrame = new TextFrame(mainClass);
         
         startSpecialFunction = new StartSpecialFunction();
-        SpecialFunctions.addSpecialFunction(startSpecialFunction);
+        SpecialFunctions.add(startSpecialFunction);
         arithmeticSeriesSpecialFunction = new ArithmeticSeriesSpecialFunction();
-        SpecialFunctions.addSpecialFunction(arithmeticSeriesSpecialFunction);
-        SpecialFunctions.addSpecialFunction(
+        SpecialFunctions.add(arithmeticSeriesSpecialFunction);
+        SpecialFunctions.add(
                 new CheckSpecialFunction(startSpecialFunction, mainClass.getConsole()));
         
         initPart1MenuItems();

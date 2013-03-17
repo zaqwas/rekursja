@@ -574,9 +574,9 @@ public class FindElementLesson implements Lesson {
         
         mainClass.getEditor().setCode(Lang.startCode);
         
-        SpecialFunctions.addSpecialFunction(new Check());
-        SpecialFunctions.addSpecialFunction(new Compare());
-        SpecialFunctions.addSpecialFunction(new Start());
+        SpecialFunctions.add(new Check());
+        SpecialFunctions.add(new Compare());
+        SpecialFunctions.add(new Start());
     }
     
     @Override

@@ -26,6 +26,10 @@ public abstract class SyntaxNodeCond extends SyntaxNode implements SyntaxNodeInd
         return true;
     }
     
+    public SyntaxNode getStatement(int index) {
+        return statements.get(index);
+    }
+    
     protected abstract String getNameOfInstruction();
     
     @Override

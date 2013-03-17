@@ -1,0 +1,25 @@
+//Funkcje specjalne:
+void start(&n){}
+//-----------------------
+int porownaj(idx){}
+
+//Wyszukiwanie elementu
+//Rozwiązanie wzorcowe:
+int wyszukaj(n)
+var i;
+{
+  for (i=0; i<n; i++) {
+    if (porownaj(i)==0) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+void main()
+var n, idx;
+{
+  start(n);
+  idx = wyszukaj(n);
+  writeln("wyszukaj(",n,") = ",idx);
+}
