@@ -1,0 +1,23 @@
+//Funkcje specjalne:
+void start(&n){}
+void sprawdz(idxMax){}
+//-----------------------
+int porownaj(idx1,idx2){}
+
+//Odnajdywanie 
+//maksymalnego elementu
+//Rozwiązanie użytkownika:
+int idxMaxElement(n)
+~var i;
+~{
+~  //Zaimplementuj tę funkcję
+  //zgodnie z treścią zadania
+~}
+
+void main()
+var n, idxMax;
+{
+  start(n);
+  idxMax = idxMaxElement(n);
+  sprawdz(idxMax);
+}

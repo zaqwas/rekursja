@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Funkcje specjalne</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+    body {
+      font-size: 14px;
+    }
+    img {
+      margin-right: 3px;
+      float: left;
+    }
+    img.withBorder {
+      border:2px solid black;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }    
+    h3 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+      clear: both;
+    }
+    div {
+      margin-top: 15px;
+      margin-bottom: 0px;
+    }
+    div.clear {
+      clear:both;
+      margin-top: 0px;
+    }
+    div.first {
+      margin-top: 5px;
+    }
+    ul {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-left: 25px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Funkcje specjalne</h2>
+  
+  <div class="first">
+    <img src="array.png" alt="Nie udało załadować się obrazka"/>
+    W osobnym oknie pojawiła się tablica liczb.
+    Twoja funkcja „idxMaxElement” powinna wyszukiwać element maksymalny w tej tablicy.
+    Oczywiście w tym celu w swoim programie powinieneś 
+    skorzystać z funkcji specjalnej „porownaj”, która jest omówiona poniżej.
+  </div>
+  
+  <div class="clear"></div>
+
+  <h3>Funkcja „int porownaj(idx1, idx2)”</h3>
+  <div class="first">
+    Funkcja „porownaj”, jak sama nazwa wskazuje, służy do porównywania 
+    dwóch liczb, jako parametr przyjmuje indeksy dwóch liczb, 
+    a jako wynik zwraca liczbę -1, 0 lub 1. Funkcja zwraca: 
+    <ul>
+      <li>0 jeśli liczby na podanych indeksach są równe</li>
+      <li>-1 jeśli liczba na indeksie <i>idx1</i> jest mniejsza od tej na indeksie <i>idx2</i></li>
+      <li>1 jeśli  liczba na indeksie <i>idx1</i> jest większa od tej na indeksie <i>idx2</i></li>
+    </ul>
+    Oczywiście jeśli choć jeden z podanych indeksów będzie ujemny albo wykroczy poza rozmiar 
+    tablicy, to program zostanie zatrzymany i zostanie wyświetlony błąd wykonania programu.
+  </div>
+  
+  <div>
+    <img src="array_only.png" alt="Nie udało załadować się obrazka" class="withBorder"/>
+    Dla przykładu poniżej zaprezentowane jest kilka wywołań funkcji "porownaj", 
+    przyjmijmy, że stan tablicy wygląda tak jak na po lewej stronie:
+    <div class="clear"></div>
+    <ul>
+      <li><code>porownaj(1, 11)</code> – wywołanie funkcji zwróci 0</li>
+      <li><code>porownaj(5, 7)</code> – wywołanie funkcji zwróci 1</li>
+      <li><code>porownaj(1, 14)</code> – wywołanie funkcji zwróci -1</li>
+      <li><code>porownaj(14, 1)</code>  – wywołanie funkcji zwróci 1</li>
+      <li><code>porownaj(3, -2)</code> – wywołanie funkcji zakończy się błędem</li>
+      <li><code>porownaj(16, 2)</code> – wywołanie funkcji zakończy się błędem</li>
+    </ul>
+  </div>
+  
+</body>
+</html>

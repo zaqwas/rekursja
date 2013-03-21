@@ -54,7 +54,7 @@ import javax.swing.event.InternalFrameEvent;
 import mainclass.MainClass;
 //</editor-fold>
 
-public class ArrayFrame {
+class ArrayFrame {
 
     //<editor-fold defaultstate="collapsed" desc="Components and variables">
     private MainClass mainClass;

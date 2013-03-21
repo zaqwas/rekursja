@@ -1,0 +1,27 @@
+//Funkcje specjalne:
+void start(&n){}
+//-----------------------
+int porownaj(idx1,idx2){}
+
+//Odnajdywanie 
+//maksymalnego elementu
+//Rozwiązanie wzorcowe:
+int idxMaxElement(n)
+var i, idxMax;
+{
+  idxMax = 0;
+  for (i=1; i<n; i++) {
+    if (porownaj(i,idxMax)>0) {
+       idxMax = i;
+    }
+  }
+  return idxMax;
+}
+
+void main()
+var n, idxMax;
+{
+  start(n);
+  idxMax = idxMaxElement(n);
+  writeln("idxMaxElement(",n,") =  ",idxMax);
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wskazówki</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <script type="text/javascript">
+    function gotoHint1() {
+      window.location.href = "#hint1";
+    }
+    function gotoHint2() {
+      window.location.href = "#hint2";
+    }
+    function gotoHint3() {
+      window.location.href = "#hint3";
+    }
+    function gotoHint4() {
+      window.location.href = "#hint4";
+    }
+
+    function showHint2() {
+      hint2.style.display = "inherit";
+    }
+    function showHint3() {
+      hint2.style.display = "inherit";
+      hint3.style.display = "inherit";
+    }
+    function showHint4() {
+      hint2.style.display = "inherit";
+      hint3.style.display = "inherit";
+    }
+  </script>
+    
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h2.first {
+      margin-top: 0px;
+    }
+      
+    div {
+      margin-top: 15px;
+      margin-bottom: 0px;
+    }
+    div.first {
+      margin-top: 5px;
+    }
+    div.indent {
+      margin-top: 0px;
+      margin-left: 20px;
+    }
+    div.hidden {
+      margin-top: 0px;
+      display: none;
+    }
+    
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    ul {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-left: 25px;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <h2 id="hint1">Wskazówka I TODO</h2>
+  
+
+  <div id="hint2" class="hidden">
+    <h2>Wskazówka II</h2>
+  </div>
+  
+  <div id="hint3" class="hidden">
+    <h2>Wskazówka III</h2>
+  </div>
+  
+  <div id="hint4" class="hidden">
+    <h2>Wskazówka IV</h2>
+  </div>
+  
+</body>
+</html>

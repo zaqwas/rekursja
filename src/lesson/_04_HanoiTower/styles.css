@@ -1,0 +1,11 @@
+.menu-bar {
+  -fx-font-size: 12px;
+  -fx-padding: 0px;
+}
+.menu-bar *.label {
+  -fx-padding: 3px 5px 3px 5px;
+}
+.radio-button {
+  -fx-padding: 0px 10px 0px 0px;
+}
+
