@@ -1,13 +1,12 @@
 //Funkcje specjalne:
-void start(&n){}
-void sprawdz(idxMax){}
+void start(&n,&skad,&dokad){}
+void sprawdz(){}
 //-----------------------
-int porownaj(idx1,idx2){}
+void przenies(skad,dokad){}
 
-//Odnajdywanie 
-//maksymalnego elementu
+//Wieże Hanoi
 //Rozwiązanie użytkownika:
-int idxMaxElement(n)
+void hanoi(n,skad,dokad)
 ~var i;
 ~{
 ~  //Zaimplementuj tę funkcję
@@ -15,9 +14,9 @@ int idxMaxElement(n)
 ~}
 
 void main()
-var n, idxMax;
+var n, skad, dokad;
 {
-  start(n);
-  idxMax = idxMaxElement(n);
-  sprawdz(idxMax);
+  start(n, skad, dokad);
+  hanoi(n, skad, dokad);
+  sprawdz();
 }

@@ -1,11 +1,11 @@
 package lesson._04_HanoiTower;
 
 //<editor-fold defaultstate="collapsed" desc="Import classes">
-import lesson._01B_MaxElement.*;
 import helpers.LessonHelper;
 import interpreter.Instance;
 import interpreter.InterpreterThread;
 import interpreter.accessvar.AccessInteger;
+import interpreter.arguments.ArgInteger;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
@@ -24,7 +24,11 @@ import lesson.LessonLoader;
 import mainclass.MainClass;
 import parser.SpecialFunctions;
 import syntax.SyntaxNode;
+import syntax.expression.Call;
+import syntax.function.Function;
 import syntax.function.FunctionBehavior;
+import syntax.statement.assigment.Assigment;
+import syntax.statement.other.Return;
 //</editor-fold>
 
 class HanoiTowerLesson implements Lesson {
@@ -48,7 +52,7 @@ class HanoiTowerLesson implements Lesson {
         }
         
         public static State getById(int id) {
-            assert 0 <= id && id <= 3;
+            assert 0 <= id && id <= 6;
             
             State[] values = values();
             if ( values[id].id == id ) {
@@ -85,7 +89,7 @@ class HanoiTowerLesson implements Lesson {
     private HanoiTowerLessonLoader loader;
     
     private TextFrame textFrame;
-    private HanoiFrame arrayFrame;
+    private HanoiFrame hanoiFrame;
     
     private JMenuItem textMenuItem;
     private JMenuItem functionsMenuItem;
@@ -101,7 +105,8 @@ class HanoiTowerLesson implements Lesson {
     private String userCode;
     private String solutionCode;
     
-//    private CompareSpecialFunction compareSpecialFunction;
+    private StartSpecialFunction startSpecialFunction;
+    private MoveSpecialFunction moveSpecialFunction;
     
     
     public HanoiTowerLesson(MainClass mainClass, DataInputStream stream, 
@@ -110,19 +115,23 @@ class HanoiTowerLesson implements Lesson {
         this.loader = loader;
         
         textFrame = new TextFrame(mainClass);
-        arrayFrame = new HanoiFrame(mainClass);
+        hanoiFrame = new HanoiFrame(mainClass);
         
         initMenuItems();
         
-//        SpecialFunctions.add(new StartSpecialFunction(arrayFrame));
-//        SpecialFunctions.add(new CheckSpecialFunction(arrayFrame, mainClass.getConsole()));
-//        compareSpecialFunction = new CompareSpecialFunction(arrayFrame);
-//        SpecialFunctions.add(compareSpecialFunction);
+        mainClass.getTreeOfInstances().setTreeNodeMaxLetters(8);
+        
+        startSpecialFunction = new StartSpecialFunction(hanoiFrame);
+        SpecialFunctions.add(startSpecialFunction);
+        moveSpecialFunction = new MoveSpecialFunction(hanoiFrame);
+        SpecialFunctions.add(moveSpecialFunction);
+        SpecialFunctions.add(new HanoiSpecialFunction());
+        SpecialFunctions.add(new CheckSpecialFunction(hanoiFrame, mainClass.getConsole()));
         
         if (stream == null) {
             initCodes(true);
             textFrame.gotoText();
-            arrayFrame.frameToFront();
+            hanoiFrame.frameToFront();
         } else {
             initCodes(false);
             mainClass.loadFramesPositionAndSettnings(stream);
@@ -376,9 +385,10 @@ class HanoiTowerLesson implements Lesson {
         lessonMenu.setEnabled(false);
         
         SpecialFunctions.clear();
+        mainClass.getTreeOfInstances().setDefaultTreeNodeMaxLetters();
         
         mainClass.removeAddictionalLessonFrame(textFrame.getFrame());
-        mainClass.removeAddictionalLessonFrame(arrayFrame.getFrame());
+        mainClass.removeAddictionalLessonFrame(hanoiFrame.getFrame());
         mainClass.getEditor().setCode(oldCode);
     }
     
@@ -386,40 +396,69 @@ class HanoiTowerLesson implements Lesson {
     public void threadStart(InterpreterThread thread) {
         userCodeMenuItem.setEnabled(false);
         solutionCodeMenuItem.setEnabled(false);
+        hanoiFrame.threadStart();
+        startSpecialFunction.threadStart();
     }
     
     @Override
     public void threadStop() {
         userCodeMenuItem.setEnabled(true);
         solutionCodeMenuItem.setEnabled(true);
+        hanoiFrame.threadStop();
     }
     
     @Override
     public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, final int delayTime) {
-//        FunctionBehavior behavior = instance.getFunction().getFunctionBehavior();
-//        boolean userCodeChosen = chosenCode == ChosenCode.User;
-//        if (behavior == compareSpecialFunction) {
-//            compareSpecialFunction.pauseStart(userCodeChosen);
-//            return true;
-//        }
-//        if (userCodeChosen) {
-//            return true;
-//        }
-//        
-//        if (instance.getFunction().getName().equals("idxMaxElement")) {
-//            AccessInteger access = (AccessInteger) instance.getFunction().getAccessVarByName("idxMax");
-//            BigInteger value = access.getValue(instance);
-//            if (value != null) {
-//                arrayFrame.paintMax(value.intValue());
-//            }
-//        } else {
-//            arrayFrame.paintMax();
-//        }
+        FunctionBehavior behavior = instance.getFunction().getFunctionBehavior();
+        boolean user = chosenCode == ChosenCode.User;
+        
+        if (behavior == moveSpecialFunction) {
+            boolean freeRod = false;
+            if (!user) {
+                instance = instance.getParentInstance();
+                Function function = instance.getFunction();
+                AccessInteger access = (AccessInteger)function.getLocalVarAccessVar(0);
+                freeRod = access.getValue(instance) != null;
+            }
+            
+            moveSpecialFunction.pauseStart(user, freeRod, delayTime);
+            return false;
+        }
+        
+        if (user) {
+            hanoiFrame.update();
+            return true;
+        }
+        
+        int n = ((ArgInteger)instance.getArgument(0)).getValueAtTheBeginning().intValue();
+        int src = ((ArgInteger)instance.getArgument(1)).getValueAtTheBeginning().intValue() - 1;
+        int dest = ((ArgInteger)instance.getArgument(2)).getValueAtTheBeginning().intValue() - 1;
+        
+        boolean call = node instanceof Call;
+        if (call && instance.getParentInstance().getParentInstance() == null) {
+            hanoiFrame.update(n, src, dest, afterCall, false, false);
+            return true;
+        }
+        
+        if (!call) {
+            boolean afterMove = node instanceof Return;
+            boolean paintFreeRod = node instanceof Assigment;
+            hanoiFrame.update(n, src, dest, afterMove, true, paintFreeRod);
+            return true;
+        }
+        
+        instance = instance.getParentInstance();
+        src = ((ArgInteger)instance.getArgument(1)).getValueAtTheBeginning().intValue() - 1;
+        dest = ((ArgInteger)instance.getArgument(2)).getValueAtTheBeginning().intValue() - 1;
+        
+        boolean afterMove = node.getJumpNode() == null;
+        hanoiFrame.updateAtCall(n, src, dest, afterMove, afterCall);
         return true;
     }
 
     @Override
     public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
+        moveSpecialFunction.pauseStop();
 //        compareSpecialFunction.pauseStop();
     }
     

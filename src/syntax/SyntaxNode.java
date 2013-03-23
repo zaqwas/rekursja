@@ -12,6 +12,10 @@ public abstract class SyntaxNode {
     
     public SyntaxNode jump;
     
+    public SyntaxNode getJumpNode() {
+        return jump;
+    }
+    
     public abstract SyntaxNode commit(Instance instance) throws ProgramError;
     
     public boolean isStopNode() {
