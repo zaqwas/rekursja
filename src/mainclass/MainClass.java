@@ -40,6 +40,9 @@ import lesson._03A_Exponentiation.ExponentiationLessonLoader;
 import lesson._03B_EuclideanAlgorithm.EuclideanAlgorithmLessonLoader;
 import lesson._03C_BinarySearch.BinarySearchLessonLoader;
 import lesson._04_HanoiTower.HanoiTowerLessonLoader;
+import lesson._05_SimpleSort.BubbleSortLessonLoader;
+import lesson._05_SimpleSort.InsertionSortLessonLoader;
+import lesson._05_SimpleSort.SelectionSortLessonLoader;
 import lesson._06A_MergeFunction.MergeFunctionLessonLoader;
 import lesson._06B_MergeSort.MergeSortLessonLoader;
 import lesson._07A_PartitionFunction.PartitionFunctionLessonLoader;
@@ -762,9 +765,17 @@ public class MainClass {
         
         chooseLessonMenu.add(new JSeparator());
         
+        addLessonLoader(new SelectionSortLessonLoader());
+        addLessonLoader(new BubbleSortLessonLoader());
+        addLessonLoader(new InsertionSortLessonLoader());
+        
+        chooseLessonMenu.add(new JSeparator());
+        
         addLessonLoader(new MergeFunctionLessonLoader());
         addLessonLoader(new MergeSortLessonLoader());
+        
         chooseLessonMenu.add(new JSeparator());
+        
         addLessonLoader(new PartitionFunctionLessonLoader());
         addLessonLoader(new QuickSortLessonLoader());
     }

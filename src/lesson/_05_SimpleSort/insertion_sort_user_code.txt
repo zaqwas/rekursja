@@ -1,0 +1,23 @@
+//Funkcje specjalne:
+void start(&n){}
+void sprawdz(){}
+//-----------------------
+int porownaj(idx1,idx2){}
+void zamien(idx1,idx2){}
+
+//Porządkowanie przez wstawianie
+//Rozwiązanie użytkownika:
+void uporzadkuj(n)
+~var i;
+~{
+~  //Zaimplementuj tę funkcję
+  //zgodnie z treścią zadania
+~}
+
+void main()
+var n;
+{
+  start(n);
+  uporzadkuj(n);
+  sprawdz();
+}

@@ -1,0 +1,42 @@
+//Funkcje specjalne:
+void start(&n){}
+//-----------------------
+int porownaj(idx1,idx2){}
+void zamien(idx1,idx2){}
+
+//Porządkowanie przez wstawianie
+//Rozwiązanie wzorcowe:
+void uporzadkuj(n)
+var i, j;
+{
+  for(i=1; i<n; i++) {
+    
+    j = i;
+    while (j>0 && 
+      porownaj(j-1, j)>0) 
+    {
+      zamien(j-1, j);
+      j--;
+    }
+    
+    for (j=i; j>0 && 
+      porownaj(j-1,j)>0; j--) 
+    {
+      zamien(j-1, j);
+    }
+
+    for (j=i; j>0; j--) {
+      if (porownaj(j-1,j)<=0) {
+         break;
+      }
+      zamien(j-1, j);
+    }
+  }
+}
+
+void main()
+var n;
+{
+  start(n);
+  uporzadkuj(n);
+}
