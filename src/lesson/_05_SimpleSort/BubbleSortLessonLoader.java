@@ -21,6 +21,6 @@ public class BubbleSortLessonLoader implements LessonLoader {
 
     @Override
     public Lesson getLesson(MainClass mainClass, DataInputStream dataInputStream) throws IOException {
-        return new SimpleSortLesson(Algorithm.SelectionSort, mainClass, dataInputStream, this);
+        return new SimpleSortLesson(Algorithm.BubbleSort, mainClass, dataInputStream, this);
     }
 }

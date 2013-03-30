@@ -9,9 +9,9 @@ public class For extends SyntaxNodeCond {
     
     public For() {
         //this.type = 9;
-        this.statementsInit = new ArrayList<SyntaxNode>();
-        this.statementsEnd = new ArrayList<SyntaxNode>();
-        this.statements = new ArrayList<SyntaxNode>();
+        this.statementsInit = new ArrayList<>();
+        this.statementsEnd = new ArrayList<>();
+        this.statements = new ArrayList<>();
     }
     
     @Override

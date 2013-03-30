@@ -29,6 +29,11 @@ public abstract class SyntaxNodeCond extends SyntaxNode implements SyntaxNodeInd
     public SyntaxNode getStatement(int index) {
         return statements.get(index);
     }
+
+    public SyntaxNode getJumpElse() {
+        return jumpElse;
+    }
+    
     
     protected abstract String getNameOfInstruction();
     

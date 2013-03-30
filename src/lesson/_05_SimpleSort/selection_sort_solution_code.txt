@@ -7,16 +7,16 @@ void zamien(idx1,idx2){}
 //Porządkowanie przez wybór
 //Rozwiązanie wzorcowe:
 void uporzadkuj(n)
-var i, j, idxMin;
+var i, j, min;
 {
   for(i=0; i<n-1; i++) {
-    idxMin = i;
-    for (j=i; j<n; j++) {
-      if (porownaj(j,idxMin)<0) {
-         idxMin = j;
+    min = i;
+    for (j=i+1; j<n; j++) {
+      if (porownaj(j,min)<0) {
+         min = j;
       }
     }
-    zamien(i, idxMin);
+    zamien(i, min);
   }
 }
 

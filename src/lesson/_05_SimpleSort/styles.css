@@ -1,10 +1,26 @@
+.root {
+  -fx-font-family: 'DejaVu Sans';
+  -fx-font-size: 12px;
+}
+
 .menu-bar {
-  -fx-font-size: 12;
-  -fx-padding: 0em 0.4em 0em 0.4em;
+  -fx-padding: 0px;
 }
 .menu-bar *.label {
-  -fx-padding: 0.3em 0.4em 0.3em 0.4em;
+  -fx-padding: 3px 5px 3px 5px;
 }
+
+#arrayHeader {
+  -fx-font-size: 11px;
+}
+#arrayIndex {
+  -fx-font-size: 8px;
+}
+
+.text-field {
+  -fx-font-family: 'DejaVu Sans Mono';
+}
+
 
 
 #empty {
@@ -13,36 +29,47 @@
 #empty:focused {
   -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
 }
+#emptySwapping {
+  -fx-background-color: black, black, -fx-control-inner-background;
+}
+
+
+#comparing {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, orange;
+}
+#comparing:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, orange;
+}
 
 
 #marked {
   -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #ffff80;
 }
 #marked:focused {
-  -fx-background-color: -fx-focus-color, -fx-focus-color, #ffffd0;
+  -fx-background-color: -fx-focus-color, -fx-text-box-border, #ffff80;
+}
+#markedSwapping {
+  -fx-background-color: black, black, #ffff80;
 }
 
 
-#result {
-  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00ff80;
-}
-#result:focused {
-  -fx-background-color: -fx-focus-color, -fx-focus-color, #00ff80;
-}
-
-
-#first {
+#selected {
   -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00f0f0;
 }
-#first:focused {
+#selected:focused {
   -fx-background-color: -fx-focus-color, -fx-focus-color, #00f0f0;
 }
-
-
-#second {
-  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00c0ff;
-}
-#second:focused {
-  -fx-background-color: -fx-focus-color, -fx-focus-color, #00c0ff;
+#selectedSwapping {
+  -fx-background-color: black, black, #00f0f0;
 }
 
+
+#sorted {
+  -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, #00ff80;
+}
+#sorted:focused {
+  -fx-background-color: -fx-focus-color, -fx-focus-color, #00ff80;
+}
+#sortedSwapping {
+  -fx-background-color: black, black, #00ff80;
+}

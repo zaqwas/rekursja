@@ -10,6 +10,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -21,6 +22,11 @@ import lesson.LessonLoader;
 import mainclass.MainClass;
 import parser.SpecialFunctions;
 import syntax.SyntaxNode;
+import syntax.expression.Call;
+import syntax.function.FunctionBehavior;
+import syntax.statement.For;
+import syntax.statement.While;
+import syntax.statement.assigment.IncDec;
 //</editor-fold>
 
 class SimpleSortLesson implements Lesson {
@@ -102,7 +108,9 @@ class SimpleSortLesson implements Lesson {
     private String userCode;
     private String solutionCode;
     
-    //private CompareSpecialFunction compareSpecialFunction;
+    private CompareSpecialFunction compareSpecialFunction;
+    private SwapSpecialFunction swapSpecialFunction;
+    private SortSpecialFunction sortSpecialFunction;
     
     public SimpleSortLesson(Algorithm algorithm, MainClass mainClass, DataInputStream stream, 
             LessonLoader loader) throws IOException {
@@ -114,11 +122,16 @@ class SimpleSortLesson implements Lesson {
         arrayFrame = new ArrayFrame(mainClass);
         
         initMenuItems();
+        mainClass.getTreeOfInstances().setTreeNodeMaxLetters(8);
         
         SpecialFunctions.add(new StartSpecialFunction(arrayFrame));
-//        SpecialFunctions.add(new CheckSpecialFunction(arrayFrame, mainClass.getConsole()));
-//        compareSpecialFunction = new CompareSpecialFunction(arrayFrame);
-//        SpecialFunctions.add(compareSpecialFunction);
+        SpecialFunctions.add(new CheckSpecialFunction(arrayFrame, mainClass.getConsole()));
+        compareSpecialFunction = new CompareSpecialFunction(arrayFrame);
+        SpecialFunctions.add(compareSpecialFunction);
+        swapSpecialFunction = new SwapSpecialFunction(arrayFrame);
+        SpecialFunctions.add(swapSpecialFunction);
+        sortSpecialFunction = new SortSpecialFunction();
+        SpecialFunctions.add(sortSpecialFunction);
         
         if (stream == null) {
             initCodes(true);
@@ -326,6 +339,7 @@ class SimpleSortLesson implements Lesson {
         lessonMenu.setEnabled(false);
         
         SpecialFunctions.clear();
+        mainClass.getTreeOfInstances().setDefaultTreeNodeMaxLetters();
         
         mainClass.removeAddictionalLessonFrame(textFrame.getFrame());
         mainClass.removeAddictionalLessonFrame(arrayFrame.getFrame());
@@ -348,31 +362,121 @@ class SimpleSortLesson implements Lesson {
     
     @Override
     public boolean pauseStart(Instance instance, SyntaxNode node, boolean afterCall, final int delayTime) {
-//        FunctionBehavior behavior = instance.getFunction().getFunctionBehavior();
-//        boolean userCodeChosen = chosenCode == ChosenCode.User;
-//        if (behavior == compareSpecialFunction) {
-//            compareSpecialFunction.pauseStart(userCodeChosen);
-//            return true;
-//        }
-//        if (userCodeChosen) {
-//            return true;
-//        }
-//        
-//        if (instance.getFunction().getName().equals("idxMaxElement")) {
-//            AccessInteger access = (AccessInteger) instance.getFunction().getAccessVarByName("idxMax");
-//            BigInteger value = access.getValue(instance);
-//            if (value != null) {
-//                arrayFrame.paintMax(value.intValue());
-//            }
-//        } else {
-//            arrayFrame.paintMax();
-//        }
+        FunctionBehavior behavior = instance.getFunction().getFunctionBehavior();
+        boolean userCodeChosen = chosenCode == ChosenCode.User;
+        
+        //<editor-fold defaultstate="collapsed" desc="UserCode">
+        if (userCodeChosen) {
+            if (behavior == swapSpecialFunction) {
+                swapSpecialFunction.pauseStartUserCode(delayTime);
+                return false;
+            }
+            if (behavior == compareSpecialFunction) {
+                compareSpecialFunction.pauseStartUserCode();
+                return true;
+            }
+            arrayFrame.updateUserCode();
+            return true;
+        }
+        //</editor-fold>
+        
+        if (node instanceof Call && behavior == sortSpecialFunction) {
+            if (afterCall) {
+                arrayFrame.updateAllSorted();
+            }
+            return true;
+        }
+        
+        //<editor-fold defaultstate="collapsed" desc="SelectionSort">
+        if (algorithm == Algorithm.SelectionSort) {
+            if (behavior == swapSpecialFunction) {
+                swapSpecialFunction.pauseStartSelectionSort(delayTime);
+                return false;
+            }
+            if (behavior == compareSpecialFunction) {
+                int i = instance.getParentInstance().getLocalVar(0).intValue();
+                compareSpecialFunction.pauseStartSelectionSort(i);
+                return true;
+            }
+            
+            int i = instance.getLocalVar(0).intValue();
+            if (node instanceof For && ((For) node).getJumpElse() == null
+                    || node instanceof IncDec && ((IncDec) node).getVariable().getName().equals("i")) {
+                arrayFrame.updateSelectionSort(i, -1, -1);
+                return true;
+            }
+            
+            BigInteger bigInt = instance.getLocalVar(1);
+            int j = bigInt == null ? -1 : bigInt.intValue();
+            bigInt = instance.getLocalVar(2);
+            int min = bigInt == null ? -1 : bigInt.intValue();
+            arrayFrame.updateSelectionSort(i, j, min);
+            return true;
+        }
+        //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="BubbleSort">
+        if (algorithm == Algorithm.BubbleSort) {
+            if (behavior == swapSpecialFunction || behavior == compareSpecialFunction) {
+                int k = instance.getParentInstance().getLocalVar(1).intValue();
+                int range = instance.getParentInstance().getLocalVar(2).intValue();
+                if (behavior == swapSpecialFunction) {
+                    swapSpecialFunction.pauseStartBubbleSort(k, range, delayTime);
+                    return false;
+                }
+                compareSpecialFunction.pauseStartBubbleSort(k, range);
+                return true;
+            }
+            if (instance.getLocalVar(1) == null) {
+                return true;
+            }
+
+            int range = instance.getLocalVar(2).intValue();
+            if (node instanceof While) {
+                arrayFrame.updateBubbleSort(32, 32, range);
+                return true;
+            }
+            
+            int k = instance.getLocalVar(1).intValue();
+            BigInteger bigInt = instance.getLocalVar(0);
+            int i = bigInt == null ? 32 : bigInt.intValue();
+            arrayFrame.updateBubbleSort(i, k, range);
+            return true;
+        }
+        //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="InsertionSort">
+        if (behavior == swapSpecialFunction || behavior == compareSpecialFunction) {
+            int i = instance.getParentInstance().getLocalVar(0).intValue() + 1;
+            if (behavior == swapSpecialFunction) {
+                swapSpecialFunction.pauseStartInsertionSort(i, delayTime);
+                return false;
+            }
+            compareSpecialFunction.pauseStartInsertionSort(i);
+            return true;
+        }
+        if (instance.getLocalVar(1) == null) {
+            arrayFrame.updateInsertionSort(1, -1);
+            return true;
+        }
+        
+        int i = instance.getLocalVar(0).intValue();
+        if (node instanceof For && ((For) node).getJumpElse() == null
+                || node instanceof IncDec && ((IncDec) node).isIncreasing()) {
+            arrayFrame.updateInsertionSort(i, -1);
+            return true;
+        }
+        int j = instance.getLocalVar(1).intValue();
+        arrayFrame.updateInsertionSort(i+1, j);
+        //</editor-fold>
+        
         return true;
     }
 
     @Override
     public void pauseStop(Instance instance, SyntaxNode node, boolean afterCall) {
-        //compareSpecialFunction.pauseStop();
+        swapSpecialFunction.pauseStop();
+        compareSpecialFunction.pauseStop();
     }
     
     

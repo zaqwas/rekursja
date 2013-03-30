@@ -109,9 +109,10 @@ public class Instance {
         return arrayArgs[index];
     }
     
-//    public BigInteger getLocalInt(int index) {
-//        return arrayLocal[index]; 
-//    }
+    public BigInteger getLocalVar(int index) {
+        return arrayLocal[index]; 
+    }
+    
 //    public void setLocalInt(int index, BigInteger value) {
 //        arrayLocal[index] = value;
 //    }

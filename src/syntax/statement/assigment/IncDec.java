@@ -26,6 +26,10 @@ public class IncDec extends SyntaxNodeIdx {
         return increasing;
     }
 
+    public Variable getVariable() {
+        return variable;
+    }
+
     @Override
     public SyntaxNode commit(Instance instance) throws ProgramError {
         if (variable.hasArrayIndex()) {
