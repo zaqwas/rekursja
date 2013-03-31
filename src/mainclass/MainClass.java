@@ -36,6 +36,7 @@ import lesson._01A_Introduction.IntroductionLessonLoader;
 import lesson._01B_MaxElement.MaxElementLessonLoader;
 import lesson._02A_RecursionIntro.RecursionIntroLessonLoader;
 import lesson._02B_ArithmeticSeries.ArithmeticSeriesLessonLoader;
+import lesson._02C_Logarithm.LogarithmLessonLoader;
 import lesson._03A_Exponentiation.ExponentiationLessonLoader;
 import lesson._03B_EuclideanAlgorithm.EuclideanAlgorithmLessonLoader;
 import lesson._03C_BinarySearch.BinarySearchLessonLoader;
@@ -752,6 +753,7 @@ public class MainClass {
         
         addLessonLoader(new RecursionIntroLessonLoader());
         addLessonLoader(new ArithmeticSeriesLessonLoader());
+        addLessonLoader(new LogarithmLessonLoader());
         
         chooseLessonMenu.add(new JSeparator());
         

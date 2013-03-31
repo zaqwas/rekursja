@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Podsumowanie</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    span.nowrap {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Podsumowanie</h2>
+  
+  <div class="firstParagraph">
+    W późniejszych lekcjach będziemy często używać funkcji logarytm do opisu złożoności algorytmów. 
+    Często będą się zdarzać lekcje, w których w pierwszej części przedstawimy jakiś 
+    problem i podamy proste rozwiązanie, które działa w czasie liniowym. 
+    Następnie, w drugiej części, będziemy przyśpieszać program, tak aby wykonywał 
+    tylko logarytmicznie (najczęściej o podstawie dwa) wiele operacji. 
+  </div>
+  
+  <div class="paragraph">
+    Zauważ, że funkcja logarytm jest bardzo wolno rosnąca, dlatego jeśli uda nam się 
+    zmniejszyć złożoność z liniowej do logarytmicznej, to otrzymujemy duży zysk w koszcie obliczeń. 
+    Np. algorytm liniowy dla liczby 1000 wykonuje około 1000 operacji, podczas gdy logarytmiczny 
+    (o podstawie 2) tylko 10. Jeśli dane w algorytmie będą rzędu <span class="nowrap">1 000 000</span>,
+    to funkcja logarytmiczna wykona tylko 20 operacji. Zatem widzimy, że algorytmy 
+    o złożoności logarytmicznej wykonują znacznie mniej operacji, zwłaszcza dla dużych danych.
+  </div>
+  
+</body>
+</html>

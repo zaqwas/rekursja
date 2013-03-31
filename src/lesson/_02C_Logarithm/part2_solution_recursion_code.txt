@@ -1,0 +1,22 @@
+//Funkcje specjalne:
+void start(&a,&n){}
+
+//Funkcja logarytm
+//Rekurencyjne 
+//rozwiązanie wzorcowe:
+int logarytm(a,n)
+var log, iloczyn;
+{
+  if (n < a) {
+    return 0;
+  }
+  return 1 + logarytm(a,n/a);
+}
+
+void main()
+var a, n, log;
+{
+  start(a,n);
+  log = logarytm(a,n);
+  writeln("logarytm(",a,",",n,") = ",log);
+}

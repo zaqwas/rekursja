@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>Pseudokod</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    div.indent {
+      margin-left: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Pseudokod algorytmu</h2>
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczba naturalna <i>a</i> (<i>a</i> &ge; 2) oraz dodatnia liczba naturalna <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Logarytm o podstawie <i>a</i> z liczby <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Przyjmij <i>log</i> := 0 oraz <i>iloczyn</i> := 1
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        Dopóki <i>iloczyn</i> &le; <i>n</i> wykonuj:
+        <div class="indent">
+          oblicz <i>iloczyn</i> := <i>iloczyn</i> * <i>a</i>,<br/>
+          zwiększ wartość zmiennej <i>log</i> o jeden.
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 3.</td>
+      <td>
+        Zwróć wartość <i>log</i>-1 i zakończ działanie funkcji.
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

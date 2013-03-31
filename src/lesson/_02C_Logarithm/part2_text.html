@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+    body {
+      font-size: 14px;
+    }
+    img {
+      display: block;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    span.nowrap {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Logarytm</h2>
+
+  <div class="firstParagraph">
+    W poprzedniej części zapoznaliśmy się z definicją logarytmu, a nawet zaimplementowaliśmy 
+    funkcję, która ją oblicza. W tej części poznamy nieco inną definicję logarytmu. 
+    Funkcję logarytm zdefiniujemy w taki sposób:<br/>
+    <b>log<sub><i>a</i></sub><i>n</i> = <i>k</i>, gdzie <i>k</i> to najmniejsza liczba, 
+    taka że liczba <i>n</i> podzielona <i>k</i>-krotnie 
+    przez liczbę <i>a</i> jest mniejsza od liczby <i>a</i>.</b> Inaczej mówiąc:
+    <img src="part2_definition.png" alt="Nie udało załadować się obrazka"/>
+    W powyższej definicji występuje dzielenie rzeczywiste, jednak powyższa definicja jest 
+    poprawna także dla dzielenia całkowitego. Tak samo, jak w przypadku definicji z pierwszej 
+    części, przyjmuje się, że logarytm z liczby <i>n</i>, która jest mniejsza niż <i>a</i>,
+    wynosi zero (log<sub><i>a</i></sub><i>n</i> = 0, dla <i>n</i>&lt;<i>a</i>).
+  </div>
+
+  <div class="paragraph">
+    Powyższa definicja jest tożsama z definicją z pierwszej części lekcji, 
+    tzn dla tych samych argumentów funkcje zwracają te same wyniki. 
+    Podobnie jak w pierwszej części funkcję logarytm można obliczyć wykonując pętlę. 
+    Główną różnicą jest to, iż teraz pętla będzie dzielić zmienną <i>n</i> przez liczbę <i>a</i>, 
+    aż zmienna <i>n</i> osiągnie wartość mniejszą niż liczba <i>a</i>. 
+    Jednak definicja z tej części lekcji może być także rozpisana w postaci rekurencyjnej:
+    <img src="part2_recursion.png" alt="Nie udało załadować się obrazka"/>
+  </div>
+
+  <div class="paragraph">
+    Twoim zadaniem jest zaimplementowanie funkcji <span class="nowrap">„int <b>logarytm</b>(a, n)”</span>
+    zgodnej z definicją logarytmu z pierwszego akapitu. Funkcja powinna zostać napisana 
+    w dwóch wersjach: rekurencyjnej i iteracyjnej.
+    W przypadku pojawienia się problemów z implementacją tej funkcji, możesz wyświetlić 
+    wskazówkę w postaci pseudokodu. Po zakończeniu implementowania tej funkcji powinienś 
+    porównać swoje roziązania z rozwiązaniami wzorcowymi, a następnie przeczytać podsumowanie.
+  </div>
+  
+</body>
+</html>

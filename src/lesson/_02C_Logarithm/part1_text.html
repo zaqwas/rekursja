@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Treść zadania</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+    body {
+      font-size: 14px;
+    }
+    img {
+      display: block;
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    span.nowrap {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Logarytm</h2>
+
+  <div class="firstParagraph">
+    W poprzedniej lekcji, w podsumowaniu przy omawianiu klas złożoności wspomnieliśmy 
+    o logarytmicznej klasie złożoności. W tej lekcji poznamy czym jest funkcja logarytm, 
+    a także postaramy się zaimplementować program, który oblicza wartość tej funkcji. 
+    Jednak najpierw musimy zapoznać się z definicją logarytmu. Funkcja logarytm 
+    przyjmuje dwa argumenty: <i>a</i> oraz <i>n</i>. Parametr <i>a</i> to podstawa 
+    logarytmu i jest to liczba naturalna większa lub równa dwa (<i>a</i> &ge; 2). 
+    Natomiast parametr <i>n</i> to dodatnia liczba naturalna (n &ge; 1).
+    Logarytm z liczby <i>n</i> o podstawie <i>a</i>, definiujemy następująco:<br/>
+    <b>log<sub><i>a</i></sub><i>n</i> = <i>k</i>, gdzie <i>k</i> to najmniejsza liczba, 
+    taka że liczba <i>a</i> pomnożona przez siebie <i>k</i>+1 razy daje wynik większy niż <i>n</i>.</b> 
+    Inaczej mówiąc:
+    <img src="part1_definition.png" alt="Nie udało załadować się obrazka"/>
+    Dodatkowo przyjmuje się, że logarytm z liczby <i>n</i>, która jest mniejsza niż <i>a</i>,
+    wynosi zero (log<sub><i>a</i></sub><i>n</i> = 0, dla <i>n</i>&lt;<i>a</i>).
+  </div>
+  
+  <div class="paragraph">
+    W rzeczywistości, w matematyce funkcja logarytm jest definiowana trochę inaczej. 
+    Logarytm może przyjmować dodatnie liczby rzeczywiste i zwraca również liczbę rzeczywistą. 
+    Jednak dla uproszczenia podaliśmy inną, nieco prostszą definicję logarytmu. 
+    Podana wyżej funkcja logarytm jest tak na prawdę zaokrągleniem w dół wartości 
+    zwracanej przez funkcję logarytm definiowaną w matematyce. 
+    Podana wyżej definicja logarytmu ma jeszcze jedną ważną cechę. 
+    Jeśli podstawą logarytmu będzie dziesięć (<i>a</i> = 10), to funkcja zwróci liczbę, 
+    która po dodaniu jedynki, będzie odpowiadać ilości cyfr liczby n (zapisanej w układzie dziesiętnym).
+  </div>
+  
+  <div class="paragraph">
+    Zadaniem w tej lekcji jest zaimplementowanie funkcji <span class="nowrap">„int logarytm(a, n)”</span>, 
+    która będzie liczyć zdefiniowaną wyżej funkcję. Zastanówmy się jak może wyglądać program, 
+    który implementuje tę funkcję. W pierwszym kroku należy podstawić do zmiennej <i>log</i> zero, 
+    a do zmiennej <i>iloczyn</i> jeden. Następnie w kroku drugim należy wykonywać pętlę 
+    dopóki zmienna <i>iloczyn</i> będzie mniejsza lub równa parametrowi <i>n</i>. 
+    W każdej iteracji pętli należy zwiększyć o jeden zmienną <i>log</i>, a zmienną <i>iloczyn</i> 
+    pomnożyć przez liczbę <i>a</i>. Po zakończeniu wykonywania się pętli należy zwrócić 
+    wartość zmiennej <i>log</i> pomniejszony o jeden i zakończyć działanie funkcji.
+  </div>
+  
+  <div class="paragraph">
+    Twoim zadaniem jest zaimplementowanie funkcji 
+    <span class="nowrap">„int <b>logarytm</b>(a, n)”</span>. 
+    Funkcja powinna realizować algorytm opisany w powyższym akapicie.
+    W przypadku pojawienia się problemów z implementacją tej funkcji, możesz wyświetlić 
+    wskazówkę w postaci pseudokodu. Po zakończeniu implementowania tej funkcji powinienś 
+    porównać swoje roziązanie z rozwiązaniem wzorcowym, a następnie przejść
+    do drugiej części obecnej lekcji.
+  </div>
+  
+</body>
+</html>

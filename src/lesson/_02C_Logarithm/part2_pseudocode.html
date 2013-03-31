@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pseudokod</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h2.first {
+      margin-top: 0px;
+    }
+    
+    div.indent {
+      margin-left: 20px;
+    }
+    
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+  </style>
+</head>
+
+<body>
+  <h2 class="first">Pseudokod funkcji rekurencyjnej</h2>
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczba naturalna <i>a</i> (<i>a</i> &ge; 2) oraz dodatnia liczba naturalna <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Logarytm o podstawie <i>a</i> z liczby <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Jeśli <i>n</i> &lt; <i>a</i>, to zwróć 0 i zakończ działanie funkcję.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        Wywołaj rekrencyjnie funkcję dla <i>a</i> oraz <i>n</i>/<i>a</i>, do zwróconego wyniku dodaj jeden, 
+        zwróć obliczoną sumę i zakończ działanie funkcji.
+      </td>
+    </tr>
+  </table>
+
+
+  <h2>Pseudokod funkcji iteracyjnej</h2>
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczba naturalna <i>a</i> (<i>a</i> &ge; 2) oraz dodatnia liczba naturalna <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Logarytm o podstawie <i>a</i> z liczby <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Przyjmij <i>log</i> := 0
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        Dopóki <i>n</i> &ge; <i>a</i> wykonuj:
+        <div class="indent">
+          oblicz <i>n</i> := <i>n</i> / <i>a</i>,<br/>
+          zwiększ wartość zmiennej <i>log</i> o jeden.
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 3.</td>
+      <td>
+        Zwróć wartość <i>log</i> i zakończ działanie funkcji.
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

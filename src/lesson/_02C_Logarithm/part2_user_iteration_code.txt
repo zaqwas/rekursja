@@ -1,0 +1,21 @@
+//Funkcje specjalne:
+void start(&a,&n){}
+void sprawdz(log){}
+
+//Funkcja logarytm
+//Iteracyjne
+//rozwiązanie użytkownika:
+int logarytm(a,n)
+~var i;
+~{
+~  //Zaimplementuj tę funkcję
+  //zgodnie z treścią zadania
+~}
+
+void main()
+var a, n, log;
+{
+  start(a,n);
+  log = logarytm(a,n);
+  sprawdz(log);
+}
