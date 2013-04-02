@@ -1,0 +1,19 @@
+//Funkcje specjalne:
+void start(&n){}
+void sprawdz(fib){}
+
+//Funkcja fibonacci
+//Rozwiązanie użytkownika:
+~int fibonacci(n)
+~{
+~  //Zaimplementuj tę funkcję
+  //zgodnie z treścią zadania
+~}
+
+void main()
+var n, fib;
+{
+  start(n);
+  fib = fibonacci(n);
+  sprawdz(fib);
+}

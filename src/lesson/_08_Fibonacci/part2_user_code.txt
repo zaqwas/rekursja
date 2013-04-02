@@ -1,0 +1,29 @@
+//Funkcje specjalne:
+void start(&n){}
+void sprawdz(fib){}
+
+//Globalna tablica do
+//zapamiętwania obliczonych
+//wyrazów ciągu:
+var tab[100];
+
+//Funkcja fibonacci
+//Rozwiązanie użytkownika:
+~int fibonacci(n)
+~{
+~  //Popraw tę funkcję
+  //zgodnie z treścią zadania
+  if (n <= 1) {
+    return n;
+  }
+  return fibonacci(n-2)
+    + fibonacci(n-1);
+~}
+
+void main()
+var n, fib;
+{
+  start(n);
+  fib = fibonacci(n);
+  sprawdz(fib);
+}

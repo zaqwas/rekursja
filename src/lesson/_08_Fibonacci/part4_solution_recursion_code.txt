@@ -1,0 +1,37 @@
+//Funkcje specjalne:
+void start(&n){}
+
+//Funkcja fibonacci
+//Rekurencyjne
+//rozwiązanie wzorcowe:
+void fibonacci(n,&a11,&a12,&a21,&a22)
+var potega;
+{
+  if (n == 0) {
+    a11 = 1; a12 = 0;
+    a21 = 0; a22 = 1;
+    return;
+  }
+  potega = potega(a,n/2);
+  potega = potega * potega;
+  if (n%2 == 1) {
+    potega *= a;
+  }
+  return potega;
+}
+
+void main()
+var a, n, potega;
+{
+  start(a,n);
+  fibonacci(n,a11,a12,a21,a22);
+  
+  writeln("a11 = F(",n+1,") = ",a11);
+  writeln("a12 = F(",n,") = ",a12);
+  writeln("a21 = F(",n,") = ",a21);
+  if (n > 0) {
+    writeln("a22 = F(",n-1,") = ",a22);
+  } else {
+    writeln("a22 = ",a22);
+  }
+}

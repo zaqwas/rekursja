@@ -1,0 +1,29 @@
+//Funkcje specjalne:
+void start(&n){}
+
+//Funkcja fibonacci
+//Rozwiązanie wzorcowe:
+int fibonacci(n)
+var a, b, c;
+{
+  if (n <= 1) {
+    return n;
+  }
+  a = 1; 
+  b = 1;
+  while (n > 2) {
+    c = a + b;
+    a = b;
+    b = c;
+    n--;
+  }
+  return b;
+}
+
+void main()
+var n, fib;
+{
+  start(n);
+  fib = fibonacci(n);
+  writeln("fibonacci(",n,") = ",fib);
+}

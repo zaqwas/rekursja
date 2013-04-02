@@ -1,0 +1,30 @@
+//Funkcje specjalne:
+void start(&n){}
+
+//Globalna tablica do
+//zapamiętwania obliczonych
+//wyrazów ciągu:
+var tab[100];
+
+//Funkcja fibonacci
+//Rozwiązanie wzorcowe:
+int fibonacci(n)
+{
+  if (n <= 1) {
+    return n;
+  }
+  if (tab[n] > 0) {
+    return tab[n];
+  }
+  tab[n] = fibonacci(n-2)
+    + fibonacci(n-1);
+  return tab[n];
+}
+
+void main()
+var n, fib;
+{
+  start(n);
+  fib = fibonacci(n);
+  writeln("fibonacci(",n,") = ",fib);
+}

@@ -1,0 +1,21 @@
+//Funkcje specjalne:
+void start(&n){}
+void sprawdz(a11,a12,a21,a22){}
+
+//Funkcja fibonacci
+//Rekurencyjne 
+//rozwiązanie użytkownika:
+void fibonacci(n,&a11,&a12,&a21,&a22)
+~var i;
+~{
+~  //Zaimplementuj tę funkcję
+  //zgodnie z treścią zadania
+~}
+
+void main()
+var n, a11, a12, a21, a22;
+{
+  start(n);
+  fibonacci(n,a11,a12,a21,a22);
+  sprawdz(a11,a12,a21,a22);
+}

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wskazówki</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <script type="text/javascript">
+    function gotoHint1() {
+      window.location.href = "#hint1";
+    }
+    function gotoHint2() {
+      window.location.href = "#hint2";
+    }
+
+    function showHint2() {
+      hint2.style.display = "inherit";
+    }
+  </script>
+    
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "Times New Roman";
+    }
+    h2 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h2.firstHeader {
+      margin-top: 0px;
+    }
+    
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.hidden {
+      display: none;
+    }
+    
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <h2 class="firstHeader" id="hint1">Wskazówka</h2>
+  <div class="firstParagraph">
+    W tej wskazówce spróbujemy naszkicować wygląd funkcji, która rozwiąże problem 
+    wielokrotnego obliczania wartości tych samych wyrazów. Funkcja „int fibonacci(n)” 
+    może wyglądać tak, iż dla małych parametrów (np. 0 oraz 1) funkcja od razu zwróci wynik. 
+    Jedak gdy parametr n będzie większy, to funkcja powinna sprawdzić globalną tablicę <i>tab</i> 
+    i zobaczyć czy <i>n</i>-ty wyraz ciągu został już policzony. Wystarczy sprawdzić 
+    czy wartość w tablicy jest większa od zera, gdyż tablice globalne przy starcie 
+    programu są wypełniane zerami. Jeśli wyraz ciągu został już policzony, 
+    to funkcja powinna zwrócić wartość z tablicy. Jeśli jednak wyraz ciągu nie został 
+    wcześniej policzony, to funkcja powinna wywołać się rekurencyjnie dwa razy dla 
+    argumentów <i>n</i>-2 oraz <i>n</i>-1. Następnie należy zsumować zwrócone wyniki, a obliczoną sumę 
+    zapamiętać w globalnej tablicy oraz zwrócić ją jako wynik funkcji.
+  </div>
+
+  
+  <div id="hint2" class="hidden">
+    <h2>Pseudokod algorytmu</h2>
+    <table>
+      <tr>
+        <td class="first">Dane:</td>
+        <td>
+          Liczba naturalna <i>n</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Wynik:</td>
+        <td>
+          <i>N</i>-ty wyraz ciągu Fibonacciego.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 1.</td>
+        <td>
+          Jeżeli <i>n</i> &le; 1, to zwróć wartość <i>n</i> i zakończ działanie funkcji.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 2.</td>
+        <td>
+          Jeżeli <i>tab</i>[<i>n</i>] &gt; 0, to zwróć wartość <i>tab</i>[<i>n</i>] i zakończ działanie funkcji.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 3.</td>
+        <td>
+          Wywołaj rekurencyjnie funkcje dla argumentów <i>n</i>-2 oraz <i>n</i>-1. 
+          Następnie zsumuj zwrócone wyniki, a obliczoną sumę 
+          przypisz do tablicy <i>tab</i>[<i>n</i>] oraz zwrócić ją jako wynik funkcji.
+        </td>
+      </tr>
+    </table>
+  </div>
+  
+</body>
+</html>

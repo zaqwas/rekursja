@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Treść zadania</title>
+  
+  <style>
+    body {
+      font-size: 14px;
+      font-family: "Times New Roman";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    img {
+      display: block;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Ciąg Fibonacciego</h2>
+
+  <div class="firstParagraph">
+    Poniżej prezentujemy zdjęcie drzewa wywołań funkcji dla programu z pierwszej części:
+    
+    <img src="part1_definition.png" alt="Nie udało załadować się obrazka"/>
+    
+    Można na nim zobaczyć, że funkcja „fibonacci” wywoływana jest wiele razy dla tych samych argumentów. 
+    Np. dla argumentu ??? funkcja wykonywana jest aż ??? razy. Wobec tego niepotrzebnie 
+    kilka razy obliczamy ten sam wyraz ciągu. Postarajmy się to wyeliminować. Jednym z pierwszych 
+    sposobów jaki może przyjść na myśl, to użycie globalnej tablicy, w której będziemy 
+    pamiętać wyliczone wcześniej wartości funkcji. 
+  </div>
+  
+  <div class="paragraph">
+    Spróbuj poprawić funkcję „int fibonacci(n)” z pierwszej części lekcji. Funkcja powinna 
+    zapamiętywać wyniki w globalnej tablicy <i>tab</i> (przypomnimy, iż tablica globalna przy 
+    uruchomieniu programu jest wypełniana zerami) i nie pozwalać, aby wielokrotnie obliczany 
+    był ten sam wyraz ciągu. Funkcja „fibonacci” powinna poprawnie działać dla argumentów <i>n</i>, 
+    będącymi liczbami naturalnymi od 0 do 98.
+    W razie problemów z implementacją tej funkcji możesz skorzystać ze wskazówek, 
+    które powinny doprowadzić Cię do poprawnego rozwiązania. Po zakończeniu implementowania 
+    tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową, a następnie przejdź do kolejnej części lekcji.
+  </div>
+  
+</body>
+</html>
