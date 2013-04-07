@@ -10,7 +10,7 @@ public class HanoiTowerLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Wieże Hanoi";
+        return "4 - Wieże Hanoi";
     }
 
     @Override

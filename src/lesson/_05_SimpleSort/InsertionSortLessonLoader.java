@@ -11,7 +11,7 @@ public class InsertionSortLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Porządkowanie przez wstawianie";
+        return "5c - Porządkowanie przez wstawianie";
     }
 
     @Override

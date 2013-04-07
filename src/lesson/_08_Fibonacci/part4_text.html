@@ -7,7 +7,7 @@
   <style>
     body {
       font-size: 14px;
-      font-family: "Times New Roman";
+      font-family: "DejaVu Serif";
     }
     h2 {
       margin-top: 0px;
@@ -99,7 +99,7 @@
 </head>
 
 <body>
-  <h2>Ciąg Fibonacciego</h2>
+  <h2>Ciąg Fibonacciego: logarytmiczne wyznaczanie <i>n</i>-tego wyrazu</h2>
 
   <div class="firstParagraph">
     
@@ -611,17 +611,38 @@
   
   
   <div class="paragraph">
+    
+    <div class="floating">
+      <span class="equation">A<sup><i>n</i></sup></span> = 
+      <table class="matrix inlineTable">
+        <tr>
+          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
+          <td class="extraLeft"><i>f</i><sub>1</sub>+<i>f</i><sub>2</sub></td>
+          <td class="extraRight"><i>f</i><sub>1</sub></td>
+          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/>&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="extraLeft"><i>f</i><sub>1</sub></td>
+          <td class="extraRight"><i>f</i><sub>2</sub></td>
+        </tr>
+      </table>
+    </div>
+    
     Z powyższych akapitów wynika, że aby wyliczyć <i>n</i>-ty wyraz ciągu Fibonacciego 
     wystarczy podnieść macierz <b>A</b> do <i>n</i>-tej potęgi. 
     Zastanówmy się jak to zrobić. Jeśli przypomnimy sobie lekcje o potęgowaniu, 
     to szybko zorientujemy się, że macierz <b>A</b><sup><i>n</i></sup>
-    można efektywnie wyliczyć posługując się algorytmem szybkiego potęgowania. 
+    można efektywnie obliczyć posługując się algorytmem szybkiego potęgowania. 
     Wobec tego zadaniem w tej lekcji jest napisanie funkcji 
-    „int fibonacci(n, &amp;a11, &amp;a12, &amp;a21, &amp;a22)”. Funkcja powinna jako parametr 
-    przyjmować jedną liczbę n będącą wykładnikiem potęgi, natomiast jako wynik zwracać 
-    cztery liczby (za pomocą referencji), będące odpowiednimi elementami macierzy 
-    <b>A</b><sup><i>n</i></sup> . Funkcja „fibonacci” powinna 
-    realizować szybki algorytm potęgowania (oczywiście odpowiednio zmodyfikowany 
+    „int fibonacci(n, &amp;f1, &amp;f2)”. Funkcja powinna jako parametr 
+    przyjmować jedną liczbę <i>n</i> będącą wykładnikiem potęgi, natomiast jako wynik 
+    zwracać (za pomocą referencji) dwie liczby <i>f</i><sub>1</sub> oraz <i>f</i><sub>2</sub>.
+    Zwrócone liczby powinny być odpowiednio pierwszym i drugim elementem drugiego wiersza macierzy
+    <b>A</b><sup><i>n</i></sup>. Te dwa elementy wystarczą do odtworzenia całej macierzy,
+    gdyż pierwszy element pierwszego wiersza jest równy <i>f</i><sub>1</sub>+<i>f</i><sub>2</sub>,
+    a drugi element piewszego wiersza jest równy <i>f</i><sub>1</sub>. Powyższe zależności są
+    pokazane na rysunku i są one prawdziwe dla wszystkich liczb naturalnych (nawet dla przypadku <i>n</i>=0).
+    Funkcja „fibonacci” powinna realizować szybki algorytm potęgowania (oczywiście odpowiednio zmodyfikowany 
     do potęgowania macierzy) i działać w czasie logarytmicznym względem parametru <i>n</i>. 
     Funkcja powinna zostać napisana w dwóch wersjach rekurencyjnej i iteracyjnej. 
     W przypadku pojawienia się problemów, możesz spojrzeć na pseudokody podanych funkcji. 

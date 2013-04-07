@@ -10,7 +10,7 @@ public class IntroductionLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Wprowadzenie do systemu „REKURENCJA”";
+        return "1a - Wprowadzenie do systemu";
     }
 
     @Override

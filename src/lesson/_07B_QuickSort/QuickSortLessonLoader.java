@@ -10,7 +10,7 @@ public class QuickSortLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Szybki algorytm porządkowania";
+        return "7b - Szybki algorytm porządkowania";
     }
 
     @Override

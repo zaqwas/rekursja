@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Pseudokod</title>
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h2.first {
+      padding-top: 0px;
+    }
+      
+    div {
+      margin-top: 15px;
+      margin-bottom: 0px;
+    }
+    div.first {
+      margin-top: 5px;
+    }
+    div.hidden {
+      display: none;
+    }
+    div.indent {
+      margin-top: 0px;
+      margin-left: 20px;
+    }
+     
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    
+    ul {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-left: 25px;
+    }
+    code {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Pseudokod funkcji rekurencyjnej</h2>
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczba naturalna <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Pierszy oraz drugi element drugiego wiersza macierzy <b>A</b><sup><i>n</i></sup>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Jeśli <i>n</i> = 0, to zwróć 1 oraz 0 i zakończ działanie funkcji.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        Wywołaj funkcję rekurencyjnie dla ⌊<i>n</i>/2⌋,
+        a obliczone wartości zapamiętaj w zmiennych <i>f</i>1 oraz <i>f</i>2.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 3.</td>
+      <td>
+        Oblicz <i>tmp</i> := <i>f</i><sub>1</sub> &middot; <i>f</i><sub>1</sub> 
+        + <i>f</i><sub>2</sub> &middot; <i>f</i><sub>2</sub>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 4.</td>
+      <td>
+        Oblicz <i>f</i><sub>1</sub> := <i>f</i><sub>1</sub> &middot; <i>f</i><sub>1</sub> 
+        + 2 &middot; <i>f</i><sub>1</sub> &middot; <i>f</i><sub>2</sub>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 5.</td>
+      <td>
+        Przypisz <i>f</i><sub>2</sub> := <i>tmp</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 6.</td>
+      <td>
+        Jeżeli <i>n</i> jest nieparzyste wykonaj:
+        <div class="indent">
+          oblicz <i>tmp</i> := <i>f</i><sub>1</sub> + <i>f</i><sub>2</sub><br/>
+          przypisz <i>f</i><sub>2</sub> := <i>f</i><sub>1</sub> oraz <i>f</i><sub>1</sub> := <i>tmp</i>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 7.</td>
+      <td>
+        Zwróć wartość zmiennych <i>f</i><sub>1</sub> oraz <i>f</i><sub>2</sub> i zakończ działanie funkcji.
+      </td>
+    </tr>
+  </table>
+
+
+  <h2>Pseudokod funkcji iteracyjnej</h2>
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczba naturalna <i>n</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Pierszy oraz drugi element drugiego wiersza macierzy <b>A</b><sup><i>n</i></sup>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Przyjmij <i>a</i><sub>1</sub> := 1 oraz <i>a</i><sub>2</sub> := 0.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        Przyjmij <i>f</i><sub>1</sub> := 0 oraz <i>f</i><sub>2</sub> := 1.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 3.</td>
+      <td>
+        Dopóki <i>n</i> &gt; 0 wykonuj:
+        <div class="indent">
+          jeżeli <i>n</i> jest nieparzyste wykonaj:
+          <div class="indent">
+            oblicz <i>tmp</i> := <i>f</i><sub>1</sub> &middot; <i>a</i><sub>1</sub> 
+            + <i>f</i><sub>2</sub> &middot; <i>a</i><sub>2</sub><br/>
+            oblicz <i>f</i><sub>1</sub> := 
+            <i>f</i><sub>1</sub> &middot; (<i>a</i><sub>1</sub> + <i>a</i><sub>2</sub>)
+            + <i>f</i><sub>1</sub> &middot; <i>f</i><sub>2</sub><br/>
+            przypisz <i>f</i>2 := <i>tmp</i>
+          </div>
+          oblicz <i>tmp</i> := <i>a</i><sub>1</sub> &middot; <i>a</i><sub>1</sub> 
+          + <i>a</i><sub>2</sub> &middot; <i>a</i><sub>2</sub><br/>
+          oblicz <i>a</i><sub>1</sub> := 
+          <i>a</i><sub>1</sub> &middot; <i>a</i><sub>1</sub>
+          + 2 &middot; <i>a</i><sub>1</sub> &middot; <i>a</i><sub>2</sub><br/>
+          przypisz <i>a</i>2 := <i>tmp</i><br/>
+          oblicz <i>n</i> := &lfloor;<i>n</i>/2&rfloor;
+        </div>
+
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 4.</td>
+      <td>
+        Zwróć wartość zmiennych <i>f</i>1 oraz <i>f</i>2 i zakończ działanie funkcji.
+      </td>
+    </tr>
+  </table>
+  
+</body>
+</html>

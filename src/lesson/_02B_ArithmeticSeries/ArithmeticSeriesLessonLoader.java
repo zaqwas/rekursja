@@ -10,7 +10,7 @@ public class ArithmeticSeriesLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Suma ciągu arytmetycznego";
+        return "2b - Suma ciągu arytmetycznego";
     }
 
     @Override

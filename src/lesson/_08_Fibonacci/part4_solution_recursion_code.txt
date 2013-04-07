@@ -1,16 +1,13 @@
 //Funkcje specjalne:
 void start(&n){}
 
-//Funkcja fibonacci
-//Rekurencyjne
-//rozwiązanie wzorcowe:
-void fibonacci(n,&a11,&a12,&a21,&a22)
+/*
+Szybkie potęgowanie:
+int potega(a,n)
 var potega;
 {
   if (n == 0) {
-    a11 = 1; a12 = 0;
-    a21 = 0; a22 = 1;
-    return;
+    return 1;
   }
   potega = potega(a,n/2);
   potega = potega * potega;
@@ -19,19 +16,44 @@ var potega;
   }
   return potega;
 }
+*/
+
+//Funkcja fibonacci
+//Rekurencyjne
+//rozwiązanie wzorcowe:
+void fibonacci(n,&f1,&f2)
+var tmp;
+{
+  if (n == 0) {
+    //return 1;
+    f1 = 0; f2 = 1;
+    return;
+  }
+  //potega = potega(a,n/2);
+  fibonacci(n/2,f1,f2);
+  //potega = potega * potega;
+  tmp = f1*f1 + f2*f2;
+  f1 = f1*f1 + 2*f1*f2;
+  f2 = tmp;
+  if (n%2 == 1) {
+    //potega *= a;
+    tmp = f1 + f2;
+    f2 = f1;
+    f1 = tmp;
+  }
+  //return potega;
+}
 
 void main()
-var a, n, potega;
+var n, f1, f2;
 {
-  start(a,n);
-  fibonacci(n,a11,a12,a21,a22);
+  start(n);
+  fibonacci(n,f1,f2);
   
-  writeln("a11 = F(",n+1,") = ",a11);
-  writeln("a12 = F(",n,") = ",a12);
-  writeln("a21 = F(",n,") = ",a21);
+  writeln("f1 = F(",n,") = ",f1);
   if (n > 0) {
-    writeln("a22 = F(",n-1,") = ",a22);
+    writeln("f2 = F(",n-1,") = ",f2);
   } else {
-    writeln("a22 = ",a22);
+    writeln("f2 = ",f2);
   }
 }

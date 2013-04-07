@@ -1,11 +1,28 @@
 //Funkcje specjalne:
 void start(&n){}
-void sprawdz(a11,a12,a21,a22){}
+void sprawdz(f1,f2){}
+
+/*
+Szybkie potęgowanie:
+int potega(a,n)
+var potega;
+{
+  potega = 1;
+  while(n>0) {
+    if (n%2 == 1) {
+      potega *= a;
+    }
+    a = a*a;
+    n = n/2;
+  }
+  return potega;
+}
+*/
 
 //Funkcja fibonacci
 //Iteracyjne
 //rozwiązanie użytkownika:
-void fibonacci(n,&a11,&a12,&a21,&a22)
+void fibonacci(n,&f1,&f2)
 ~var i;
 ~{
 ~  //Zaimplementuj tę funkcję
@@ -13,9 +30,9 @@ void fibonacci(n,&a11,&a12,&a21,&a22)
 ~}
 
 void main()
-var n, a11, a12, a21, a22;
+var n, f1, f2;
 {
   start(n);
-  fibonacci(n,a11,a12,a21,a22);
-  sprawdz(a11,a12,a21,a22);
+  fibonacci(n,f1,f2);
+  sprawdz(f1,f2);
 }

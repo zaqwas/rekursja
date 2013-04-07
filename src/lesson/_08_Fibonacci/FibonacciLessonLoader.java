@@ -1,26 +1,26 @@
-package lesson._05_SimpleSort;
+package lesson._08_Fibonacci;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import lesson.Lesson;
 import lesson.LessonLoader;
-import lesson._05_SimpleSort.SimpleSortLesson.Algorithm;
 import mainclass.MainClass;
 
-public class SelectionSortLessonLoader implements LessonLoader {
+public class FibonacciLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "5a - Porządkowanie przez wybór";
+        return "8 - Ciąg Fibonacciego";
     }
 
     @Override
     public String getLessonKey() {
-        return "9sX6haLj0C";
+        return "x7KgN2c70C";
     }
 
     @Override
     public Lesson getLesson(MainClass mainClass, DataInputStream dataInputStream) throws IOException {
-        return new SimpleSortLesson(Algorithm.SelectionSort, mainClass, dataInputStream, this);
+        return new FibonacciLesson(mainClass, dataInputStream, this);
     }
+    
 }

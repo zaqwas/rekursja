@@ -10,7 +10,7 @@ public class LogarithmLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "3C - Logarytm";
+        return "2c - Logarytm";
     }
 
     @Override

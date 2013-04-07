@@ -10,7 +10,7 @@ public class RecursionIntroLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Wprowadzenie do rekurencji";
+        return "2a - Wprowadzenie do rekurencji";
     }
 
     @Override

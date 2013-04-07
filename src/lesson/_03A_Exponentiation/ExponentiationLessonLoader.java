@@ -10,7 +10,7 @@ public class ExponentiationLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Potęgowanie";
+        return "3a - Potęgowanie";
     }
 
     @Override

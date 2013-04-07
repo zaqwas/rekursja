@@ -10,7 +10,7 @@ public class MergeFunctionLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Scalanie posortowanych ciągów";
+        return "6a - Scalanie uporządkowanych tablic";
     }
 
     @Override

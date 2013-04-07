@@ -9,7 +9,8 @@ var tab[100];
 
 //Funkcja fibonacci
 //Rozwiązanie użytkownika:
-~int fibonacci(n)
+int fibonacci(n)
+~
 ~{
 ~  //Popraw tę funkcję
   //zgodnie z treścią zadania

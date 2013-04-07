@@ -186,7 +186,7 @@ public class InterpreterThread extends Thread {
                     stack.mark();
                 }
                 boolean wait = lesson.pauseStart(topStackInstance, prevNode, !newInstance, delayTime);
-                if ( wait && runStatus == RunStatus.DELAY ) {
+                if (wait && runStatus == RunStatus.DELAY) {
                     try {
                         sleep(delayTime);
                     } catch (InterruptedException ex) {
@@ -208,13 +208,16 @@ public class InterpreterThread extends Thread {
                 }
                 lesson.pauseStop(topStackInstance, prevNode, !newInstance);
                 editorMgr.clrearStatement();
+                boolean mark = markTopStackInstance;
                 if (markTopStackInstance) {
                     tree.unmark();
                     stack.unmark();
                     markTopStackInstance = false;
                 }
                 if (reqStatus == RequestStatus.STOP) {
-                    continue;
+                    markTopStackInstance = mark;
+                    currentInstance = null;
+                    break;
                 }
             }
             //</editor-fold>
@@ -245,6 +248,7 @@ public class InterpreterThread extends Thread {
                 realInstance = realInstance.getParentInstance();
                 currentInstance = realInstance;
                 if (realInstance == null) {
+                    topStackInstance = null;
                     break;
                 }
                 if (function.isAddedToHistory()) {
@@ -342,15 +346,19 @@ public class InterpreterThread extends Thread {
         runStatus = RunStatus.STOPPED;
         if (programError == null) {
             mainClass.setStatus(new SimpleLazyStringCreator("Program zatrzymany"));
-            tree.update(mainInstance);
-            stack.clear();
-            instanceFrame.clear();
         } else {
             mainClass.getEditor().setLineAndPositionInProgramError(programError);
             mainClass.setError(programError);
-            instanceFrame.update(topStackInstance);
-            tree.update(topStackInstance);
+        }
+        
+        if (topStackInstance == null) {
+            stack.clear();
+            instanceFrame.update(mainInstance);
+            tree.update(mainInstance);
+        } else {
             stack.update(topStackInstance);
+            tree.update(topStackInstance);
+            instanceFrame.update(topStackInstance);
             if (markTopStackInstance) {
                 tree.mark();
                 stack.mark();

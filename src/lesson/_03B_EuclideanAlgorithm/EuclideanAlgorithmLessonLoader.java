@@ -10,7 +10,7 @@ public class EuclideanAlgorithmLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Największy wspólny dzielnik";
+        return "3b - Największy wspólny dzielnik";
     }
 
     @Override

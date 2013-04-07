@@ -10,7 +10,7 @@ public class PartitionFunctionLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Funkcja dzieląca tablicę";
+        return "7a - Funkcja dzieląca tablicę";
     }
 
     @Override

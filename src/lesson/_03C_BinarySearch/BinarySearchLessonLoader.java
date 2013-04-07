@@ -10,7 +10,7 @@ public class BinarySearchLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Wyszukiwanie elementu";
+        return "3c - Wyszukiwanie elementu";
     }
 
     @Override

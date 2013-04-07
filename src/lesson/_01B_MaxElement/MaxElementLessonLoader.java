@@ -10,7 +10,7 @@ public class MaxElementLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Pierwszy program: maksymalny element";
+        return "1b - Pierwszy program";
     }
 
     @Override

@@ -10,7 +10,7 @@ public class MergeSortLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Porządkowanie przez scalanie";
+        return "6b - Porządkowanie przez scalanie";
     }
 
     @Override

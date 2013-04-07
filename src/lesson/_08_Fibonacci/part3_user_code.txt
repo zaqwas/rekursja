@@ -4,7 +4,8 @@ void sprawdz(fib){}
 
 //Funkcja fibonacci
 //Rozwiązanie użytkownika:
-~int fibonacci(n)
+int fibonacci(n)
+~var i;
 ~{
 ~  //Zaimplementuj tę funkcję
   //zgodnie z treścią zadania

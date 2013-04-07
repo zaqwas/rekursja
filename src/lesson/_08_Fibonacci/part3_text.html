@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Treść zadania</title>
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Ciąg Fibonacciego: funkcja iteracyjna</h2>
+
+  <div class="firstParagraph">
+    Rozwiązanie z poprzedniej części nie jest zbyt optymalne, gdyż wykorzystuje dodatkową pamięć. 
+    W tej części postaramy się zoptymalizować program, tak aby nie wykorzystywał żadnej tablicy.
+  </div>
+  
+  <div class="paragraph">
+    Powiedzmy, że mamy obliczonych kilka początkowych wyrazów ciągu Fibonacciego, tj.: 
+    0, 1, 1, 2, 3, 5, 8, 13. Zauważ, że aby wyliczyć kolejny – ósmy – wyraz ciągu wystarczą nam 
+    tylko dwa poprzednie wyrazy tego ciągu: F<sub>8</sub> = F<sub>6</sub> + F<sub>7</sub> = 8 + 13 = 21. 
+    W przypadku kolejnego – dziewiątego – wyrazu ciągu też potrzebujemy pamiętać tylko 
+    dwa ostatnie wyrazy: F<sub>9</sub> = F<sub>7</sub> + F<sub>8</sub> = 13 + 21 = 34. 
+    Zatem na podstawie powyższego spostrzeżenia łatwo napisać iteracyjną funkcję, 
+    która będzie obliczać <i>n</i>-ty wyraz ciągu Fibonacciego. 
+    Funkcja powinna wykorzystywać pętlę, która będzie obliczać kolejne wyrazy ciągu na podstawie 
+    dwóch ostatnio zapamiętanych wartości. Po każdym obliczeniu nowej wartości 
+    pętla powinna zapomnieć o jednym z dwóch zapamiętanych wcześniej wyrazów ciągu
+    – pętla powinna zapomnieć o mniejszym z nich.
+  </div>
+  
+  <div class="paragraph">
+    Na podstawie powyższego spostrzeżenia spróbuj napisać iteracyjną funkcję „int fibonacci(n)”. 
+    W razie problemów z implementacją tej funkcji możesz skorzystać ze wskazówek, 
+    które powinny doprowadzić Cię do poprawnego rozwiązania. Po zakończeniu implementowania 
+    tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową, a następnie przejdź do kolejnej części lekcji.
+  </div>
+  
+</body>
+</html>

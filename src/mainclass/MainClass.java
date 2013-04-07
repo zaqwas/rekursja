@@ -48,6 +48,7 @@ import lesson._06A_MergeFunction.MergeFunctionLessonLoader;
 import lesson._06B_MergeSort.MergeSortLessonLoader;
 import lesson._07A_PartitionFunction.PartitionFunctionLessonLoader;
 import lesson._07B_QuickSort.QuickSortLessonLoader;
+import lesson._08_Fibonacci.FibonacciLessonLoader;
 import parser.ProgramError;
 import stack.StackOfInstances;
 import statistics.Statistics;
@@ -780,6 +781,10 @@ public class MainClass {
         
         addLessonLoader(new PartitionFunctionLessonLoader());
         addLessonLoader(new QuickSortLessonLoader());
+        
+        chooseLessonMenu.add(new JSeparator());
+        
+        addLessonLoader(new FibonacciLessonLoader());
     }
     
     private void addLessonLoader(final LessonLoader loader) {

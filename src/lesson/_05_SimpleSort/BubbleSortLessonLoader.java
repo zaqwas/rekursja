@@ -11,7 +11,7 @@ public class BubbleSortLessonLoader implements LessonLoader {
 
     @Override
     public String getLessonName() {
-        return "Porządkowanie bąbelkowe";
+        return "5b - Porządkowanie bąbelkowe";
     }
 
     @Override
