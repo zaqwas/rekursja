@@ -135,40 +135,40 @@ class TextFrame {
             public void run() {
                 TabPane tabPane = new TabPane();
                 tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-                tabPane.setStyle("-fx-tab-min-height: 16px");
+                tabPane.setTabMinHeight(16d);
                 tabSelectionModel = tabPane.getSelectionModel();
 
                 Tab tab = new Tab(Lang.textTabName);
+                tabPane.getTabs().add(tab);
                 WebView web = new WebView();
                 web.setContextMenuEnabled(false);
                 web.getEngine().load(getClass().getResource(prefix + "text.html").toExternalForm());
                 tab.setContent(web);
-                tabPane.getTabs().add(tab);
-
+                
                 tab = new Tab(Lang.functionsTabName);
+                tabPane.getTabs().add(tab);
                 web = new WebView();
                 web.setContextMenuEnabled(false);
                 web.getEngine().load(getClass().getResource("functions.html").toExternalForm());
                 tab.setContent(web);
-                tabPane.getTabs().add(tab);
 
-                tab = new Tab(Lang.hintTabName);
+                tab = new Tab(Lang.pseudocodeTabName);
+                tab.setDisable(true);
+                hintTabDisabledProperty = tab.disableProperty();
+                tabPane.getTabs().add(tab);
                 web = new WebView();
                 web.setContextMenuEnabled(false);
                 web.getEngine().load(getClass().getResource(prefix + "pseudocode.html").toExternalForm());
                 tab.setContent(web);
-                tab.setDisable(true);
-                hintTabDisabledProperty = tab.disableProperty();
-                tabPane.getTabs().add(tab);
                 
                 tab = new Tab(Lang.summaryTabName);
+                tab.setDisable(true);
+                summaryTabDisabledProperty = tab.disableProperty();
+                tabPane.getTabs().add(tab);
                 web = new WebView();
                 web.setContextMenuEnabled(false);
                 web.getEngine().load(getClass().getResource(prefix + "summary.html").toExternalForm());
                 tab.setContent(web);
-                tab.setDisable(true);
-                summaryTabDisabledProperty = tab.disableProperty();
-                tabPane.getTabs().add(tab);
 
                 Scene scene = new Scene(tabPane);
                 fxPanel.setScene(scene);
@@ -196,7 +196,7 @@ class TextFrame {
         
         public static final String textTabName = "Treść zadania";
         public static final String functionsTabName = "Funkcje specjalne";
-        public static final String hintTabName = "Wskazówki";
+        public static final String pseudocodeTabName = "Pseudokod";
         public static final String summaryTabName = "Podsumowanie";
     }
     //</editor-fold>

@@ -1,29 +1,94 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Treść zadania</title>
+  
+  <style>
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    img.floating {
+      float: left;
+      display: block;
+      margin-right: 3px;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.clear {
+      clear: both;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Suma ciągu arytmetycznego - wzór</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Porządkowanie przez wstawianie</h2>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
-
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
-
-  </body>
-</html> 
+  <div class="firstParagraph">
+    <img class="floating" src="insert1.png" alt=""/>
+    
+    W tej lekcji zajmiemy się algorytmem porządkowania przez wstawianie. 
+    Jednak zanim przejdziemy do wyjaśnienia tego algorytmu, najpierw zajmiemy się 
+    samą operacją wstawiania. Rozważmy taką sytuację jak na obrazku. 
+    Mamy pięcioelementową tablicę, w której pierwsze cztery elementy są 
+    uporządkowane, a na ostatniej pozycji umieściliśmy nowy element. Niestety nowy 
+    element zaburza uporządkowanie tablicy, a oczywiście chcielibyśmy przywrócić 
+    porządek w całej tablicy. Wobec tego nowy element należy umieścić (wstawić) 
+    na odpowiednią pozycję, w przypadku naszej tabeli powinniśmy wstawić trójkę 
+    pomiędzy trójkę oraz czwórkę. 
+  </div>
+  <div class="clear"></div>
+  
+  <div class="paragraph">
+    <img class="floating" src="insert2.png" alt=""/>
+    
+    W poprzednim akapicie powiedzieliśmy sobie, że aby ponownie otrzymać uporządkowaną 
+    tablicę należy wstawić nowy element w odpowiednie miejsce. Zastanówmy się jak może 
+    wyglądać algorytm, który to wykonuje. Operacje wstawiania można przeprowadzić w ten sposób, 
+    iż nowy element będziemy porównywać z kolejnymi elementami stojącymi po jego lewej stronie 
+    (na rysunku porównanie liczb oznaczyliśmy kolorem pomarańczowym). Jeśli element stojący 
+    po lewej stronie jest większy od nowego elementu, to należy zamienić go z nowym elementem 
+    i kontynuować wstawianie. Jeśli jednak element stojący po lewej stronie jest 
+    mniejszy lub równy, to znaczy, że nowy element znajduje na właściwym miejscu 
+    i należy zakończyć wstawianie. Wstawianie należy zakończyć również, gdy nowy 
+    element znajdzie się początku tablicy.
+  </div>
+  <div class="clear"></div>
+  
+  <div class="paragraph">
+    <img class="floating" src="insertion_sort.png" alt=""/>
+    
+    Jeśli opanowaliśmy algorytm wstawiania nowego elementu do uporządkowanej tablicy, 
+    to nie powinniśmy mieć już żadnych problemów z wykorzystaniem tej metody w algorytmie porządkowania. 
+    Algorytm porządkowanie przez wstawianie jest następujący. Najpierw należy zacząć 
+    od fragmentu tablicy składającej się z jednego (pierwszego) elementu i wstawić 
+    do niej element drugi. W ten sposób pierwsze dwa elementy będą uporządkowane 
+    i będziemy mogli wstawić trzeci element. Następnie należy umieszczać kolejne elementy. 
+    Po każdym umieszczeniu początek tablicy będzie uporządkowany i będzie można przeprowadzić 
+    kolejną operację wstawiania. Algorytm należy zakończyć jeśli nie będzie żadnego elementu do wstawienia.
+  </div>
+  <div class="clear"></div>
+  
+  <div class="paragraph">
+    Spróbuj zrealizować wyżej opisany algorytm. Zaimplementuj funkcję „void uporzadkuj(n)”, 
+    która powinna porządkować elementy tablicy wyświetlonej w osobnym oknie. 
+    Aby funkcja działała prawidłowo należy skorzystać z dwóch funkcji specjalnych 
+    „int porownaj(idx1, idx2)” oraz „void zamien(idx1, idx2)”. Obie funkcje są szczegółowo 
+    omówione w zakładce „funkcje specjalne”.
+    W przypadku pojawienia się problemów z implementacją tej funkcji, powinieneś spojrzeć 
+    na pseudokod algorytmu. Po zakończeniu implementowania porównaj swoje rozwiązania 
+    z rozwiązaniem wzorcowym, a następnie przeczytaj podsumowanie.
+  </div>
+  
+</body>
+</html>

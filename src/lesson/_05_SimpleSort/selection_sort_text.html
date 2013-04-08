@@ -1,29 +1,92 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Treść zadania</title>
+  
+  <style>
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    img.floating {
+      float: left;
+      display: block;
+      margin-right: 3px;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.clear {
+      clear: both;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Suma ciągu arytmetycznego - wzór</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Porządkowanie przez wybór</h2>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
-
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
-
-  </body>
-</html> 
+  <div class="firstParagraph">
+    W lekcji o wyszukiwaniu binarnym pokazaliśmy jak szybko wyszukiwać element 
+    w uporządkowanym ciągu. Dowiedzieliśmy się także, iż wyszukiwanie w posortowanym 
+    ciągu jest znacznie szybsze niż w ciągu nieuporządkowanym, dlatego tak ważne jest, 
+    aby w niektórych danych utrzymywać porządek. Oczywiście nie zawsze dane są na wstępnie 
+    uporządkowane, wówczas najpierw potrzeba je posortować. Wobec tego należy użyć 
+    jakiegoś algorytmu, który weźmie nieposortowany ciąg liczb i poprzestawia elementy tak, 
+    aby stał się uporządkowany. W tej lekcji, jak i dwóch następnych lekcjach, omówimy 
+    najprostsze algorytmy sortowania jakimi są porządkowanie: przez wybór, 
+    bąbelkowe oraz porządkowanie przez wstawianie. Wymienione algorytmy nie są algorytmami 
+    rekurencyjnymi, więc czytając te trzy lekcje możesz spokojnie zapomnieć o istnieniu rekurencji. 
+    Te trzy algorytmy zostały opisane w tym systemie, tylko dlatego, iż później poznamy 
+    dwa znacznie szybsze, lecz nieco bardziej skomplikowane algorytmy sortowania. 
+    Jednak przed poznaniem tych algorytmów, dobrze zapoznać się z tymi trzema 
+    prostymi metodami sortowania. 
+  </div>
+  
+  <div class="paragraph">
+    Algorytm opisany w tej lekcji możemy wyprowadzić z definicji problemu porządkowania. 
+    Zauważmy, że: jeśli mamy ustawić elementy ciągu w kolejności od najmniejszego do największego, 
+    to można wybrać w nim najpierw element najmniejszy i umieścić go na początku, 
+    za nim umieścić drugi najmniejszy element ciągu (czyli najmniejszy w pozostałym ciągu) itd. 
+    Metoda ta nazywa się algorytmem porządkowanie przez wybór. Do jej dokładnego 
+    opisania jesteśmy już przygotowani gdyż w drugiej lekcji poznaliśmy metodę znajdowania 
+    najmniejszego elementu w ciągu (lekcja druga była poświęcona znajdowaniu maksymalnego 
+    elementu, jednak bardzo łatwo zaadaptować tę metodę do znajdowania elementu minimalnego). 
+    Musimy jedynie podać w jaki sposób kolejno znajdowane elementy, od najmniejszego 
+    do największego, mają być ustawiane jeden za drugim. Najoszczędniej byłoby robić 
+    to w tej samej tablicy, w której znajduje się ciąg do uporządkowania. Jest to możliwe: 
+    znaleziony element zamienia się z pierwszym elementem ciągu, w następnym etapie – 
+    drugi najmniejszy element w ciągu zamienić miejscami z drugim elementem ciągu itd. 
+  </div>
+  
+  <div class="paragraph">
+    <img class="floating" src="selection_sort.png" alt=""/>
+    
+    Sposób działania algorytmu porządkowania przez wybór ilustrujemy na rysunku po lewej stronie. 
+    Zwróćmy uwagę na trzecią iterację – bieżący najmniejszy element może się już znajdować 
+    na swoim miejscu w ciągu. W realizacji tego algorytmu jednak specjalnie tej sytuacji 
+    nie wyróżniamy – w tym przypadku taki element jest zamieniany miejscem z samym sobą.
+  </div>
+  <div class="clear"></div>
+  
+  <div class="paragraph">
+    Twoim zadaniem w tej lekcji jest zaimplementowanie funkcję „void uporzadkuj(n)”. 
+    Funkcja jako parametr przyjmuje jedną liczbę <i>n</i> oznaczającą rozmiar tablicy. 
+    Funkcja powinna realizować powyżej opisany algorytm porządkowania przez wybór. 
+    Funkcja „uporządkuj” powinna działać na tablicy, która jest wyświetlona w osobnym oknie, 
+    w tym celu program powinien wykorzystywać dwie funkcje specjalne „zamien” oraz „porownaj”, 
+    które są szerzej omówione w zakładce „funkcje specjalne”. W razie problemów z implementacją 
+    tej funkcji możesz spojrzeć do wskazówki w postaci pseudokodu. Po skończonej implementacji 
+    powinieneś porównać swoje rozwiązanie z rozwiązaniem wzorcowym, a także przeczytać podsumowanie.
+  </div>
+  
+</body>
+</html>
