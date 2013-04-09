@@ -1,38 +1,143 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Treść zadania</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Podsumowanie</title>
+  
   <style>
     body {
       font-size: 14px;
-    }
-    img {
-      margin-right: 3px;
-      float: left;
+      font-family: "DejaVu Serif";
     }
     h2 {
       margin-top: 0px;
       margin-bottom: 0px;
       text-align: center;
     }
-    div {
-      padding-top: 15px;
-      margin-bottom: 0px;
-      margin-top: 0px;
-      clear: both;
+    img.block {
+      display: block;
     }
-    div.first {
-      padding-top: 5px;
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.displayTable {
+      display: table;
+    }
+    div.displayCell {
+      display: table-cell;
     }
     span.nowrap {
       white-space: nowrap;
+    }
+    div.equation {
+      white-space: nowrap;
+      font-size: 18px;
     }
   </style>
 </head>
 
 <body>
-  <h2>Wieże Hanoi TODO</h2>
+  <h2>Podsumowanie</h2>
+  <div class="firstParagraph">
+    W tym podsumowaniu odpowiemy sobie na pytanie, ile należy wykonać ruchów pojedynczymi 
+    krążkami, by rozwiązać łamigłówkę Wież Hanoi z <i>n</i> krążkami – oznaczmy tę liczbę 
+    przez <i>h<sub>n</sub></i>. Wiemy, że jeśli wieża jest jednoelementowa, to po prostu 
+    wykonujemy przeniesienie, czyli <i>h<sub>1</sub></i> = 1. Wiemy również, że gdy 
+    <i>n</i> jest większe niż jeden dwukrotnie wywołujemy funkcję rekurencynie dla 
+    <i>n</i>-1 elementowych wież oraz wykonyjemy jedno przesunięcie, czyli 
+    <i>h<sub>n</sub></i> = 2 &middot; <i>h</i><sub><i>n</i>-1</sub> + 1 dla <i>n</i>&ge;2. 
+    Reasumując, z powyższych rozważań wynika taka rekurencyjna zależność:
+    <img class="block" src="summary_equation.png" alt=""/>    
+  </div>
+  
+  <div class="paragraph">
+    Spróbujmy rozpisać powyższy wzór:
+    <div class="displayTable">
+      <div class="displayCell">
+        <i>h<sub>n</sub></i>&nbsp;
+      </div>
+      <div class="displayCell">
+        <span class ="nowrap">= 2<i>h</i><sub><i>n</i>-1</sub>+1</span>
+        <span class ="nowrap">= 2(2<i>h</i><sub><i>n</i>-2</sub>+1)+1</span>
+        <span class ="nowrap">= 2<sup>2</sup><i>h</i><sub><i>n</i>-2</sub>+2+1</span>
+        <span class ="nowrap">= 2<sup>2</sup>(2<i>h</i><sub><i>n</i>-3</sub>+1)+2+1</span>
+        <span class ="nowrap">= 2<sup>3</sup><i>h</i><sub><i>n</i>-3</sub>+2<sup>2</sup>+2+1</span>
+        <span class ="nowrap">= 2<sup>3</sup>(2<i>h</i><sub><i>n</i>-4</sub>+1)+2<sup>2</sup>+2+1</span>
+        <span class ="nowrap">= 2<sup>4</sup><i>h</i><sub><i>n</i>-4</sub>+2<sup>3</sup>+2<sup>2</sup>+2+1</span>
+      </div>
+    </div>
+    
+    Rozpisując wzór z poprzedniego akapitu można zobaczyć regularność, jeśli 
+    rozpiszemy ten wzór <i>k</i> razy otrzymamy:<br/>
+    <span class ="nowrap">
+      <i>h<sub>n</sub></i> = 
+      2<sup><i>k</i></sup><i>h</i><sub><i>n</i>-<i>k</i></sub><!--
+      -->+2<sup><i>k</i>-1</sup>+2<sup><i>k</i>-2</sup>+...+2<sup>2</sup>+2+1
+    </span><br/>
+
+    Jeśli podstawimy za <i>k</i> liczbę <i>n</i>-1 otrzymamy:
+    <div class="displayTable">
+      <div class="displayCell">
+        <i>h<sub>n</sub></i>&nbsp;
+      </div>
+      <div class="displayCell">
+        <span class ="nowrap">
+          = 2<sup><i>n</i>-1</sup><i>h</i><sub>1</sub><!--
+          -->+2<sup><i>n</i>-2</sup>+2<sup><i>n</i>-3</sup>+...+2<sup>2</sup>+2+1<!--
+          --></span> 
+        <span class ="nowrap">
+          = 2<sup><i>n</i>-1</sup>+2<sup><i>n</i>-2</sup><!--
+          -->+2<sup><i>n</i>-3</sup>+...+2<sup>2</sup>+2+1<!--
+          --></span>
+      </div>
+    </div>
+    
+    Rozpiszmy wyraz <i>h<sub>n</sub></i> w następujący sposób:
+    <div class="displayTable">
+      <div class="displayCell">
+        <i>h<sub>n</sub></i>&nbsp;
+      </div>
+      <div class="displayCell">
+        <span class ="nowrap">= 2<i>h<sub>n</sub></i> - <i>h<sub>n</sub></i></span>
+        <span class ="nowrap">
+          = 2(2<sup><i>n</i>-1</sup>+2<sup><i>n</i>-2</sup>+2<sup><i>n</i>-3</sup>+...+2+1)<!--
+          --></span> 
+        <span class ="nowrap">
+          - (2<sup><i>n</i>-1</sup>+2<sup><i>n</i>-2</sup>+...+2<sup>2</sup>+2+1)<!--
+          --></span>
+        <span class ="nowrap">
+          = 2<sup><i>n</i></sup>+2<sup><i>n</i>-1</sup>+2<sup><i>n</i>-2</sup>+...+2<sup>2</sup>+2<!--
+          --></span>
+        <span class ="nowrap">
+          + -2<sup><i>n</i>-1</sup>-2<sup><i>n</i>-2</sup>-...-2<sup>2</sup>-2-1<!--
+          --></span>
+      </div>
+    </div>
+    
+    Jeśli pogrupujemy wyrazy względem tych samych wykładników otrzymamy:
+    <div class="displayTable">
+      <div class="displayCell">
+        <i>h<sub>n</sub></i>&nbsp;
+      </div>
+      <div class="displayCell">
+        <span class ="nowrap">= 2<sup><i>n</i></sup></span>
+        <span class ="nowrap">+ 2<sup><i>n</i>-1</sup>-2<sup><i>n</i>-1</sup></span>
+        <span class ="nowrap">+ 2<sup><i>n</i>-2</sup>-2<sup><i>n</i>-2</sup></span>
+        <span class ="nowrap">+ 2<sup><i>n</i>-3</sup>-2<sup><i>n</i>-3</sup></span>
+        <span class ="nowrap">+ ... + 2<sup>2</sup>-2<sup>2</sup></span>
+        <span class ="nowrap">+ 2-2 - 1</span>
+      </div>
+    </div>
+    
+    Teraz możemy zauważyć, że wszystkie wyrazy oprócz pierwszego i ostatniego wyrazu się upraszczają,
+    wobec tego otrzymujemy ostateczny wynik:
+    <div class ="equation">
+      <i>h<sub>n</sub></i> = 2<sup><i>n</i></sup> - 1
+    </div>
+  </div>
 
 </body>
 </html>

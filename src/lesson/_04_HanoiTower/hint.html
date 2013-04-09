@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Wskazówki</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Wskazówki</title>
+  
   <script type="text/javascript">
     function gotoHint1() {
       window.location.href = "#hint1";
@@ -34,29 +35,27 @@
   <style type="text/css">
     body {
       font-size: 14px;
+      font-family: "DejaVu Serif";
     }
     h2 {
       margin-top: 15px;
       margin-bottom: 0px;
       text-align: center;
     }
-    h2.first {
+    h2.firstHeader {
       margin-top: 0px;
     }
-      
-    div {
-      margin-top: 15px;
-      margin-bottom: 0px;
-    }
-    div.first {
+    
+    div.firstParagraph {
       margin-top: 5px;
     }
+    div.paragraph {
+      margin-top: 15px;
+    }
     div.indent {
-      margin-top: 0px;
       margin-left: 20px;
     }
     div.hidden {
-      margin-top: 0px;
       display: none;
     }
     
@@ -69,7 +68,7 @@
       white-space: nowrap;
       vertical-align: text-top;
     }
-    ul {
+    ol {
       margin-top: 0px;
       margin-bottom: 0px;
       padding-left: 25px;
@@ -78,20 +77,125 @@
 </head>
 
 <body>
+  <h2 class="firstHeader" id="hint1">Wskazówka I</h2>
+  <div class="firstParagraph">
+    Spróbuj myśleć rekurencyjnie, tzn. załóż, że umiesz rozwiązywać problem mniejszy 
+    i za jego pomocą spróbuj rozwiązać większy problem. Powiedzmy, że masz do przeniesienia 
+    wieże złożoną z sześciu krążków ze słupka pierwszego na słupek trzeci. 
+    Spróbuj zastanowić się jak można przenieść tę wieżę przy założeniu, że potrafisz 
+    przenosić wieże złożoną z pięciu krążków.
+  </div>
   
-  <h2 id="hint1">Wskazówka I TODO</h2>
-  
-
   <div id="hint2" class="hidden">
     <h2>Wskazówka II</h2>
+    <div class="firstParagraph">
+      W tej wskazówce postaramy się rozwiązać problem z poprzedniej wskazówki, 
+      czyli opowiemy jak przenieść sześcioelementową wieżę ze słupka pierwszego 
+      na słupek trzeci, przy założeniu, że potrafimy przenosić wieże pięcioelementową. 
+      Aby rozwiązać ten problem należy wykonać trzy kroki:
+      <ol>
+        <li>Należy przenieść pięcioelementową wieżę ze słupka pierwszego na słupek drugi.</li>
+        <li>Należy przenieść największy krążek ze słupka pierwszego na słupek trzeci.</li>
+        <li>Należy przenieść pięcioelementową wieżę ze słupka drugiego na słupek trzeci.</li>
+      </ol>
+    </div>
   </div>
   
   <div id="hint3" class="hidden">
     <h2>Wskazówka III</h2>
+    <div class="firstParagraph">
+      Zauważ, że powyższy algorytm możemy zastosować dla dowolnej wieży <i>n</i>-elementowej, 
+      która składa się z więcej niż jednego krążka. Bowiem jeśli wieża składa się 
+      z jednego krążka, to wystarczy tylko przenieść ten jedek krążek ze słupka 
+      początkowego na słupek docelowy. Wobec tego nasz algorytm może wyglądać w ten sposób:
+      <ol>
+        <li>
+          Sprawdź czy wieża składa się z jednego krążka, jeśli tak to po prostu 
+          przenieś ten krążek i zakończ działanie.
+        </li>
+        <li>Na podstawie słupków „<i>skad</i>” oraz „<i>dokad</i>” wyznacz trzeci pomocniczy słupek.</li>
+        <li>
+          Przenieś za pomocą tego samego algorytmu wieżę <i>n</i>-1-elementową 
+          ze słupka początkowego na słupek pomocniczy.
+        </li>
+        <li>
+          Przenieś największy krążek ze słupka początkowego na słupek docelowy.
+        </li>
+        <li>
+          Przenieś za pomocą tego samego algorytmu wieżę <i>n</i>-1-elementową 
+          ze słupka pomocniczego na słupek docelowy.
+        </li>
+      </ol>
+    </div>
+    
+    <div class="paragraph">
+      Powyżej przedstawiliśmy rozwiązanie problemu, jednak powstaje pytanie, 
+      czy opisane wyżej kroki mogą być zawsze wykonane. Wątpliwości powinny budzić 
+      jedynie kroki 3-5. Najpierw zajmijmy się krokiem 4. W czasie wykonywania tego kroku 
+      wszystkie krążki oprócz największego znajdują się na pomocniczym słupku. 
+      Słupek docelowy jest pusty, wobec tego nic nie stoi na przeszkodzie, 
+      aby przenieść największy krążek ze słupka początkowego na słupek docelowy. 
+      Kroki 3. i 5. są podobne, a ich wykonalność wynika stąd, że mamy do pełnej 
+      dyspozycji trzy paliki, gdyż palik zawierający największy krążek może być 
+      również swobodnie wykorzystany przez wszystkie pozostałe krążki. 
+      Stosując więc wnioskowanie indukcyjne, możemy być pewnie, 
+      że kroki 3. i 5. mogą być również wykonane. 
+    </div>
   </div>
+
   
   <div id="hint4" class="hidden">
-    <h2>Wskazówka IV</h2>
+    <h2>Pseudokod algorytmu</h2>
+    <table>
+      <tr>
+        <td class="first">Dane:</td>
+        <td>
+          Trzy paliki ponumerowane liczbami 1, 2 i 3 oraz <i>n</i> krążków nanizanych
+          od największego do najmniejszego na palik o numerze „<i>skad</i>”. 
+          Funkcja dostaje również parametr „<i>dokad</i>” oznaczający palik docelowy.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Wynik:</td>
+        <td>
+          Krążki nanizane na palik „<i>dokad</i>” - do uzyskania tego wyniku można
+          wykonywać tylko dopuszczalne przenoszenia.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 1.</td>
+        <td>
+          Jeżeli <i>n</i> = 1, to przenieś krążak z palika „<i>skad</i>” na palik „<i>dokad</i>”
+          i zakończ działanie funkcji.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 2.</td>
+        <td>
+          Oblicz palik pomocniczy, czyli <i>wolny</i> := 6 - <i>skad</i> - <i>dokad</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 3.</td>
+        <td>
+          Wywołaj funkcję rekurencyjnie dla: <i>n</i>-1 krążków, 
+          palika początkowego „<i>skad</i>” oraz palika docelowego „<i>wolny</i>”.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 4.</td>
+        <td>
+          Przenieś krążek z palika „<i>skad</i>” na palik „<i>dokad</i>”.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 5.</td>
+        <td>
+          Wywołaj funkcję rekurencyjnie dla: <i>n</i>-1 krążków, 
+          palika początkowego „<i>wolny</i>” oraz palika docelowego „<i>dokad</i>”.
+        </td>
+      </tr>
+    </table>
   </div>
   
 </body>

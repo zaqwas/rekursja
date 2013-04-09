@@ -4,629 +4,80 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>Treść zadania</title>
   
-  <style>
+  <style type="text/css">
     body {
       font-size: 14px;
-      font-family: "Times New Roman";
+      font-family: "DejaVu Serif";
     }
     h2 {
       margin-top: 0px;
       margin-bottom: 0px;
       text-align: center;
     }
-    hr {
-      margin-top: 0px;
-      margin-bottom: 0px;
-    }
-    div.paragraph {
-      margin-top: 8px;
-    }
+    
     div.firstParagraph {
       margin-top: 5px;
     }
-    div.floating {
+    div.paragraph {
+      margin-top: 15px;
+    }
+    
+    img.floating {
+      margin-right: 3px;
       float: left;
     }
-    div.divInlineNoWrap {
-      display: inline;
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
       white-space: nowrap;
+      vertical-align: text-top;
     }
-    div.clear {
-      clear: both;
-    }
-    div.divHr {
-      margin-top: 8px;
-    }
-    
-    table.matrix {
-      border-collapse: collapse;
-    }
-    table.inlineTable {
-      display: inline-table;
-      vertical-align: middle;
-    }
-    table.center {
-      margin-left: auto;
-      margin-right: auto;
-    }
-    
-    td.noPadding {
-      padding-left: 0px;
-      padding-right: 0px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    td.left {
-      padding-left: 0px;
-      padding-right: 3px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    td.right {
-      padding-left: 3px;
-      padding-right: 0px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    td.extraLeft {
-      padding-left: 0px;
-      padding-right: 5px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    td.extraRight {
-      padding-left: 5px;
-      padding-right: 0px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    
-    span.centerBlock {
-      display: inline-block;
-      text-align: center;
-    }
-    span.equation {
-      font-size: 18px;
-    }
-    
-    #matrixExample {
-      border-collapse: collapse;
-    }
-    #matrixExampleFirstCol {
-      border-right: 2px solid black;
+    ul {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-left: 25px;
     }
   </style>
 </head>
 
 <body>
-  <h2>Ciąg Fibonacciego</h2>
-
+  <h2>Wieże Hanoi</h2>
   <div class="firstParagraph">
-    
-    <div class="floating">
-      <table id="matrixExample">
-        <colgroup>
-          <col id="matrixExampleFirstCol"/>
-          <col/>
-        </colgroup>
-        
-        <tr>
-          <th>Macierz 2x2&nbsp;</th>
-          <th>&nbsp;Przykład&nbsp;</th>
-        </tr>
-        <tr>
-          <td>
-            <table class="matrix center">
-              <tr>
-                <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-                <td class="left">a<sub>1,1</sub></td>
-                <td class="right">a<sub>1,2</sub></td>
-                <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-              </tr>
-              <tr>
-                <td class="left">a<sub>1,1</sub></td>
-                <td class="right">a<sub>1,2</sub></td>
-              </tr>
-            </table>
-          </td>
-          <td>
-            <table class="matrix center">
-              <tr>
-                <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-                <td class="left">3</td>
-                <td class="right">1</td>
-                <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-              </tr>
-              <tr>
-                <td class="left">0</td>
-                <td class="right">4</td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </div>
-    
-    Wydawać by się mogło, że zaprezentowana w trzeciej części metoda obliczania elementów 
-    ciągu Fibonacciego jest optymalna, gdyż aby policzyć kolejny wyraz ciągu potrzebujemy 
-    mieć wyliczone dwa wcześniejsze wyrazy, aby wyliczyć wcześniejsze wyrazy potrzebujemy 
-    jeszcze wcześniejsze itd. Wobec tego wydaję się, że aby wyliczyć n-ty wyraz ciągu, 
-    potrzeba wyliczyć także wszystkie wcześniejsze wyrazy. Jednak zaprezentowany powyżej pogląd 
-    jest mylny, gdyż poniżej opiszemy metodę, która wylicza n-ty wyraz ciągu Fibonacciego 
-    o wiele bardziej efektywniej. Najpierw jednak musimy dowiedzieć się czym są macierze 
-    i poznać podstawowe operacje wykonywane na nich. Macierz to prostokątna tablica wypełniona liczbami. 
-    Macierz może mieć różną ilość wierszy i kolumn, jednak w tej lekcji będą potrzebne 
-    nam jedynie macierze rozmiaru dwa na dwa. Na obrazku po lewej stronie zaprezentowany 
-    jest schemat oraz przykład takiej macierzy.
+    Tą nazwą opatruje się łamigłówkę, która jest klasycznym przykładem problemu 
+    algorytmicznego i służy w informatyce jako ilustracja wielu pojęć i metod 
+    rozwiązywania problemów, w tym zwłaszcza rekurencji. Mamy trzy paliki (słupki) 
+    – ponumerowane liczbami 1, 2 i 3 – oraz pewną liczbę krążków rożnej 
+    wielkości z otworami, nanizanych na jeden z palików w kolejności od największego 
+    do najmniejszego, największy znajduje się na dole. Łamigłówka polega na przeniesieniu 
+    wszystkich krążków z jednego palika do inny palik, z możliwością posłużenia 
+    się przy tym trzecim – osobnym – palikiem w taki sposób, że:
+    <ul>
+      <li>pojedynczy ruch polega na przeniesieniu jednego krążka między dwoma palikami.</li>
+      <li>w żadnej chwili rozwiązania łamigłówki większy krążek nie może leżeć na mniejszym.</li>
+    </ul>
   </div>
-  <div class="clear"></div>
-  <div class="divHr"><hr/></div>
   
   <div class="paragraph">
-    Na macierzach można przeprowadzać różne, np. macierze można dodawać oraz odejmować. 
-    W przypadku dodawania (lub odejmowania) macierzy, dodajemy (lub odejmowania) do siebie 
-    elementy na tych samych współrzędnych. Poniżej prezentujemy schemat dodawania:
-    
-    <div>
-      <table class="matrix">
-        <tr>
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">a<sub>1,1</sub></td>
-          <td class="right">a<sub>1,2</sub></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-          
-          <td class="noPadding" rowspan="2" >&nbsp;+&nbsp;</td>
-
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">b<sub>1,1</sub></td>
-          <td class="right">b<sub>1,2</sub></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-
-          <td class="noPadding" rowspan="2" >&nbsp;=&nbsp;</td>
-
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="extraLeft">a<sub>1,1</sub> + b<sub>1,1</sub></td>
-          <td class="extraRight">a<sub>1,2</sub> + b<sub>1,2</sub></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-        </tr>
-        <tr>
-          <td class="left">a<sub>2,1</sub></td>
-          <td class="right">a<sub>2,2</sub></td>
-          <td class="left">b<sub>2,1</sub></td>
-          <td class="right">b<sub>2,2</sub></td>
-          <td class="extraLeft">a<sub>2,1</sub> + b<sub>2,1</sub></td>
-          <td class="extraRight">a<sub>2,2</sub> + b<sub>2,2</sub></td>
-        </tr>
-      </table>
-    </div>
-    
-    oraz przykład dodawania macierzy:
-    
-    <div>
-      <table class="matrix">
-        <tr>
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">8</td>
-          <td class="right">5</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-
-          <td class="noPadding" rowspan="2" >&nbsp;+&nbsp;</td>
-          
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">5</td>
-          <td class="right">3</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-
-          <td class="noPadding" rowspan="2" >&nbsp;=&nbsp;</td>
-          
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="extraLeft">8+5</td>
-          <td class="extraRight">5+3</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-          
-          <td class="noPadding" rowspan="2" >&nbsp;=&nbsp;</td>
-          
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">13</td>
-          <td class="right">8</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-        </tr>
-        <tr>
-          <td class="left">5</td>
-          <td class="right">3</td>
-          <td class="left">3</td>
-          <td class="right">2</td>
-          <td class="extraLeft">5+3</td>
-          <td class="extraRight">3+2</td>
-          <td class="left">8</td>
-          <td class="right">5</td>
-        </tr>
-
-      </table>
-    </div>
-    
+    <img class="floating" src="hanoi_frame.png" alt=""/>
+    Zadaniem w tej lekcji jest napisanie funkcji „void hanoi(n, skad, dokad)”. 
+    Funkcja powinna przestawiać wieże ze słupka „<i>skad</i>” na słupek „<i>dokad</i>”. 
+    Funkcja „main” będzie wywoływała funkcję „hanoi” z parametrami 
+    „<i>skad</i>” oraz „<i>dokad</i>” będącymi liczbami naturalnymi z przedziału od 1 do 3, 
+    przy czym te dwie wartości będzą zawsze od siebie różne. 
+    Parametr <i>n</i> to liczba naturalna większa od 0 i oznacza ona, iż na słupku 
+    początkowym jest nanizanych <i>n</i> krążków. Twoja funkcja powinna operować 
+    na krążkach, które są pokazane w specjalnym oknie. W tym celu powinienieś 
+    w swojej funkcji skorzystać z funkcji specjalnej „void przenies(skad, dokad)”. 
+    Funkcja „przenies” jak sama nazwa wskazuje służy do przenoszenia krążków 
+    i jest szerzej omówiona w zakład funkcje specjalne.
+    W razie problemów z implementacją tej funkcji, powinieneś skorzystać z licznych 
+    wskazówek, które powoli powinny podprowadzać Cię do poprawnego rozwiązania. 
+    Po zakończeniu implementowania porównaj swoje rozwiązania z rozwiązaniem wzorcowym, 
+    a następnie przeczytaj podsumowanie. 
   </div>
-  <div class="divHr"><hr/></div>
-  
-  
-  <div class="paragraph">
-    Macierze można też ze sobą mnożyć. Poniżej prezentujemy schemat mnożenia macierzy:
-    
-    <div>
-      <table class="matrix">
-        <tr>
-          <td colspan="13" rowspan="2"></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">b<sub>1,1</sub></td>
-          <td class="right">b<sub>1,2</sub></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-        </tr>
-        <tr>
-          <td class="left">b<sub>2,1</sub></td>
-          <td class="right">b<sub>2,2</sub></td>
-        </tr>
-        <tr>
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">a<sub>1,1</sub></td>
-          <td class="right">a<sub>1,2</sub></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/>&nbsp;</td>
 
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">b<sub>1,1</sub></td>
-          <td class="right">b<sub>1,2</sub></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-
-          <td class="noPadding" rowspan="2" >&nbsp;=&nbsp;</td>
-
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">a<sub>1,1</sub></td>
-          <td class="right">a<sub>1,2</sub></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/>&nbsp;</td>
-
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="extraLeft">a<sub>1,1</sub>b<sub>1,1</sub> + a<sub>1,2</sub>b<sub>2,1</sub></td>
-          <td class="extraRight">a<sub>1,1</sub>b<sub>2,1</sub> + a<sub>1,2</sub>b<sub>2,2</sub></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-        </tr>
-        <tr>
-          <td class="left">a<sub>2,1</sub></td>
-          <td class="right">a<sub>2,2</sub></td>
-          <td class="left">b<sub>2,1</sub></td>
-          <td class="right">b<sub>2,2</sub></td>
-          <td class="left">a<sub>2,1</sub></td>
-          <td class="right">a<sub>2,2</sub></td>
-          <td class="extraLeft">a<sub>2,1</sub>b<sub>1,1</sub> + a<sub>2,2</sub>b<sub>2,1</sub></td>
-          <td class="extraRight">a<sub>2,1</sub>b<sub>2,1</sub> + a<sub>2,2</sub>b<sub>2,2</sub></td>
-        </tr>
-
-      </table>
-    </div>
-    
-    oraz przykład mnożenia macierzy:
-    
-    <div>
-      <table class="matrix">
-        <tr>
-          <td colspan="13" rowspan="2"></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">1</td>
-          <td class="right">1</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-          <td colspan="5" rowspan="2"></td>
-        </tr>
-        <tr>
-          <td class="left">1</td>
-          <td class="right">0</td>
-        </tr>
-        <tr>
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">8</td>
-          <td class="right">5</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/>&nbsp;</td>
-
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">1</td>
-          <td class="right">1</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-
-          <td class="noPadding" rowspan="2" >&nbsp;=&nbsp;</td>
-
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">8</td>
-          <td class="right">5</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/>&nbsp;</td>
-
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="extraLeft">8&middot;1+5&middot;1</td>
-          <td class="extraRight">8&middot;1+5&middot;0</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-
-          <td class="noPadding" rowspan="2" >&nbsp;=&nbsp;</td>
-
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">13</td>
-          <td class="right">8</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-        </tr>
-        <tr>
-          <td class="left">5</td>
-          <td class="right">3</td>
-          <td class="left">1</td>
-          <td class="right">0</td>
-          <td class="left">5</td>
-          <td class="right">3</td>
-          <td class="extraLeft">5&middot;1+3&middot;1</td>
-          <td class="extraRight">5&middot;1+3&middot;0</td>
-          <td class="left">8</td>
-          <td class="right">5</td>
-        </tr>
-
-      </table>
-    </div>
-    
-  </div>
-  <div class="divHr"><hr/></div>
-  
-  
-  <div class="paragraph">
-    
-    <div class="floating">
-      <span class="equation">I<sub>2</sub></span> = 
-      <table class="matrix inlineTable">
-        <tr>
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">1</td>
-          <td class="right">0</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/>&nbsp;</td>
-        </tr>
-        <tr>
-          <td class="left">0</td>
-          <td class="right">1</td>
-        </tr>
-      </table>
-    </div>
-    
-    Skoro możemy mnożyć macierze, to możemy je także potęgować. 
-    <i>N</i>-ta potęga macierzy, to po prostu pomnożona <i>n</i>-1 razy przez siebie macierz. 
-    Jedyną wątpliwość może budzić zerowa potęga macierzy. W przypadku zwykłych liczb 
-    powiedzieliśmy, że dowolna liczba podniesiona do zerowej potęgi wynosi jeden (<i>a</i><sup>0</sup> = 1). 
-    Zastanówmy się czym jest jedynka wśród liczb całkowitych. Jedynka to taka liczba, 
-    która pomnożona przez jakiś element daje ten sam element (<i>a</i>&middot;1 = <i>a</i>). 
-    W przypadku macierzy (rozmiaru 2x2), też możemy wyróżnić taki element. 
-    Nazywamy go <span class="equation">I<sub>2</sub></span> (2 – symbolizuje rozmiar macierzy) 
-    i każda macierz podniesiona do potęgi zerowej powinna zwrócić właśnie macierz 
-    <span class="equation">I<sub>2</sub></span>. Na rysunku po lewej prezentujemy wygląd tej macierzy.
-  </div>
-  <div class="clear"></div>
-  <div class="divHr"><hr/></div>
-  
-  
-  <div class="paragraph">
-    
-    <div class="floating">
-      <table class="matrix inlineTable">
-        <tr>
-          <td class="noPadding" rowspan="2"><span class="equation">A</span> =&nbsp;</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">1</td>
-          <td class="right">1</td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-        </tr>
-        <tr>
-          <td class="left">1</td>
-          <td class="right">0</td>
-        </tr>
-      </table>
-      ,
-      <span class="equation">A<sup><i>n</i></sup> = </span>
-      <table class="matrix inlineTable">
-        <tr>
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">F<sub><i>n</i>+1</sub></td>
-          <td class="right">F<sub><i>n</i></sub></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-        </tr>
-        <tr>
-          <td class="left">F<sub><i>n</i></sub></td>
-          <td class="right">F<sub><i>n</i>-1</sub></td>
-        </tr>
-      </table>
-      dla <i>n</i> &ge; 1&nbsp;
-    </div>
-    
-    Powyższe informacje o macierzach są wystarczające, aby opisać szybki sposób obliczania 
-    <i>n</i>-tego wyrazu ciągu Fibonacciego. Aby policzyć <i>n</i>-ty wyraz Fibonacciego 
-    wystarczy podnieść do <i>n</i>-tej potęgi macierz zaprezentowaną na rysunku po lewej. 
-    Jeśli podniesiemy do <i>n</i>-tej potęgi tę macierz (<i>n</i> &ge; 1), 
-    to wówczas w pierwszym wierszu otrzymamy wyrazy F<sub><i>n</i>+1</sub> oraz F<sub><i>n</i></sub>, 
-    a w drugim wierszu elementy będą równe F<sub><i>n</i>+1</sub>  oraz F<sub><i>n</i>-1</sub>. 
-  </div>
-  <div class="clear"></div>
-  <div class="divHr"><hr/></div>
-  
-  
-  <div class="paragraph">
-    
-    Na rysunku po lewej zaprezentowaliśmy omawianą właściwość, jednak warto byłoby udowodnić, 
-    że ta zależność jest poprawna dla wszystkich liczb n większych od zera. 
-    Przeprowadźmy dowód polegający na indukcji matematycznej. Indukcje matematyczną najczęściej 
-    stosujemy w ten sposób iż pokazujemy że dane twierdzenie jest poprawne dla początkowych wartości 
-    (w tym przypadku dla n=1).
-    
-    <div>
-      <div class="divInlineNoWrap">
-        1. przypadek <i>n</i>=1:
-        <span class="equation">A<sup>1</sup></span> = 
-        <table class="matrix inlineTable">
-          <tr>
-            <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-            <td class="left">1</td>
-            <td class="right">1</td>
-            <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-          </tr>
-          <tr>
-            <td class="left">1</td>
-            <td class="right">0</td>
-          </tr>
-        </table>
-        =
-        <table class="matrix inlineTable">
-          <tr>
-            <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-            <td class="left">F<sub>2</sub></td>
-            <td class="right">F<sub>1</sub></td>
-            <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-          </tr>
-          <tr>
-            <td class="left">F<sub>1</sub></td>
-            <td class="right">F<sub>0</sub></td>
-          </tr>
-        </table>
-      </div>
-      ,
-      <div class="divInlineNoWrap">
-        2. założenie: 
-        <span class="equation">A<sup><i>n</i></sup></span> = 
-        <table class="matrix inlineTable">
-          <tr>
-            <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-            <td class="left">F<sub><i>n</i>+1</sub></td>
-            <td class="right">F<sub><i>n</i></sub></td>
-            <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-          </tr>
-          <tr>
-            <td class="left">F<sub><i>n</i></sub></td>
-            <td class="right">F<sub><i>n</i>-1</sub></td>
-          </tr>
-        </table>
-      </div>
-      ,
-      <div class="divInlineNoWrap">
-        3. teza: 
-        <span class="equation">A<sup><i>n</i>+1</sup></span> = 
-        <table class="matrix inlineTable">
-          <tr>
-            <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-            <td class="left">F<sub><i>n</i>+2</sub></td>
-            <td class="right">F<sub><i>n</i>+1</sub></td>
-            <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-          </tr>
-          <tr>
-            <td class="left">F<sub><i>n+1</i></sub></td>
-            <td class="right">F<sub><i>n</i></sub></td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    
-    Następnie zakładamy, że twierdzenie działa dla liczby <i>n</i>:
-
-    
-    , a z tego założenia pokazujemy, że twierdzenie jest poprawne także dla liczby n+1. 
-
-    
-    W naszym przypadku wystarczy pomnożyć macierz wypełnioną odpowiednimi wyrazami ciągu  
-
-    <div>
-      <span class="equation">A<sup><i>n</i>+1</sup></span> = 
-
-      <div class="divInlineNoWrap">
-        <span class="equation">A<sup><i>n</i></sup></span>
-        <table class="matrix inlineTable">
-          <tr>
-            <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-            <td class="left">1</td>
-            <td class="right">1</td>
-            <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-          </tr>
-          <tr>
-            <td class="left">1</td>
-            <td class="right">0</td>
-          </tr>
-        </table>
-      </div>
-
-      <span class="centerBlock" style="text-align: center;">(<i>zał.</i>)<br/>=</span>
-
-      <div class="divInlineNoWrap">
-        <table class="matrix inlineTable">
-          <tr>
-            <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-            <td class="left">F<sub><i>n</i>+1</sub></td>
-            <td class="right">F<sub><i>n</i></sub></td>
-            <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-          </tr>
-          <tr>
-            <td class="left">F<sub><i>n</i></sub></td>
-            <td class="right">F<sub><i>n</i>-1</sub></td>
-          </tr>
-        </table>
-        <table class="matrix inlineTable">
-          <tr>
-            <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-            <td class="left">1</td>
-            <td class="right">1</td>
-            <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-          </tr>
-          <tr>
-            <td class="left">1</td>
-            <td class="right">0</td>
-          </tr>
-        </table>
-      </div>
-
-      =
-
-      <table class="matrix inlineTable">
-        <tr>
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="extraLeft">1&middot;F<sub><i>n</i>+1</sub> +1&middot;F<sub><i>n</i></sub></td>
-          <td class="extraRight">1&middot;F<sub><i>n</i>+1</sub> +0&middot;F<sub><i>n</i></sub></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-        </tr>
-        <tr>
-          <td class="extraLeft">1&middot;F<sub><i>n</i></sub> +1&middot;F<sub><i>n</i>-1</sub></td>
-          <td class="extraRight">1&middot;F<sub><i>n</i></sub> +0&middot;F<sub><i>n</i>-1</sub></td>
-        </tr>
-      </table>
-
-      =
-
-      <table class="matrix inlineTable">
-        <tr>
-          <td class="noPadding" rowspan="2"><img src="matrix_left.png" alt=""/></td>
-          <td class="left">F<sub><i>n</i>+2</sub></td>
-          <td class="right">F<sub><i>n</i>+1</sub></td>
-          <td class="noPadding" rowspan="2"><img src="matrix_right.png" alt=""/></td>
-        </tr>
-        <tr>
-          <td class="left">F<sub><i>n</i>+1</sub></td>
-          <td class="right">F<sub><i>n</i></sub></td>
-        </tr>
-      </table>
-    </div>
-    
-  </div>
-  <div class="divHr"><hr/></div>
-  
-  
-  <div class="paragraph">
-    Z powyższych akapitów wynika, że aby wyliczyć <i>n</i>-ty wyraz ciągu Fibonacciego 
-    wystarczy podnieść macierz <b>A</b> do <i>n</i>-tej potęgi. 
-    Zastanówmy się jak to zrobić. Jeśli przypomnimy sobie lekcje o potęgowaniu, 
-    to szybko zorientujemy się, że macierz <b>A</b><sup><i>n</i></sup>
-    można efektywnie wyliczyć posługując się algorytmem szybkiego potęgowania. 
-    Wobec tego zadaniem w tej lekcji jest napisanie funkcji 
-    „int fibonacci(n, &amp;a11, &amp;a12, &amp;a21, &amp;a22)”. Funkcja powinna jako parametr 
-    przyjmować jedną liczbę n będącą wykładnikiem potęgi, natomiast jako wynik zwracać 
-    cztery liczby (za pomocą referencji), będące odpowiednimi elementami macierzy 
-    <b>A</b><sup><i>n</i></sup> . Funkcja „fibonacci” powinna 
-    realizować szybki algorytm potęgowania (oczywiście odpowiednio zmodyfikowany 
-    do potęgowania macierzy) i działać w czasie logarytmicznym względem parametru <i>n</i>. 
-    Funkcja powinna zostać napisana w dwóch wersjach rekurencyjnej i iteracyjnej. 
-    W przypadku pojawienia się problemów, możesz spojrzeć na pseudokody podanych funkcji. 
-    Po zakończeniu implementowania porównaj swoje rozwiązania z rozwiązaniami wzorcowymi.
-  </div>
-  
 </body>
 </html>
