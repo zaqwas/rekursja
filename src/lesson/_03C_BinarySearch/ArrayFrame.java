@@ -5,12 +5,13 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Random;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,7 +24,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
-import javafx.scene.control.LabelBuilder;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -52,16 +52,15 @@ public class ArrayFrame {
     private MainClass mainClass;
     private JInternalFrame frame;
 
-    private boolean noCheckTextProperty;
+    private boolean noCheckTextFieldFlag;
     private boolean semaphoreJavaFX;
+    
+    private SimpleBooleanProperty componentsDisabledProperty = new SimpleBooleanProperty(false);
     
     private int selectedPart = 1;
 
     private SimpleIntegerProperty randomMaxValue = new SimpleIntegerProperty();
     private SimpleIntegerProperty arraySize = new SimpleIntegerProperty();
-
-    private BooleanProperty arraySizeSliderDisableProperty;
-    private BooleanProperty randomValuesButtonDisableProperty;
 
     private TextField searchingTextField;
     private TextField arrayTextField[] = new TextField[32];
@@ -120,12 +119,7 @@ public class ArrayFrame {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                arraySizeSliderDisableProperty.set(true);
-                randomValuesButtonDisableProperty.set(true);
-                
-                for (int i = 0; i < 32; i++) {
-                    arrayTextField[i].setEditable(false);
-                }
+                componentsDisabledProperty.set(true);
                 semaphoreJavaFX = false;
             }
         });
@@ -145,12 +139,10 @@ public class ArrayFrame {
             @Override
             public void run() {
                 for (int i = 0; i < 32; i++) {
-                    arrayTextField[i].setEditable(true);
                     arrayTextField[i].setId("empty");
                 }
                 searchingTextField.setId("empty");
-                arraySizeSliderDisableProperty.set(false);
-                randomValuesButtonDisableProperty.set(false);
+                componentsDisabledProperty.set(false);
                 
                 semaphoreJavaFX = false;
             }
@@ -215,13 +207,13 @@ public class ArrayFrame {
                 Arrays.sort(arrayValue, 0, size);
                 
                 try {
-                    noCheckTextProperty = true;
+                    noCheckTextFieldFlag = true;
                     for (int i = 0; i < size; i++) {
                         String str = String.valueOf(arrayValue[i]);
                         arrayTextField[i].setText(str);
                     }
                 } finally {
-                    noCheckTextProperty = false;
+                    noCheckTextFieldFlag = false;
                 }
             }
         });
@@ -414,7 +406,7 @@ public class ArrayFrame {
     }
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="TextFieldDisableChangeListener">
+    //<editor-fold defaultstate="collapsed" desc="ArraySizeChangeListener">
     private class ArraySizeChangeListener implements ChangeListener<Number> {
         
         @Override
@@ -426,7 +418,7 @@ public class ArrayFrame {
             }
             
             try {
-                noCheckTextProperty = true;
+                noCheckTextFieldFlag = true;
                 for (int i = idxFrom; i < idxTo; i++) {
                     int j = i;
                     while (j > 0 && arrayValue[j - 1] > arrayValue[j]) {
@@ -435,7 +427,7 @@ public class ArrayFrame {
                     }
                 }
             } finally {
-                noCheckTextProperty = false;
+                noCheckTextFieldFlag = false;
             }
         }
     };
@@ -452,11 +444,11 @@ public class ArrayFrame {
 
         @Override
         public void changed(ObservableValue<? extends String> ov, String oldStr, String newStr) {
-            if (noCheckTextProperty) {
+            if (noCheckTextFieldFlag) {
                 return;
             }
             try {
-                noCheckTextProperty = true;
+                noCheckTextFieldFlag = true;
                 TextField text = index == -1 ? searchingTextField : arrayTextField[index];
                 
                 boolean oldValue = false;
@@ -515,7 +507,7 @@ public class ArrayFrame {
                 }
                 text.forward();
             } finally {
-                noCheckTextProperty = false;
+                noCheckTextFieldFlag = false;
             }
         }
     };
@@ -537,7 +529,7 @@ public class ArrayFrame {
                 Arrays.sort(arrayValue, 0, size);
             }
             try {
-                noCheckTextProperty = true;
+                noCheckTextFieldFlag = true;
                 String str = String.valueOf(rand.nextInt(maxValue));
                 searchingTextField.setText(str);
                 for (int i = 0; i < size; i++) {
@@ -545,7 +537,7 @@ public class ArrayFrame {
                     arrayTextField[i].setText(str);
                 }
             } finally {
-                noCheckTextProperty = false;
+                noCheckTextFieldFlag = false;
             }
         }
     }
@@ -607,7 +599,7 @@ public class ArrayFrame {
         slider.valueProperty().bindBidirectional(arraySize);
         arraySize.set(32);
         arraySize.addListener(new ArraySizeChangeListener());
-        arraySizeSliderDisableProperty = slider.disableProperty();
+        slider.disableProperty().bind(componentsDisabledProperty);
 
         Label label = new Label();
         StringExpression strExpression = Bindings.format("Rozmiar tablicy: %02d", arraySize);
@@ -628,7 +620,7 @@ public class ArrayFrame {
                 .onAction(new RandomValuesAction())
                 .build();
         randomValuesMenu.getItems().add(randomMenuItem);
-        randomValuesButtonDisableProperty = randomMenuItem.disableProperty();
+        randomMenuItem.disableProperty().bind(componentsDisabledProperty);
         
         slider = SliderBuilder.create()
                 .min(0).max(99).value(10)
@@ -660,6 +652,8 @@ public class ArrayFrame {
                 .prefColumnCount(2)
                 .contextMenu(null);
         
+        BooleanBinding editable = componentsDisabledProperty.not();
+        
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER);
         vbox.getChildren().addAll(hbox);
@@ -670,6 +664,7 @@ public class ArrayFrame {
         HBox.setMargin(label, new Insets(0d, 2d, 0d, 0d));
         searchingTextField = textFieldBuilder.build();
         searchingTextField.textProperty().addListener(new TextFieldStringChangeListener(-1));
+        searchingTextField.editableProperty().bind(editable);
         hbox.getChildren().addAll(label, searchingTextField);
                 
         GridPane grid = new GridPane();
@@ -678,6 +673,7 @@ public class ArrayFrame {
             arrayTextField[i] = text;
             text.textProperty().addListener(new TextFieldStringChangeListener(i));
             text.disableProperty().bind(arraySize.lessThanOrEqualTo(i));
+            text.editableProperty().bind(editable);
             grid.add(text, i % 8 + 1, i / 8);
         }
         for (int i = 0; i < 4; i++) {

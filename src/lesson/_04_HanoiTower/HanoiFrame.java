@@ -93,8 +93,7 @@ class HanoiFrame {
     private BigInteger diskNumberBigInt;
     private Stack<Integer>[] stack = new Stack[3];
     //</editor-fold>
-
-
+    
     public HanoiFrame(MainClass mainClass) {
         this.mainClass = mainClass;
         for (int i = 0; i < 3; i++) {
@@ -102,7 +101,7 @@ class HanoiFrame {
         }
         initFrame();
     }
-
+    
 
     //<editor-fold defaultstate="collapsed" desc="getFrame">
     public JInternalFrame getFrame() {
@@ -117,7 +116,6 @@ class HanoiFrame {
     }
     //</editor-fold>
 
-    
     //<editor-fold defaultstate="collapsed" desc="get diskNumber, start/finish Rod">
     public int getDiskNumber() {
         return diskNumber.get();

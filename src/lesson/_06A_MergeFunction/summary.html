@@ -1,29 +1,170 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Podsumowanie</title>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    
+    table {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    td.indent1 {
+      padding-left: 20px;
+    }
+    td.indent2 {
+      padding-left: 40px;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Suma ciągu arytmetycznego - wzór</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Podsumowanie</h2>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
+  <div class="firstParagraph">
+    Zastanówmy się nad złożonością funkcji scal. Przyjmijmy, 
+    że <i>n</i> oraz <i>m</i> wyrażają rozmiar tablic oraz funkcja scal przyjmuje 
+    te liczby jako parametr. Spróbujmy przy pomocy tych dwóch liczb 
+    wyrazić ile maksymalnie porównań może wykonać funkcja scal. Najpierw spójrzmy 
+    na pseudokod algorytmu:
+  </div>
 
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Dwie liczby naturalne <i>n</i> oraz <i>m</i>. Dwa uporządkowane ciągi liczb
+        <i>x</i><sub>0</sub>, <i>x</i><sub>1</sub>,..., <i>x</i><sub><i>n</i>-1</sub> oraz 
+        <i>y</i><sub>0</sub>, <i>y</i><sub>1</sub>,..., <i>y</i><sub><i>m</i>-1</sub>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Uporządkowany ciąg <i>z</i><sub>0</sub>, <i>z</i><sub>1</sub>,..., <i>z</i><sub><i>n</i>+<i>m</i>-1</sub>,
+        który powstał ze scalenia ciągów <i>x<sub>i</sub></i> oraz <i>y<sub>i</sub></i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Przyjmij <i>idx1</i> := 0, <i>idx2</i> := 0 oraz <i>idx3</i> := 0
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        Dopóki <i>idx1</i> &lt; <i>n</i> oraz <i>idx2</i> &lt; <i>m</i> wykonuj kroki 3-8.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 3.</td>
+      <td class="indent1">
+        Jeśli <i>x<sub>idx1</sub></i> &le; <i>y<sub>idx2</sub></i> wykonaj kroki 4-5.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 4.</td>
+      <td class="indent2">
+        Przyjmij <i>z<sub>idx3</sub></i> := <i>x<sub>idx1</sub></i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 5.</td>
+      <td class="indent2">
+        Zwiększ wartości zmiennych <i>idx1</i> oraz <i>idx3</i> o jeden.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 6.</td>
+      <td class="indent1">
+        Jeśli <i>x<sub>idx1</sub></i> &gt; <i>y<sub>idx2</sub></i> wykonaj kroki 7-8.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 7.</td>
+      <td class="indent2">
+        Przyjmij <i>z<sub>idx3</sub></i> := <i>y<sub>idx2</sub></i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 8.</td>
+      <td class="indent2">
+        Zwiększ wartości zmiennych <i>idx2</i> oraz <i>idx3</i> o jeden.
+      </td>
+    </tr>
 
-  </body>
-</html> 
+    <tr>
+      <td class="first">Krok 9.</td>
+      <td>
+        Dopóki <i>idx1</i> &lt; <i>n</i> wykonuj kroki 10-11.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 10.</td>
+      <td class="indent1">
+        Przyjmij <i>z<sub>idx3</sub></i> := <i>x<sub>idx1</sub></i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 11.</td>
+      <td class="indent1">
+        Zwiększ wartości zmiennych <i>idx1</i> oraz <i>idx3</i> o jeden.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 12.</td>
+      <td>
+        Dopóki <i>idx2</i> &lt; <i>m</i> wykonuj kroki 13-14.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 13.</td>
+      <td class="indent1">
+        Przyjmij <i>z<sub>idx3</sub></i> := <i>y<sub>idx2</sub></i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 14.</td>
+      <td class="indent1">
+        Zwiększ wartości zmiennych <i>idx2</i> oraz <i>idx3</i> o jeden.
+      </td>
+    </tr>
+  </table>
+
+  <div>
+    Zauważmy, że: w krokach 9-14 nie są wykonywane żadne operacje porównania elementów tablicy. 
+    Wobec tego najgorszym przypadkiem jest przypadek, w którym w krokach 9-14
+    do przepisania pozostanie tylko jeden element. Zauważmy, że w krokach 2-8, 
+    dla każdego powtórzenia pętli wywołujemy funkcję porównaj tylko jeden raz
+    oraz przepisujemy jeden element
+    (co prawda w kroku 3 i 6 wykonujemy porónania elementów,
+    jednak wykorzystując instrukcję „if ... else ...” możemy w warunku „if” sprawdzić czy
+    <i>x<sub>idx1</sub></i> &le; <i>y<sub>idx2</sub></i> i w zależności od tego warunku
+    wykonać kroki 4-5 albo 7-8). Skoro mamy do przepisania <i>n</i>+<i>m</i>
+    elementów oraz najgorszym przypadkiem jest ten, w którym w krokach 9-14 przepiszemy 
+    jeden element, to w najgorszym przypadku w krokach 2-8 przepiszemy <i>n</i>+<i>m</i>-1 elementów. 
+    Wobec tego w najgorszym przypadku funkcja „scal” wykona <i>n</i>+<i>m</i>-1 porównań.
+  </div>
+
+</body>
+</html>

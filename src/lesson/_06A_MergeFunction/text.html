@@ -1,29 +1,76 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Treść zadania</title>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    img {
+        float: left;
+        margin-right: 3px;
+    }
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.clear {
+      clear: both;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Suma ciągu arytmetycznego - wzór</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Funkcja scalająca uporządkowane tablice</h2>
+  
+  <div class="firstParagraph">
+    <img src="merge.png" alt=""/>
+    W poprzednich lekcjach zajęliśmy się problemem sortowania, poznaliśmy trzy proste 
+    metody porządkowania. Niestety omówione metody sortując <i>n</i>-elementowy ciąg 
+    wykonywały około <i>n</i><sup>2</sup> porównań. W następnej lekcji poznamy znacznie 
+    szybszy sposób sortowania. Algorytm, o którym mowa nosi nazwę sortowania przez 
+    scalanie (ang. mergesort). Jednak zanim przejdziemy do omawiania tego porządkowania 
+    musimy zapoznać się z podstawową funkcją wykorzystywaną w tym algorytmie – z funkcją 
+    scal (ang. merge). Funkcja scal przyjmuje dwie posortowanane tablice liczb 
+    i scala je w jedną uporządkowaną tablicę. W tej lekcji zajmiemy się implementacją tej funkcji.
+  </div>
+  <div class="clear"></div>
+  
+  <div class="paragraph">
+    <img src="array_frame.png" alt="Nie udało załadować się obrazka"/>
+    Podobnie jak w poprzednich lekcjach twój algorytm powinien działać 
+    na trzech specjalnych tablicach wyświetlonych w osobnym oknie.
+    Tablice na górze są już wypełnione i posortowane. Możesz założyć, że te tablice nie są puste,
+    tzn. mają przynajmniej jeden element. Natomiast trzecia tablica (dolna) jest tablicą wynikową. 
+    Twoja funkcja powinna wypełnić tę tablicę przepisując zawartość dwóch górnych tabel. 
+    Po zakończeniu przepisywania wartości w tablicy wynikowej powinny być posortowane niemalejąco.
+    Aby twoja funkcja mogła działać na wyświetlonych tablicach powinieneś skorzystać 
+    z dwóch funkcji specjalnych: „int porownaj(idx1, idx2)” oraz 
+    „void przenies(idxSkad, tabSkad, idxDokad)”. Funkcja porównaj służy do porównywania liczb 
+    znajdujących się w dwóch górnych tablicach. Natomiast funkcja przenieś służy 
+    do przenoszenia elementów z górnych tablic do tablicy wynikowej. 
+    Więcej o funkcjach speclanych można dowiedzieć się z zakładki „funkcje specjalne”.
+  </div>
+  <div class="clear"></div>
+  
+  <div class="paragraph">
+    Zadaniem w tej lekcji jest zaimplementowanie funkcji „void scal(n, m)”, gdzie 
+    jako parametry funkcja przyjmuje rozmiary dwóch górnych tablic. Funkcja powinna
+    scalać dwie tablice w jedną zgodnie z założeniami poczynionymi w powyższym akapicie. 
+    W razie kłopotów z implementacją tej funkcji możesz skorzystać z licznych wskazówek. 
+    Po zakończeniu implementacji porównaj swoje rozwiązanie z rozwiązaniem wzorcowym, 
+    a następnie przeczytaj podsumowanie.
+  </div>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
-
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
-
-  </body>
+</body>
 </html> 

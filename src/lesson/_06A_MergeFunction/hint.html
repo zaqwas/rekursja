@@ -1,68 +1,251 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Treść zadania</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script>
-      function gotoHint1()
-      {
-        window.location.href = "#hint1";
-      }
-      function gotoHint2()
-      {
-        window.location.href = "#hint2";
-      }
-      function gotoHint3()
-      {
-        window.location.href = "#hint3";
-      }
-      function gotoHint4()
-      {
-        window.location.href = "#hint4";
-      }
-      
-      function showHint2()
-      {
-        hint2.style.display = "inherit";
-      }
-      function showHint3()
-      {
-        hint2.style.display = "inherit";
-        hint3.style.display = "inherit";
-      }
-      function showHint4()
-      {
-        hint2.style.display = "inherit";
-        hint3.style.display = "inherit";
-        hint4.style.display = "inherit";
-      }
-    </script>
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Wskazówki</title>
+  
+  <script type="text/javascript">
+    function gotoHint1() {
+      window.location.href = "#hint1";
+    }
+    function gotoHint2() {
+      window.location.href = "#hint2";
+    }
+    function gotoHint3() {
+      window.location.href = "#hint3";
+    }
+    function gotoHint4() {
+      window.location.href = "#hint4";
+    }
 
-  <body>
+    function showHint2() {
+      hint2.style.display = "inherit";
+    }
+    function showHint3() {
+      hint2.style.display = "inherit";
+      hint3.style.display = "inherit";
+    }
+    function showHint4() {
+      hint2.style.display = "inherit";
+      hint3.style.display = "inherit";
+      hint4.style.display = "inherit";
+    }
+  </script>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h2.firstHeader {
+      margin-top: 0px;
+    }
     
-    <div id="hint1">
-      <h2 style="text-align: center">Wskazówka I</h2>
-      <br>
-      <br>
-    </div>
+    img {
+      float: left;
+      margin-right: 3px;
+    }
+    hr {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
     
-    <div id="hint2" style="display: none;">
-      <h2 style="text-align: center">Wskazówka II</h2>
-      <br>
-      <br>
-    </div>
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.divHr {
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+    div.clear {
+      clear: both;
+    }
+    div.hidden {
+      display: none;
+    }
     
-    <div id="hint3" style="display: none">
-      <h2 style="text-align: center">Wskazówka III</h2>
-      <br>
-      <br>
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    td.indent1 {
+      padding-left: 20px;
+    }
+    td.indent2 {
+      padding-left: 40px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2 id="hint1" class="firstHeader">Wskazówka I</h2>
+  <div class="firstParagraph">
+    <img src="hint1.png" alt=""/>
+    Zastanówmy się jaki wyraz będzie mógł się znaleźć na początku tablicy wynikowej. 
+    Tablice są posortowane, więc najmniejsze elementy są na początku. 
+    Wobec tego wystarczy porównać te elementy ze sobą i wziąć mniejszy z nich. 
+    To będzie nasz pierwszy element w wynikowej tablicy. Na rysunku kolorem pomarańczonwym
+    oznaczyliśmy porównanie liczb, a następnie w drugim wierszu następuje przeniesienie
+    mniejszej warotści.
+  </div>
+  <div class="clear"></div>
+
+  <div id="hint2" class="hidden">
+    <h2>Wskazówka II</h2>
+    <div class="firstParagraph">
+      <img src="hint2.png" alt=""/>
+      W poprzedniej wskazówce zajęliśmy się pierwszym elementem. Skupmy się teraz na kolejnych. 
+      Zauważmy, że gdyby usunąć z tablicy pierwszy przeniesiony element, wówczas sytuacja 
+      by nam się powtórzyła. Znów musielibyśmy porównać początki tablic i przenieść 
+      mniejszy z tych elementów. Wobec tego musimy pamiętać tylko znaczniki, na pierwsze 
+      elementy dotychczas nieprzeniesione z dwóch tablic. Za każdym razem należy je 
+      ze sobą porównać i przenieść mniejszy z nich. Na rysunku pokazaliśmy przenoszenie dwóch
+      elementów. Każda kolumna opisuje przeniesienie jednego elementu. W pierwszym
+      wierszu porównyjemy elementy, w drugim przenosimy mniejsze elementy, a w trzecim
+      aktualizujemy znaczniki.
     </div>
+  </div>
+  <div class="clear"></div>
+
+  <div id="hint3" class="hidden">
+    <h2>Wskazówka III</h2>
     
-    <div id="hint4" style="display: none">
-      <h2 style="text-align: center">Wskazówka IV - pseudokod</h2>
-      <br>
-      <br>
+    <div class="first">
+      <img src="hint3_1.png" alt=""/>
+      Ze wskazówki pierwszej można wywnioskować, że funkcja powinna działać w pętli, 
+      za każdym razem powinna porównywać dwa elementy i przenosić mniejszy. 
+      Zastanówmy się jeszcze, co zrobić jeśli przeniesiemy wszystkie liczby z jakiejś tabeli.
     </div>
-  </body>
-</html>
+    <div class="clear"></div>
+    
+    <div class="divHr"><hr/></div>
+      
+    <div>
+      <img src="hint3_2.png" alt=""/>
+      Odpowiedź na powyższe pytanie jest proste: wówczas wystarczy tylko przepisać 
+      elementy z tablicy, w której zostały jeszcze elementy do tablicy wynikowej.
+      Na rysunku pokazaliśmy przenoszenie dwóch elementów. Każda kolumna opisuje 
+      przeniesienie jednego elementu. W pierwszym wierszu przenosimy elementy, 
+      a w drugim aktualizujemy znaczniki.
+    </div>
+  </div>
+  <div class="clear"></div>
+  
+  <div id="hint4" class="hidden">
+    <h2>Wskazówka IV - pseudokod algorytmu</h2>
+    <table>
+      <tr>
+        <td class="first">Dane:</td>
+        <td>
+          Dwie liczby naturalne <i>n</i> oraz <i>m</i>. Dwa uporządkowane ciągi liczb
+          <i>x</i><sub>0</sub>, <i>x</i><sub>1</sub>,..., <i>x</i><sub><i>n</i>-1</sub> oraz 
+          <i>y</i><sub>0</sub>, <i>y</i><sub>1</sub>,..., <i>y</i><sub><i>m</i>-1</sub>
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Wynik:</td>
+        <td>
+          Uporządkowany ciąg <i>z</i><sub>0</sub>, <i>z</i><sub>1</sub>,..., <i>z</i><sub><i>n</i>+<i>m</i>-1</sub>,
+          który powstał ze scalenia ciągów <i>x<sub>i</sub></i> oraz <i>y<sub>i</sub></i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 1.</td>
+        <td>
+          Przyjmij <i>idx1</i> := 0, <i>idx2</i> := 0 oraz <i>idx3</i> := 0
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 2.</td>
+        <td>
+          Dopóki <i>idx1</i> &lt; <i>n</i> oraz <i>idx2</i> &lt; <i>m</i> wykonuj kroki 3-8.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 3.</td>
+        <td class="indent1">
+          Jeśli <i>x<sub>idx1</sub></i> &le; <i>y<sub>idx2</sub></i> wykonaj kroki 4-5.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 4.</td>
+        <td class="indent2">
+          Przyjmij <i>z<sub>idx3</sub></i> := <i>x<sub>idx1</sub></i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 5.</td>
+        <td class="indent2">
+          Zwiększ wartości zmiennych <i>idx1</i> oraz <i>idx3</i> o jeden.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 6.</td>
+        <td class="indent1">
+          Jeśli <i>x<sub>idx1</sub></i> &gt; <i>y<sub>idx2</sub></i> wykonaj kroki 7-8.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 7.</td>
+        <td class="indent2">
+          Przyjmij <i>z<sub>idx3</sub></i> := <i>y<sub>idx2</sub></i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 8.</td>
+        <td class="indent2">
+          Zwiększ wartości zmiennych <i>idx2</i> oraz <i>idx3</i> o jeden.
+        </td>
+      </tr>
+      
+      <tr>
+        <td class="first">Krok 9.</td>
+        <td>
+          Dopóki <i>idx1</i> &lt; <i>n</i> wykonuj kroki 10-11.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 10.</td>
+        <td class="indent1">
+          Przyjmij <i>z<sub>idx3</sub></i> := <i>x<sub>idx1</sub></i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 11.</td>
+        <td class="indent1">
+          Zwiększ wartości zmiennych <i>idx1</i> oraz <i>idx3</i> o jeden.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 12.</td>
+        <td>
+          Dopóki <i>idx2</i> &lt; <i>m</i> wykonuj kroki 13-14.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 13.</td>
+        <td class="indent1">
+          Przyjmij <i>z<sub>idx3</sub></i> := <i>y<sub>idx2</sub></i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 14.</td>
+        <td class="indent1">
+          Zwiększ wartości zmiennych <i>idx2</i> oraz <i>idx3</i> o jeden.
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</body>
+</html> 

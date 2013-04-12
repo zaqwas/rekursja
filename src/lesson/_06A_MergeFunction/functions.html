@@ -1,29 +1,112 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Funkcje specjalne</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Funkcja specjalne</title>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h3 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    img {
+        float: left;
+        margin-right: 3px;
+    }
+    img.withBorder {
+      border:2px solid black;
+    }
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.clear {
+      clear: both;
+    }
+    ul {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-left: 25px;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Funkcje specjalne</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Funkcja specjalne</h2>
+  
+  <div class="firstParagraph">
+    <div>
+    <img src="array_frame.png" alt=""/>
+    </div>
+    W osobnym oknie pojawiły się trzy tablice liczb. Na górze znajdują się dwie 
+    początkowe tablice, a na dole wynikowa. Twoja funkcja „scal” powinna 
+    wypełnić tablicę wynikową przepisując zawartość dwóch górnych tabel. 
+    Po zakończeniu przepisywania wartości w tablicy wynikowej powinny być posortowane niemalejąco.
+    Aby twoja funkcja mogła działać na wyświetlonych tablicach powinieneś skorzystać 
+    z dwóch funkcji specjalnych: „int porownaj(idx1, idx2)” oraz 
+    „void przenies(idxSkad, tabSkad, idxDokad)”. Funkcje są omówione poniżej.
+  </div>
+  <div class="clear"></div>
+  
+  <h3>Funkcja „void przenies(idxSkad, tabSkad, idxDokad)”</h3>
+  <div class="firstParagraph">
+    Funkcja „void przenies(idxSkad, tabSkad, idxDokad)” służy do przenoszenia elementów 
+    z górnych tablic do tablicy wynikowej. Jako parametry funkcja przyjmuje trzy liczby. 
+    Parametr <i>tabSkad</i> może przyjmować tylko wartość 0 albo 1 (inaczej będzie zgłoszony 
+    błąd). Parametr określa z której tablicy chcemy przenieśc element z pierwszej (górnej) 
+    czy drugiej (środkowej). Parametr <i>idxSkad</i> to indeks elementu z tablicy pierwszej 
+    lub drugiej tablicy, natomiast <i>idxDokad</i> określa indeks elementu z tablicy 
+    wynikowej. Oczywiście podane indeksy muszą być liczbami nieujemnymi i muszą być 
+    mniejsze od rozmiarów poszczególnych tablic. Jeśli jakiś parametr nie będzie spełniał 
+    tych warunków zostanie zgłoszony błąd i program przerwie swoje działanie. Po przeniesieniu 
+    elementu pole w tablicy pierwotnej zostaje oznaczone na biało. Nie można wywołać funkcji, 
+    na elemencie którym się już wcześniej przeniosło. Np. wywołanie funkcji przenies(3,0,1) 
+    lub przenies(2,1,1) spowodowałoby błąd (zakładamy że stan tablicy wyraża powyższy rysunek). 
+    Podobnie nie można przenośić elementów do tablicy wynikowej na miejse, w którym 
+    znajduje się już element.Np. wywołanie funkcji przenies(0,0,0) lub przenies(1,1,0) 
+    spowodowałoby błąd.
+  </div>
+  
+  <h3>Funkcja „int porownaj(idx1, idx2)”</h3>
+  <div class="firstParagraph">
+    Funkcja „int porownaj(idx1, idx2)” służy do porównywania dwóch elementów z górnych tablic.
+    Jako parametry funkcja przyjmuje dwie liczby całkowite będące indeksami elementów:
+    idx1 – indeks elementu w pierwszej tablicy, idx2 – indeks elementu w drugiej tablicy.
+    Jako wynik funkcja zwraca liczbę -1, 0 lub 1. Funkcja zwraca: 
+    <ul>
+      <li>0 jeśli liczby na podanych indeksach są równe</li>
+      <li>-1 jeśli liczba na indeksie <i>idx1</i> jest mniejsza od tej na indeksie <i>idx2</i></li>
+      <li>1 jeśli  liczba na indeksie <i>idx1</i> jest większa od tej na indeksie <i>idx2</i></li>
+    </ul>
+    Oczywiście jeśli choć jeden z podanych indeksów będzie ujemny albo wykroczy poza rozmiar 
+    tablicy, to program zostanie zatrzymany i zostanie wyświetlony błąd wykonania programu.
+  </div>
+  
+  <div class="paragraph" >
+    <img class="withBorder" src="array_only.png" alt=""/>
+    Dla przykładu poniżej zaprezentowane jest kilka wywołań funkcji „porownaj”. 
+    Przyjmijmy, że stan tablicy wygląda tak jak na obrazku po lewej stronie:
+    <div class="clear"></div>
+    <ul>
+      <li><code>porownaj(1, 4)</code> – wywołanie funkcji zwróci 0</li>
+      <li><code>porownaj(0, 3)</code> – wywołanie funkcji zwróci 1</li>
+      <li><code>porownaj(0, 3)</code> – wywołanie funkcji zwróci -1</li>
+      <li><code>porownaj(3, -2)</code> – wywołanie funkcji zakończy się błędem</li>
+      <li><code>porownaj(16, 2)</code> – wywołanie funkcji zakończy się błędem</li>
+    </ul>
+  </div>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
-
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
-
-  </body>
+</body>
 </html> 
