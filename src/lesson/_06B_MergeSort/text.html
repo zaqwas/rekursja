@@ -1,29 +1,93 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Treść zadania</title>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    img {
+        float: left;
+        margin-right: 3px;
+    }
+    
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.clear {
+      clear: both;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Suma ciągu arytmetycznego - wzór</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Porządkowanie przez scalanie</h2>
+  <div class="firstParagraph">
+    W poprzedniej lekcji pokazaliśmy jak scalić dwie uporządkowane tablice – napisaliśmy 
+    w tym celu odpowiednią funkcję „scal”. W tej lekcji zajmiemy się wykorzystaniem 
+    tej funkcji do posortowania dowolnego ciągu. W tej lekcji napiszemy funkcję 
+    „void uporzadkuj(idx1, idx2)”, która będzie realizować algorytm porządkowania przez scalanie.
+  </div>
+  <div class="clear"></div>
+  
+  <div class="paragraph">
+    <img src="array.png" alt=""/>
+    W osobnym oknie pojawiły się dwie tablice liczb: górna tablica służy tylko do wprowadzania 
+    liczb i prezentuje stan tablicy przed uruchomieniem programu. Natomiast dolna tablica 
+    jest po starcie programu wypełniona liczbami z górnej tablicy. Funkcja „uporzadkuj” 
+    powinna posortować elementy w dolnej tablicy. Funkcja sortująca operując na tej 
+    tablicy liczb może skorzystać tylko z jednej funkcji specjalnej: „void scal(idx1, idx2, idx3)”. 
+    W poprzedniej lekcji funkcja scalała dwie osobne tablice, jednak w tej lekcji funkcja 
+    „scal” działa trochę inaczej, w tej lekcji funkcja „scal” operuje na dwóch przyległych
+    fragmentach tablicy. Funkcja scal bierze dwa posortowane fragmenty tablicy. 
+    Pierwszy fragment począwszy od indeksu <i>idx1</i> aż do indeksu <i>idx2</i>-1, 
+    drugi fragment  począwszy od indeksu <i>idx2</i> aż do indeksu <i>idx3</i>-1. 
+    Po wywołaniu funkcji „scal” elementy we fragmencie tablicy od indeksu <i>idx1</i>
+    do <i>idx3</i>-1 indeksu są uporządkowane. Funkcja scalająca jest szerzej 
+    omówiona w zakładce „funkcje specjalne”.
+  </div>
+  <div class="clear"></div>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
+  <div class="paragraph">
+    <img src="mergesort.png" alt=""/>
+    Zastanówmy się teraz jak można użyć funkcja „scal” do posortowania ciągów. 
+    Funkcja „scal” potrzebuje dwóch posortowanych fragmentów tablicy, dlatego możemy 
+    podzielić całą tablicę na dwa równe fragmenty (lub w miarę równe, gdy liczba 
+    <i>n</i> jest nieparzysta). Wówczas jeśli posortujemy pierwszy i drugi fragment 
+    z osobna będziemy mogli wykorzystać funkcję „scal”, którą uporządkuje całą tablicę liczb.
+    Oczywiście, pozostaje kwestia tego, jak posortować te dwa mniejsze ciągi. 
+    Jednak po zastanowieniu sprawa powinna wydawać się prosta, gdyż wystarczy rekurencyjnie 
+    wywołać funkcje porządkującą dla tych dwóch mniejszych fragmentów tablic. Zatem 
+    kolejne wywołania funkcji, będą dzieliły tablicę na coraz mniejsze kawałki. 
+    Warto jeszcze zastanowić się nad warunkiem stopu. Tablica złożona z jednego elementu 
+    jest automatycznie posortowana, wobec tego jeśli wywołamy funkcję „uporzadkuj” 
+    na jednoelementowym fragmencie tablicy wówczas powinniśmy od razu zakończyć działanie funkcji. 
+    Rysunek po lewej stronie wizualizuje uwagi zamieszczone w tym akapicie.
+  </div>
+  <div class="clear"></div>
 
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
+  <div class="paragraph">
+    Twoim zadaniem jest zaimplementować funkcję „void uporzadkuj(idx1, idx2)”. 
+    Funkcja sortująca powinna działać tak, jak zostało powiedziane w poprzednim akapicie. 
+    Funkcja „uporzadkuj” przyjmuje dwa indeksy: znacznik początku i końca tablicy. 
+    Funkcja „main” będzie wywoływać tę funkcję z paramatrami 0 oraz <i>n</i>, 
+    gdzie <i>n</i> oznacza wielkość tablicy. 
+    W razie problemów z implementacją tej funkcji możesz skorzystać ze wskazówki 
+    w postaci pseudokodu tego algorytmu. Po zakończeniu implementacji swojej funkcji 
+    powinieneś porównać swoje rozwiązanie z rozwiązaniem wzorcowym, a następnie powinieneś 
+    przeczytać podsumowanie.
+  </div>
 
-  </body>
+</body>
 </html> 

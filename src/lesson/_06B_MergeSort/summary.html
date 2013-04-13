@@ -1,29 +1,128 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Podsumowanie</title>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    img {
+      margin-top: 15px; 
+      margin-bottom: 15px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    table {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.clear {
+      clear: both;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Suma ciągu arytmetycznego - wzór</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Podsumowanie</h2>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
+  <div class="firstParagraph">
+    Zanim przejdziemy do omawiania złożoności algorytmu porządkowania przez scalanie,
+    zapoznajmy się dokładie z pseudokodem tego algorytmu.
+  </div>
+  
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczby naturalne <i>idx1</i>, <i>idx2</i> oraz ciąg liczb 
+        <i>x</i><sub><i>idx1</i></sub>, <i>x</i><sub><i>idx1</i>+1</sub>,..., 
+        <i>x</i><sub><i>idx2</i>-1</sub>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Uporządkowany ciąg <i>x'</i><sub><i>idx1</i></sub>, 
+        <i>x'</i><sub><i>idx1</i>+1</sub>,..., <i>x'</i><sub><i>idx2</i>-1</sub>,
+        który powstał z przestawienia elementów ciągu <i>x</i><sub><i>i</i></sub>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Jeżeli <i>idx1</i> &ge; <i>idx2</i>-1, to zakończ działanie funkcji.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        Oblicz <i>idxSr</i> := &lfloor;(<i>idx1</i>+<i>idx2</i>) / 2&rfloor;.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 3.</td>
+      <td>
+        Wywołaj rekurencyjnie funkcję „uporzadkuj” dla parametrów <i>idx1</i> oraz <i>idxSr</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 4.</td>
+      <td>
+        Wywołaj rekurencyjnie funkcję „uporzadkuj” dla parametrów <i>idxSr</i> oraz <i>idx2</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 5.</td>
+      <td>
+        Wywołaj funkcję „scal” z parametrami <i>idx1</i>, <i>idxSr</i> oraz <i>idx2</i>.
+      </td>
+    </tr>
+  </table>
+  
+  <div>
+    Zauważmy, że: porównanie elementów tablicy jest wykonywane jedynie wewnątrz funkcji „scal”, 
+    dlatego powinniśmy sobie przypomnieć, że funkcja „scal” wykonywała maksymalnie 
+    <i>a</i>+<i>b</i>-1 porównań (liczby <i>a</i> oraz <i>b</i> określają długość 
+    scalanych fragmentów taclicy). Ponieważ szacujemy liczbę porównań z góry możemy powiedzieć, 
+    że funkcja „scal” wykonuje tyle porównań ile wynosi długość wynikowego ciągu.
+    Spójrzmy się na poniższy rysunek, który zawiera drzewo wywołań funkcji „uporzadkuj”:
+  </div>
 
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
+  <img src="tree.png" alt=""/>
+  
+  <div>
+    Niebieskimi kororami oznaczyliśmy podział fragmentu tablicy na kolejne dwa fragmenty, 
+    natomiast kolorem zielonym zaznaczyliśmy scalone fragmenty. Zauważmy, że: w każdym wierszu 
+    (oprócz ostatniego i przedostatniego) długości ciągów sumują się do <i>n</i> 
+    (liczba <i>n</i> określa długość całej tablicy liczb). 
+    Wobec tego funkcje „scal” w poszczególnych wierszach wykonują co najwyżej <i>n</i> porównań.
+    Oszacujmy teraz liczbę wierszy. Zauważmy, że: w każdym wierszu dzielimy ciąg na pół. 
+    Wobec tego, jeśli przypomnimy sobie naszą definicję logarytmu, zauważymy, 
+    że liczba wierszy jest zbliżona do logarytmu z liczby <i>n</i>. 
+    Wobec tego liczbę porównań możemy oszacować przez <i>n</i> &middot; log<sub>2</sub> <i>n</i>.
+  </div>
 
-  </body>
-</html> 
+</body>
+</html>

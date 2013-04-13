@@ -1,68 +1,87 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Treść zadania</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script>
-      function gotoHint1()
-      {
-        window.location.href = "#hint1";
-      }
-      function gotoHint2()
-      {
-        window.location.href = "#hint2";
-      }
-      function gotoHint3()
-      {
-        window.location.href = "#hint3";
-      }
-      function gotoHint4()
-      {
-        window.location.href = "#hint4";
-      }
-      
-      function showHint2()
-      {
-        hint2.style.display = "inherit";
-      }
-      function showHint3()
-      {
-        hint2.style.display = "inherit";
-        hint3.style.display = "inherit";
-      }
-      function showHint4()
-      {
-        hint2.style.display = "inherit";
-        hint3.style.display = "inherit";
-        hint4.style.display = "inherit";
-      }
-    </script>
-  </head>
-
-  <body>
-    
-    <div id="hint1">
-      <h2 style="text-align: center">Wskazówka I</h2>
-      <br>
-      <br>
-    </div>
-    
-    <div id="hint2" style="display: none;">
-      <h2 style="text-align: center">Wskazówka II</h2>
-      <br>
-      <br>
-    </div>
-    
-    <div id="hint3" style="display: none">
-      <h2 style="text-align: center">Wskazówka III</h2>
-      <br>
-      <br>
-    </div>
-    
-    <div id="hint4" style="display: none">
-      <h2 style="text-align: center">Wskazówka IV - pseudokod</h2>
-      <br>
-      <br>
-    </div>
-  </body>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Pseudokod</title>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px; 
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    div.indent {
+      margin-left: 20px;
+    }
+    div.indent2 {
+      margin-left: 40px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Pseudokod algorytmu</h2>
+  
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczby naturalne <i>idx1</i>, <i>idx2</i> oraz ciąg liczb 
+        <i>x</i><sub><i>idx1</i></sub>, <i>x</i><sub><i>idx1</i>+1</sub>,..., 
+        <i>x</i><sub><i>idx2</i>-1</sub>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Uporządkowany ciąg <i>x'</i><sub><i>idx1</i></sub>, 
+        <i>x'</i><sub><i>idx1</i>+1</sub>,..., <i>x'</i><sub><i>idx2</i>-1</sub>,
+        który powstał z przestawienia elementów ciągu <i>x</i><sub><i>i</i></sub>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Jeżeli <i>idx1</i> &ge; <i>idx2</i>-1, to zakończ działanie funkcji.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        Oblicz <i>idxSr</i> := &lfloor;(<i>idx1</i>+<i>idx2</i>) / 2&rfloor;.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 3.</td>
+      <td>
+        Wywołaj rekurencyjnie funkcję „uporzadkuj” dla parametrów <i>idx1</i> oraz <i>idxSr</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 4.</td>
+      <td>
+        Wywołaj rekurencyjnie funkcję „uporzadkuj” dla parametrów <i>idxSr</i> oraz <i>idx2</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 5.</td>
+      <td>
+        Wywołaj funkcję „scal” z parametrami <i>idx1</i>, <i>idxSr</i> oraz <i>idx2</i>.
+      </td>
+    </tr>
+  </table>
+  
+</body>
 </html>

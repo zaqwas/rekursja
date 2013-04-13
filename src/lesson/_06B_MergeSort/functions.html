@@ -1,29 +1,70 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Funkcje specjalne</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Funkcja specjalne</title>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h3 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    img {
+        float: left;
+        margin-right: 3px;
+    }
+    
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.clear {
+      clear: both;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Funkcje specjalne</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Funkcja specjalne</h2>
+  
+  <div class="firstParagraph">
+    <img src="array.png" alt=""/>
+    W osobnym oknie pojawiły się dwie tablice liczb. Górna tablica służy tylko do 
+    wprowadzania liczb i prezentuje stan tablicy przed uruchomieniem programu. 
+    Natomiast dolna tablica jest po starcie programu wypełniona liczbami z górnej 
+    tablicy i prezentuje stan tablicy w trakcie działania programu. Twoja funkcja 
+    „uporzadkuj” powinna posortować liczby w tej dolnej tablicy liczb, aby tego 
+    dokonać funkcja „uporzadkuj” powinna wykorzystywać funkcję specjalną 
+    „void scal(idx1, idx2, idx3)”, która jest omówiona poniżej.
+  </div>
+  <div class="clear"></div>
+  
+  <h3>Funkcja „void scal(idx1, idx2, idx3)”</h3>
+  <div class="firstParagraph">
+    Funkcja „void scal(idx1, idx2, idx3)” służy do scalenia dwóch posortowanych
+    framentów tablicy. Jako parametr funkcja przyjmuje trzy indeksy: 
+    <i>idx1</i>, <i>idx2</i>, <i>idx3</i>. Indeksy powinny spełniać następujący warunek:
+    <i>idx1</i> &lt; <i>idx2</i> &lt; <i>idx3</i>. Ponadto parametr <i>idx1</i> powinien 
+    być nieujemny, a parametr <i>idx3</i> nie powinien przekraczać rozmiaru tablicy. 
+    Jeśli jakiś wyżej wymieniony warunek nie będzie spełniony, funkcja zwróci błąd 
+    i program przerwie swoje działanie. Podane trzy parametry powinny wyznaczać dwa 
+    spójne fragmenty tablicy. Pierwszy fragment począwszy od indeksu <i>idx1</i> 
+    aż do indeksu <i>idx2</i>-1, drugi fragment  począwszy od indeksu <i>idx2</i> 
+    aż do indeksu <i>idx3</i>-1. Podane dwa fragmenty tabliy powinny być uporządkowane
+    (inaczej funkcja zwróci błąd). Funkcja „scal” przestawia elementy we fragmencie 
+    [<i>idx1</i>, <i>idx3</i>), w taki sposób, iż po zakończeniu tej funkcji
+    elementy w tym fragmencie są uporządkowane. Na rusunku powyżej, pokazaliśmy
+    wywołanie funkcji „scal(4, 8, 12)”.
+  </div>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
-
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
-
-  </body>
+</body>
 </html> 
