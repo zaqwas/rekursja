@@ -183,7 +183,7 @@ class TextFrame {
                 tab = new Tab(Lang.pseudocodeTabName);
                 web = new WebView();
                 web.contextMenuEnabledProperty().set(false);
-                web.getEngine().load(getClass().getResource("pseudocode.html").toString());
+                web.getEngine().load(getClass().getResource("hint.html").toString());
                 tab.setContent(web);
                 tab.setDisable(true);
                 hintTabDisabledProperty = tab.disableProperty();

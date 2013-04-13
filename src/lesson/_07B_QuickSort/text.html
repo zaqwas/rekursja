@@ -1,29 +1,72 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Suma szeregu arytmetycznego.</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Treść zadania</title>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    img {
+        float: left;
+        margin-right: 3px;
+    }
+    
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.clear {
+      clear: both;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Suma ciągu arytmetycznego - wzór</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Szybki algorytm porządkowania</h2>
+  <div class="firstParagraph">
+    W poprzedniej lekcji pokazaliśmy jak podzielić tablicę na trzy części - napisaliśmy 
+    w tym celu specjalną funkcję „podziel”. Pierwsza część tablicy zawierała liczby 
+    mniejsze od „wartości osiowej” („wartość osiowa” to wartość pierwszego elementu 
+    fragmentu tablicy, na którym wywołujemy funkcję „podziel”). Druga część zawierała 
+    liczby równe tej wartości, natomiast trzecia zawierała liczby większe od
+    „wartości osiowej”.  W tej lekcji zajmiemy się wykorzystaniem tej funkcji 
+    do uporządkowania tablicy liczb.
+  </div>
+  <div class="clear"></div>
+  
+  <div class="paragraph">
+    <img src="array.png" alt=""/>
+    W osobnym oknie pojawiły się dwie tablice liczb: górna tablica służy tylko do wprowadzania 
+    liczb i prezentuje stan tablicy przed uruchomieniem programu. Natomiast dolna tablica 
+    jest po starcie programu wypełniona liczbami z górnej tablicy. Funkcja „uporzadkuj” 
+    powinna posortować elementy w dolnej tablicy, aby tego dokonać funkcja „uporzadkuj” 
+    powinna wywoływać funkcję specjalną „podziel(idx1, idx2, &amp;i1, &amp;i2)”. 
+    Funkcja „podziel” działa zgodnie z warunkami omówionymi w poprzedniej lekcji. 
+    Więcej informacji na temat tej funkcji można uzyskać czytając treść zakładki 
+    „funkcje specjalne”.
+  </div>
+  <div class="clear"></div>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
-
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
-
-  </body>
+  <div class="paragraph">
+    Twoim zadaniem jest zaimplementować funkcję „void uporzadkuj(idx1, idx2)”. 
+    Funkcja „uporzadkuj” przyjmuje dwa indeksy: znacznik początku i końca tablicy. 
+    Funkcja „main” będzie wywoływać tę funkcję z paramatrami 0 oraz <i>n</i>, 
+    gdzie <i>n</i> oznacza wielkość tablicy. Funkcja powinna uporządkować elementy
+    talicy od najmniejszego do największego.
+    W razie problemów z implementacją tej funkcji możesz skorzystać z dwóch wskazówek. 
+    Po zakończeniu implementacji swojej funkcji powinieneś porównać swoje rozwiązanie 
+    z rozwiązaniem wzorcowym, a następnie powinieneś przeczytać podsumowanie.
+  </div>
+  
+</body>
 </html> 

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Wskazówki</title>
+  
+  <script type="text/javascript">
+    function gotoHint1() {
+      window.location.href = "#hint1";
+    }
+    function gotoHint2() {
+      window.location.href = "#hint2";
+    }
+
+    function showHint2() {
+      hint2.style.display = "inherit";
+    }
+  </script>
+    
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h2.firstHeader {
+      margin-top: 0px;
+    }
+    
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.hidden {
+      display: none;
+    }
+    div.clear {
+      clear: both;
+    }
+    
+    img {
+        float: left;
+        margin-right: 3px;
+    }
+    ol {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-left: 25px;
+    }
+    
+    table {
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <h2 class="firstHeader" id="hint1">Wskazówka</h2>
+  
+  <div class="firstParagraph">
+    Przypomnijmy sobie jak działa funkcja podziel. Po wywołaniu funkcji „podziel” 
+    dla całej tablicy dostaniemy tablicę liczb podzieloną na trzy fragmenty:
+    <ol>
+      <li>
+        Fragment pierwszy (nazwijmy go „A”) będzie wypełniony liczbami  mniejszymi od 
+        „wartości osiowej” (przyjęliśmy, że „wartość osiowa” to wartość pierwszego 
+        elementu we fragmencie tablicy, dla której wywołujemy funkcję „podziel”).
+      </li>
+      <li>
+        Fragment drugi (nazwijmy go „B”) będziemy wypełniony liczby równymi „wartości osiowej”.
+      </li>
+      <li>
+        Natomiast fragment trzeci (nazwijmy go „C”) będzie zawierał 
+        liczby większe od „wartości osiowej”.
+      </li>
+    </ol>
+  </div>
+  
+  <div class="paragraph">
+    <img src="quisksort.png" alt=""/>
+    Zauważmy, że zachodzi następująca nierówność A &lt; B &lt; C (A &lt; B – oznacza, iż każdy 
+    element należący do fragmentu „A” jest mniejszy od każdego elementu z fragmentu „B”).
+    Na podstawie tej nierówności możemy wywnioskować, że jedyne elementy zaburzające 
+    porządek muszą należeć do tych samych fragmentów tablicy. Wobec tego wystarczy 
+    z osobna posortować fragmenty „A” oraz „C” (fragmentu „B” nie musimy oczywiście sortować, 
+    gdyż jest on wypełniony liczbami równymi „wartości osiowej”, zatem równymi sobie). 
+    Oczywiście, aby posortować fragment „A” oraz „C” wystarczy tylko wywołać rekurencyjnie 
+    funkcję „uporzadkuj”. Wizualizacja poniższej uwagi jest pokazana na rysunku po lewej.
+    Wizualizacja szybkiego algorytmu porządkowania znajduje się na rysunku.
+  </div>
+  <div class="clear"></div>
+
+  
+  <div id="hint2" class="hidden">
+    <h2>Pseudokod algorytmu</h2>
+    <table>
+      <tr>
+        <td class="first">Dane:</td>
+        <td>
+          Liczby naturalne <i>idx1</i>, <i>idx2</i> oraz ciąg liczb 
+          <i>x</i><sub><i>idx1</i></sub>, <i>x</i><sub><i>idx1</i>+1</sub>,..., 
+          <i>x</i><sub><i>idx2</i>-1</sub>
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Wynik:</td>
+        <td>
+          Uporządkowany ciąg <i>x'</i><sub><i>idx1</i></sub>, 
+          <i>x'</i><sub><i>idx1</i>+1</sub>,..., <i>x'</i><sub><i>idx2</i>-1</sub>,
+          który powstał z przestawienia elementów ciągu <i>x</i><sub><i>i</i></sub>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 1.</td>
+        <td>
+          Wywołaj funkcję „podziel” z parametrami <i>idx1</i> oraz <i>idx2</i>, 
+          a dwa znaczniki zwrócone przez funkcję przypisz 
+          do zmiennych <i>i1</i> oraz <i>i2</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 2.</td>
+        <td>
+          Jeżeli <i>idx1</i> &lt; <i>i1</i>-1, to rekurencyjnie wywołaj 
+          funkcję „uporzadkuj” dla parametrów <i>idx1</i> oraz <i>i1</i>.
+        </td>
+      </tr>
+      <tr>
+        <td class="first">Krok 3.</td>
+        <td>
+          Jeżeli <i>i2</i> &lt; <i>idx2</i>-1, to rekurencyjnie wywołaj
+          funkcję „uporzadkuj” dla parametrów <i>i2</i> oraz <i>idx2</i>.
+        </td>
+      </tr>
+    </table>
+  </div>
+  
+</body>
+</html>

@@ -1,29 +1,75 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Funkcje specjalne</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Funkcja specjalne</title>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    h3 {
+      margin-top: 15px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    img {
+        float: left;
+        margin-right: 3px;
+    }
+    
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.clear {
+      clear: both;
+    }
+  </style>
+</head>
 
-  <body>
-    <h2>Funkcje specjalne</h2>
-    <p>
-      W poprzedniej części obecnej lekcji zaimplementowałeś funkcję liczącą sumy ciągu arytmetycznego w dwóch wersjach:
-      iteracyjnym i rekurencyjnym. W obu przypadkach komputer musiał wykonać mniej więcej tyle dodawań ile wynosiła liczba n.
-      Jednak tę sumę da się wyliczyć stosując tylko parę operacji arytmetycznych (mnożeń, dzieleń dodawań, odejmowań).
-      Spójrz na poniższy rysunek i spróbuj wymyślić wzór:
-    </p>
-    <img src="rectangle1.png" alt="Nie można załadować obrazka"/>
+<body>
+  <h2>Funkcja specjalne</h2>
+  
+  <div class="firstParagraph">
+    <img src="array.png" alt=""/>
+    W osobnym oknie pojawiły się dwie tablice liczb. Górna tablica służy tylko do 
+    wprowadzania liczb i prezentuje stan tablicy przed uruchomieniem programu. 
+    Natomiast dolna tablica jest po starcie programu wypełniona liczbami z górnej 
+    tablicy i prezentuje stan tablicy w trakcie działania programu. Twoja funkcja 
+    „uporzadkuj” powinna posortować liczby w tej dolnej tablicy liczb, aby tego 
+    dokonać funkcja „uporzadkuj” powinna wykorzystywać funkcję specjalną 
+    „void podziel(idx1, idx2, &amp;i1, &amp;i2)”, która jest omówiona poniżej.
+  </div>
+  <div class="clear"></div>
+  
+  <h3>Funkcja „void podziel(idx1, idx2, &amp;i1, &amp;i2)”</h3>
+  <div class="firstParagraph">
+    <img src="array_only.png" alt=""/>
+    Funkcja „void podziel(idx1, idx2, &amp;i1, &amp;i2)” służy do dzielenia fragmentu
+    na trzy części. Jako parametr funkcja przyjmuje dwa indeksy: 
+    <i>idx1</i> oraz <i>idx2</i>. Indeksy powinny spełniać następujący warunek:
+    <i>idx1</i> &lt; <i>idx2</i>. Ponadto parametr <i>idx1</i> powinien 
+    być nieujemny, a parametr <i>idx2</i> nie powinien przekraczać rozmiaru tablicy. 
+    Jeśli jakiś wyżej wymieniony warunek nie będzie spełniony, funkcja zwróci błąd 
+    i program przerwie swoje działanie. Funkcja „podziel” działa tak, iż bierze
+    pierwszy element tego fragmentu (nazywamy go „wartością osiową”) i przestawiając
+    elementy dzieli dany fragment na trzy części. Po wykonianiu operacji „podziel”
+    na początku tego fragmentu znajdują się elementy mniejsze od „wartości osiowej”,
+    za nimi znajdują się elementy równe, a na końcu liczby większe od „wartości osiowej”.
+    Dodatkowo funkcja zwraca (za pomocą referencji) dwa znaczniki: <i>i1</i> oraz <i>i1</i>
+    Znaczniki wskazóją odpowiednio początk oraz koniec fragemntu tablicy, w którym
+    znajdują się elementy równe „wartości osiowej”. Na obrazku w tym akapicie, jest
+    pokazane wywołanie funkcji „void podziel(4, 28, &amp;i1, &amp;i2)”. Na obrazku
+    po lewej jest stan tablicy przed wywołaniem tej funkcji, natomiast po prawej
+    znajduje się tablica po wywołaniu tej funkcji. Dodatkow funkcja jako <i>i1</i>
+    zwróciła ??, a jako <i>i2</i>zwróciła ??.
+  </div>
 
-    <p>
-      Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-      Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-    </p>
-
-    <p>
-      Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-      Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-    </p>
-
-  </body>
+</body>
 </html> 
