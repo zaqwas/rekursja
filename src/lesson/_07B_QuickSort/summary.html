@@ -1,32 +1,174 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
-  <title>Suma szeregu arytmetycznego.</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Podsumowanie</title>
+  
+  <style type="text/css">
+    body {
+      font-size: 14px;
+      font-family: "DejaVu Serif";
+    }
+    h2 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    img.centerBlock {
+      margin-top: 15px; 
+      margin-bottom: 15px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    img.floating {
+        float: left;
+        margin-right: 3px;
+    }
+    
+    table {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    td.first {
+      color: green;
+      white-space: nowrap;
+      vertical-align: text-top;
+    }
+    
+    div.firstParagraph {
+      margin-top: 5px;
+    }
+    div.paragraph {
+      margin-top: 15px;
+    }
+    div.clear {
+      clear: both;
+    }
+  </style>
 </head>
 
 <body>
-  <h2>Suma ciągu arytmetycznego - wzór</h2>
-  <p>
+  <h2>Podsumowanie</h2>
+  <div class="firstParagraph">
     Zanim przejdziemy do omawiana złośoności algorytmu szybkiego sortowania, 
-    najpierw spójrzmy na pseudokod tego algorytmu.
-  </p>
+    najpierw spójrzmy na pseudokod tego algorytmu:
+  </div>
   
-  <p>
+  <table>
+    <tr>
+      <td class="first">Dane:</td>
+      <td>
+        Liczby naturalne <i>idx1</i>, <i>idx2</i> oraz ciąg liczb 
+        <i>x</i><sub><i>idx1</i></sub>, <i>x</i><sub><i>idx1</i>+1</sub>,..., 
+        <i>x</i><sub><i>idx2</i>-1</sub>
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Wynik:</td>
+      <td>
+        Uporządkowany ciąg <i>x'</i><sub><i>idx1</i></sub>, 
+        <i>x'</i><sub><i>idx1</i>+1</sub>,..., <i>x'</i><sub><i>idx2</i>-1</sub>,
+        który powstał z przestawienia elementów ciągu <i>x</i><sub><i>i</i></sub>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 1.</td>
+      <td>
+        Wywołaj funkcję „podziel” z parametrami <i>idx1</i> oraz <i>idx2</i>, 
+        a dwa znaczniki zwrócone przez funkcję przypisz 
+        do zmiennych <i>i1</i> oraz <i>i2</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 2.</td>
+      <td>
+        Jeżeli <i>idx1</i> &lt; <i>i1</i>-1, to rekurencyjnie wywołaj 
+        funkcję „uporzadkuj” dla parametrów <i>idx1</i> oraz <i>i1</i>.
+      </td>
+    </tr>
+    <tr>
+      <td class="first">Krok 3.</td>
+      <td>
+        Jeżeli <i>i2</i> &lt; <i>idx2</i>-1, to rekurencyjnie wywołaj
+        funkcję „uporzadkuj” dla parametrów <i>i2</i> oraz <i>idx2</i>.
+      </td>
+    </tr>
+  </table>
+  
+  <div>
     Pseudokod jest bardzo prosty i jedyne operacje wykonywane na tablicy są 
-    przeprowadzane przez funkcję podziel
-  </p>
-  <img src="array.png" alt="Nie można załadować obrazka"/>
-
-  <p>
-    Zadaniem w tej części jest zaimplementować funkcję liczącą sumę ciągu arytmetycznego.
-    Jednak w przeciwieństwie do poprzedniej części funkcja powinna wykonywać tylko parę operacji arytmetycznych.
-  </p>
-
-  <p>
-    Po zakończeniu implementowania tej funkcji porównaj swoje rozwiązanie z funkcją wzorcową.
-    Oczywiście, jeśli z powyższego rysunku nie wysnujesz żadnych wniosków, to możesz skorzystać z licznych podpowiedzi.
-  </p>
+    przeprowadzane przez funkcję &bdquo;podziel&rdquo;. Z poprzedniej lekcji
+    pamiętamy, że funkcja podziel wykonywała <i>n</i>-1 porównań, gdzie liczba
+    <i>n</i> jest długością dzielonej tablicy. Dlatego skoro szaczujemy złożoność
+    z góry możemy powiedzieć, że funkcja &bdquo;podziel&rdquo; wykonuje tyle
+    porównań ile wynosi długość dzielonego fragmentu. Niestety określenie złożoności
+    algorytmu szybkiego sortowania nie jest takie proste, gdyż złożoność tego
+    algorytmu w dużym stopniu zależy od tego na jakie części będą dzielone
+    fragmenty tablicy, dostarczane funkcji &bdquo;podziel&rdquo;. Na początek rozważmy 
+    przypadek optymistyczny, tzn. taki w którym funkcja &bdquo;podziel&rdquo;
+    będzie dzielić dostarczane fragmenty na dwie równe części. Spójrzmy na 
+    poniższy rysunek:
+  </div>
+  
+  <img class="centerBlock" src="tree_best.png" alt=""/>
+  
+  <div>
+    Na rysunku zaprezentowane jest drzewo wywołań funkcji &bdquo;uporzadkuj&rdquo;. 
+    W każdym węźle na górze jest pokazany fragment tablicy dostarczony do funkcji 
+    &bdquo;uporzadkuj&rdquo; natomiast na dole jest pokazany stan tego fragmentu 
+    po wywołaniu funkcji &bdquo;podziel&rdquo;. 
+    W tym miejscu możemy dokonać podobnej analizy, jak w przypadku algorytmu
+    porządkowania przez scalanie. Zauważmy, że: na każdym poziomie tego drzewa
+    długości fragmentów tablicy nie przekraczają liczby <i>n</i> (liczba <i>n</i>
+    oznacza rozmiar całej tablicy). Wobec tego funkcje podziel, które są wywływane
+    w każdym poziomie wkonują co najwyżej <i>n</i> porównań. Oszacujmy jeszcze 
+    liczbę poziomów. Zauważmy, że: w każdym występują fragmenty dwa razy mniejsze 
+    niż w poziomie wyżej. Dodatkowo kończymy rozbjanie fragmentów, gdy na dole 
+    osiągniemy podział na jednoelementowe fragmenty. 
+    Wobec tego, jeśli przypomnimy sobie naszą definicję logarytmu, zauważymy, 
+    że liczba poziomów jest zbliżona do logarytmu z liczby <i>n</i>. 
+    Wobec tego liczbę porównań możemy oszacować przez 
+    <i>n</i> &middot; log<sub>2</sub> <i>n</i>.
+  </div>
+  
+  <div class="paragraph">
+    <img class="floating" src="tree_worst.png" alt=""/>
+    Niestety nie zawsze będziemy mieć tyle czszęścia, w dzieleniu fragmentów tablicy.
+    Rozważmy teraz tabliczę liczb uporządkowaną od elementu największego do najmniejszego.
+    Zauważmy, że funkcja &bdquo;podziel&rdquo; na takiej tablicy działa tak, iż 
+    po wykonaniu tej funkcji w pierwszej części dzielonego fragmentu są prawie wszystkie'
+    elementy. Dodatkowo po wykonaniu funkcji &bdquo;podziel&rdquo; pierwsza część
+    jest odwrotnie uporządkowana, czyli ta sytuacja będzie się powtarzać.
+    Przeanalizujmy złożoność alogrytmu, na takim fragmencie. Na początku funkcja 
+    &bdquo;podziel&rdquo; wykona się na <i>n</i> elementowym fragmencie, następnie
+    na <i>n-1</i> elementowym, kolejno na <i>n-2</i> elementowym i tak aż 
+    fragment będzie składał się tylko z dwóch elmentów.
+    Wobec tego liczbę porównań możemy wyliczyć sumując: 
+    (<i>n</i>-1) + (<i>n</i>-2) + ... + 3 + 2. Jeśli przypomnimy sobie lekcję o 
+    sumie wyrazów ciągu arytmetycznego, to zauważymy, że ta suma wynosi:
+    ((n-1)&middot;n) / 2 - 1, czyli w przybliżeniu <i>n</i><sup>2</sup>.
+  </div>
+  <div class="clear"></div>
+  
+  <div class="paragraph">
+    Aby uniknąć przypadku z poprzedniego akapitu, często w algorytmie szybkiego
+    porządkowania wykorzystuje się losowanie. Losuje się &bdquo;wartość osiową&rdquo;
+    W ten sposób, złożoność algorytmu nie zależy od danych, a od wylosowanych wartości.
+    Dodatkowo mamy duże prawdopodobieństwo, że wylosowany element, będzie bliski
+    medianie dzielonego fragmentu tablicy. Jeśli jednak, zdarzy się tak, że wylosowany
+    element będzie bliższy najmniejszemu lub największemu elementowi w dzielonym fragmencie.
+    To niestety fragment tablicy nie podzielimy tak jakbyś my chcieli (na dwie w miarę 
+    równe części), niestety jedna z tych części będzie znacznie większa. Jednak w 
+    następnym wywołaniu funkcji &bdquo;uporzadkuj&rdquo; znów będziemy losować 
+    &bdquo;wartość osiową&rdquo; i znów będzemy mieli dużą szansę wylosowania 
+    odpowiedniego elementu. W menu lekcji, dostępna jest opcja &bdquo;rozwiązanie 
+    zrandomizowane&rdquo;, które wyświetla program wykorzstujący losowanie,
+    porównaj to rozwiązanie z rozwiązaniem wzorcowym a także 
+    przeanalizuj ten program, wywołując go kilka razy na tej samej tablicy.
+    Ponadto możesz uruchomić program wzorcowy oraz zrandomizowany, na tablicy odwrotnie 
+    uporządkowanej zobaczysz wówczas, iż program zrandomizowany działa o wiele szybciej.
+  </div>
 
 </body>
 </html> 
